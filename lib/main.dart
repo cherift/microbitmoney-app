@@ -8,6 +8,11 @@ import 'package:flutter/services.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: AppColors.secondary,
+    statusBarIconBrightness: Brightness.light,
+  ));
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -22,13 +27,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BIT-MO',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFBF3724),
-          primary: const Color(0xFFBF3724),
-          secondary: const Color(0xFF087CE3),
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
+          secondary: AppColors.secondary,
         ),
         useMaterial3: true,
         fontFamily: 'Poppins',
@@ -85,7 +89,7 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.background,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

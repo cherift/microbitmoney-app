@@ -98,18 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fit: BoxFit.contain,
                             ),
                           ),
-
                           SizedBox(height: availableHeight * 0.04),
-
-                          Text(
-                            'Bienvenue',
-                            style: TextStyle(
-                              fontSize: size.width * 0.07,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.text,
-                            ),
-                          ),
-                          SizedBox(height: availableHeight * 0.01),
                           Text(
                             'Connectez-vous pour accéder à votre compte',
                             textAlign: TextAlign.center,
