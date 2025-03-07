@@ -77,7 +77,7 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
             Expanded(
               flex: 1,
               child: _buildGradientStatCard(
-                title: 'Commission',
+                title: 'Total',
                 value: commissionAmount,
                 growth: commissionGrowth,
                 gradientStart: AppColors.primary,

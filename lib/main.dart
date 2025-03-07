@@ -1,11 +1,12 @@
 import 'package:bit_money/constants/app_colors.dart';
-import 'package:bit_money/screens/home_screen.dart';
+import 'package:bit_money/screens/general_screen.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -13,12 +14,16 @@ void main() {
     statusBarIconBrightness: Brightness.light,
   ));
 
+  // Forcer l'orientation en portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) {
     runApp(const MyApp());
   });
+
+  // Initialiser les données de locale pour intl
+  await initializeDateFormatting('fr_FR', null);
 }
 
 class MyApp extends StatelessWidget {
@@ -116,7 +121,7 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
       );
     } else {
       if (_isAuthenticated) {
-        return const HomePage();
+        return const GeneralScreen();
       }
       return const LoginScreen();
     }

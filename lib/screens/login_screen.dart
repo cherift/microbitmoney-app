@@ -1,4 +1,4 @@
-import 'package:bit_money/screens/home_screen.dart';
+import 'package:bit_money/screens/general_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_money/services/auth_service.dart';
 import 'package:bit_money/constants/app_colors.dart';
@@ -301,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                                 if (response['success'] == true) {
                                                   Navigator.of(context).pushReplacement(
-                                                    MaterialPageRoute(builder: (_) => const HomePage()),
+                                                    MaterialPageRoute(builder: (_) => const GeneralScreen()),
                                                   );
                                                 } else {
                                                   setState(() {
