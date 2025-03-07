@@ -3,7 +3,6 @@ import 'package:bit_money/components/notifications.dart';
 import 'package:bit_money/components/quick_actions.dart';
 import 'package:bit_money/components/stat_card.dart';
 import 'package:bit_money/constants/app_colors.dart';
-import 'package:bit_money/screens/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -43,7 +42,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }
