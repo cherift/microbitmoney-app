@@ -24,6 +24,7 @@ class GeneralScreenState extends State<GeneralScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: Container(
         decoration: const BoxDecoration(
           color: AppColors.background,
