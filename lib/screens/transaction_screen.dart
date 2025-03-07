@@ -69,6 +69,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 color: Colors.transparent,
               ),
               child: SafeArea(
+                bottom: false,
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Padding(
