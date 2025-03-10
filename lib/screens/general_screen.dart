@@ -1,5 +1,6 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/screens/home_screen.dart';
+import 'package:bit_money/screens/profile_screen.dart';
 import 'package:bit_money/screens/transaction_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,8 @@ class GeneralScreenState extends State<GeneralScreen> {
   final List<Map<String, dynamic>> _navItems = [
     {'icon': Icons.home, 'page': HomePage()},
     {'icon': Icons.send, 'page': TransactionsScreen()},
-    {'icon': Icons.insert_chart, 'page': HomePage()},
-    {'icon': Icons.settings, 'page': HomePage()},
+    {'icon': Icons.download_for_offline, 'page': HomePage()},
+    {'icon': Icons.person_3, 'page': ProfileScreen()},
   ];
 
   @override
