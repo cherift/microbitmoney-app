@@ -86,7 +86,7 @@ class TransactionReceiptScreen extends StatelessWidget {
     final double totalAmount = transaction.totalAmount;
     final double receivedAmountForeign = amountSent / 1000;
     final String foreignCurrency = "USD";
-    final String truncatedRef = _truncateWithEllipsis(transaction.referenceId, 18);
+    final String truncatedRef = _truncateWithEllipsis(transaction.finalTransactionNumber ?? transaction.referenceId, 18);
 
     return Card(
       elevation: 0,
@@ -158,8 +158,8 @@ class TransactionReceiptScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Assistance famille',
+            Text(
+              transaction.reason ?? 'Assistance famille',
               style: TextStyle(fontSize: 16),
             ),
 
