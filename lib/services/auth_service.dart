@@ -108,7 +108,7 @@ class AuthService {
       } else if (response.statusCode == 401) {
         return {
           'success': false,
-          'message': 'Identifiants invalides. Veuillez vérifier votre email et mot de passe.'
+          'message': 'Identifiants invalides.'
         };
       } else {
         return {
@@ -183,7 +183,7 @@ class AuthService {
   Future<bool> logout() async {
     try {
       final dio = Dio();
-      await dio.post('$baseUrl/api/auth/signout');
+      await dio.post('$baseUrl/api/auth/logout');
 
       await _secureStorage.delete(key: 'user_session');
 
