@@ -1,7 +1,6 @@
-
-
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/models/pdv_model.dart';
+import 'package:flutter/material.dart';
 
 class Transaction {
   final String id;
@@ -15,13 +14,14 @@ class Transaction {
   final String senderAddress;
   final String senderIdType;
   final String senderIdNumber;
-  final DateTime senderIdIssueDate;
+  final DateTime? senderIdIssueDate;
   final DateTime senderIdExpiryDate;
   final String senderNationality;
   final DateTime senderBirthDate;
   final String senderBirthPlace;
-  final String senderOccupation;
+  final String? senderOccupation;
   final String senderGender;
+  final String? senderCountry;
 
   // Recipient information
   final String recipientFirstName;
@@ -35,6 +35,7 @@ class Transaction {
   final DateTime recipientBirthDate;
   final String recipientBirthPlace;
   final String recipientGender;
+  final String? recipientCountry;
 
   // Transaction details
   final double amount;
@@ -47,6 +48,11 @@ class Transaction {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? completedAt;
+  final String? reason;
+  final String? finalTransactionNumber;
+  final String? rejectionReason;
+  final String? processedBy;
+  final DateTime? processedAt;
 
   // Related entities
   final Operator? operator;
@@ -62,13 +68,14 @@ class Transaction {
     required this.senderAddress,
     required this.senderIdType,
     required this.senderIdNumber,
-    required this.senderIdIssueDate,
+    this.senderIdIssueDate,
     required this.senderIdExpiryDate,
     required this.senderNationality,
     required this.senderBirthDate,
     required this.senderBirthPlace,
-    required this.senderOccupation,
+    this.senderOccupation,
     required this.senderGender,
+    this.senderCountry,
     required this.recipientFirstName,
     required this.recipientLastName,
     required this.recipientPhone,
@@ -80,6 +87,7 @@ class Transaction {
     required this.recipientBirthDate,
     required this.recipientBirthPlace,
     required this.recipientGender,
+    this.recipientCountry,
     required this.amount,
     required this.fees,
     required this.totalAmount,
@@ -90,11 +98,17 @@ class Transaction {
     required this.createdAt,
     required this.updatedAt,
     this.completedAt,
+    this.reason,
+    this.finalTransactionNumber,
+    this.rejectionReason,
+    this.processedBy,
+    this.processedAt,
     this.operator,
     this.pdv,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
+    debugPrint(json.toString());
     return Transaction(
       id: json['id'],
       referenceId: json['referenceId'],
@@ -105,13 +119,14 @@ class Transaction {
       senderAddress: json['senderAddress'],
       senderIdType: json['senderIdType'],
       senderIdNumber: json['senderIdNumber'],
-      senderIdIssueDate: DateTime.parse(json['senderIdIssueDate']),
+      senderIdIssueDate: json['senderIdIssueDate'] != null ? DateTime.parse(json['senderIdIssueDate']) : null,
       senderIdExpiryDate: DateTime.parse(json['senderIdExpiryDate']),
       senderNationality: json['senderNationality'],
       senderBirthDate: DateTime.parse(json['senderBirthDate']),
       senderBirthPlace: json['senderBirthPlace'],
       senderOccupation: json['senderOccupation'],
       senderGender: json['senderGender'],
+      senderCountry: json['senderCountry'],
       recipientFirstName: json['recipientFirstName'],
       recipientLastName: json['recipientLastName'],
       recipientPhone: json['recipientPhone'],
@@ -123,6 +138,7 @@ class Transaction {
       recipientBirthDate: DateTime.parse(json['recipientBirthDate']),
       recipientBirthPlace: json['recipientBirthPlace'],
       recipientGender: json['recipientGender'],
+      recipientCountry: json['recipientCountry'],
       amount: (json['amount'] as num).toDouble(),
       fees: (json['fees'] as num).toDouble(),
       totalAmount: (json['totalAmount'] as num).toDouble(),
@@ -133,6 +149,11 @@ class Transaction {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
+      reason: json['reason'],
+      finalTransactionNumber: json['finalTransactionNumber'],
+      rejectionReason: json['rejectionReason'],
+      processedBy: json['processedBy'],
+      processedAt: json['processedAt'] != null ? DateTime.parse(json['processedAt']) : null,
       operator: json['operator'] != null ? Operator.fromJson(json['operator']) : null,
       pdv: json['pdv'] != null ? PDV.fromJson(json['pdv']) : null,
     );
@@ -149,13 +170,14 @@ class Transaction {
       'senderAddress': senderAddress,
       'senderIdType': senderIdType,
       'senderIdNumber': senderIdNumber,
-      'senderIdIssueDate': senderIdIssueDate.toIso8601String(),
+      'senderIdIssueDate': senderIdIssueDate?.toIso8601String(),
       'senderIdExpiryDate': senderIdExpiryDate.toIso8601String(),
       'senderNationality': senderNationality,
       'senderBirthDate': senderBirthDate.toIso8601String(),
       'senderBirthPlace': senderBirthPlace,
       'senderOccupation': senderOccupation,
       'senderGender': senderGender,
+      'senderCountry': senderCountry,
       'recipientFirstName': recipientFirstName,
       'recipientLastName': recipientLastName,
       'recipientPhone': recipientPhone,
@@ -167,6 +189,7 @@ class Transaction {
       'recipientBirthDate': recipientBirthDate.toIso8601String(),
       'recipientBirthPlace': recipientBirthPlace,
       'recipientGender': recipientGender,
+      'recipientCountry': recipientCountry,
       'amount': amount,
       'fees': fees,
       'totalAmount': totalAmount,
@@ -177,6 +200,11 @@ class Transaction {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'completedAt': completedAt?.toIso8601String(),
+      'reason': reason,
+      'finalTransactionNumber': finalTransactionNumber,
+      'rejectionReason': rejectionReason,
+      'processedBy': processedBy,
+      'processedAt': processedAt?.toIso8601String(),
       'operator': operator?.toJson(),
       'pdv': pdv?.toJson(),
     };

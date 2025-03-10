@@ -209,16 +209,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     switch (transaction.status) {
       case 'PENDING':
-        statusColor = Colors.amber;
+        statusColor = Colors.orange;
         statusText = 'En attente';
         break;
       case 'COMPLETED':
         statusColor = Colors.green;
         statusText = 'Terminé';
         break;
-      case 'REJECTED':
+      case 'CANCELLED':
         statusColor = Colors.red;
-        statusText = 'Refusé';
+        statusText = 'Annulé';
         break;
       default:
         statusColor = Colors.grey;
