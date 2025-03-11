@@ -1,23 +1,20 @@
 import 'package:bit_money/constants/app_colors.dart';
-import 'package:bit_money/models/transaction_model.dart';
-import 'package:bit_money/screens/transaction_receipt_screen.dart';
-import 'package:bit_money/services/transaction_service.dart';
+import 'package:bit_money/models/reception_model.dart';
+import 'package:bit_money/screens/reception_receipt_sreen.dart';
+import 'package:bit_money/services/reception_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TransactionsScreen extends StatefulWidget {
-
-  const TransactionsScreen({
-    super.key,
-  });
+class ReceptionsScreen extends StatefulWidget {
+  const ReceptionsScreen({super.key});
 
   @override
-  State<TransactionsScreen> createState() => _TransactionsScreenState();
+  State<ReceptionsScreen> createState() => _ReceptionsScreenState();
 }
 
-class _TransactionsScreenState extends State<TransactionsScreen> {
-  late TransactionService _transactionService;
-  List<Transaction> _transactions = [];
+class _ReceptionsScreenState extends State<ReceptionsScreen> {
+  late ReceptionService _receptionService;
+  List<Reception> _receptions = [];
   bool _isLoading = true;
   double _totalAmount = 0;
   String _currency = 'GNF';
@@ -25,32 +22,37 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   @override
   void initState() {
     super.initState();
-    _transactionService = TransactionService();
-    _loadTransactions();
+    _receptionService = ReceptionService();
+    _loadReceptions();
   }
 
-  Future<void> _loadTransactions() async {
+  Future<void> _loadReceptions() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final transactions = await _transactionService.getTransactions();
-      transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      final receptions = await _receptionService.getReceptions();
+      receptions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-      final total = transactions.fold<double>(
-        0, (sum, transaction) => sum + transaction.amount
-      );
-      final currency = transactions.isNotEmpty ? transactions.first.currency : 'GNF';
+      double total = 0;
+      for (var reception in receptions) {
+        if (reception.amount != null) {
+          total += reception.amount!;
+        }
+      }
+
+      final currency = (receptions.isNotEmpty && receptions.first.currency != null)
+        ? receptions.first.currency! : 'GNF';
 
       setState(() {
-        _transactions = transactions;
+        _receptions = receptions;
         _totalAmount = total;
         _currency = currency;
         _isLoading = false;
       });
     } catch (e) {
-      debugPrint('Erreur lors du chargement des transactions: $e');
+      debugPrint('Erreur lors du chargement des réceptions: $e');
       setState(() {
         _isLoading = false;
       });
@@ -63,37 +65,37 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-            onRefresh: _loadTransactions,
+            onRefresh: _loadReceptions,
             child: Container(
-                decoration: const BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
               child: SafeArea(
                 bottom: false,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildTotalAmountCard(),
-                          const SizedBox(height: 24),
-                          const Text(
-                            'Liste des envois',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildTotalAmountCard(),
+                        const SizedBox(height: 24),
+                        const Text(
+                          'Liste des réceptions',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
                           ),
-                          const SizedBox(height: 16),
-                          _buildTransactionsList(),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildReceptionsList(),
+                      ],
                     ),
                   ),
                 ),
+              ),
             ),
           ),
     );
@@ -111,8 +113,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.secondary,
-            AppColors.secondary.withValues(alpha: .8),
+            AppColors.accent,
+            AppColors.accent.withValues(alpha: .8),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -128,7 +130,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Montant total des envois',
+            'Montant total des réceptions',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.white,
@@ -161,8 +163,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
   }
 
-  Widget _buildTransactionsList() {
-    if (_transactions.isEmpty) {
+  Widget _buildReceptionsList() {
+    if (_receptions.isEmpty) {
       return Center(
         child: Column(
           children: [
@@ -174,7 +176,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun envoi',
+              'Aucune réception',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -189,25 +191,27 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: _transactions.length,
+      itemCount: _receptions.length,
       itemBuilder: (context, index) {
-        final transaction = _transactions[index];
-        return _buildTransactionCard(transaction);
+        final reception = _receptions[index];
+        return _buildReceptionCard(reception);
       },
     );
   }
 
-  Widget _buildTransactionCard(Transaction transaction) {
+  Widget _buildReceptionCard(Reception reception) {
     final formatter = NumberFormat('#,###', 'fr');
-    final formattedAmount = formatter.format(transaction.amount);
+    final formattedAmount = reception.amount != null
+        ? formatter.format(reception.amount)
+        : 'N/A';
 
     final dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
-    final formattedDate = dateFormatter.format(transaction.createdAt);
+    final formattedDate = dateFormatter.format(reception.createdAt);
 
     Color statusColor;
     String statusText;
 
-    switch (transaction.status) {
+    switch (reception.status) {
       case 'PENDING':
         statusColor = Colors.orange;
         statusText = 'En attente';
@@ -222,7 +226,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         break;
       default:
         statusColor = Colors.grey;
-        statusText = transaction.status;
+        statusText = 'Inconnu';
     }
 
     return Card(
@@ -244,7 +248,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        transaction.referenceId,
+                        reception.referenceId,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -253,7 +257,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${transaction.operator?.name ?? 'Opérateur'} - $formattedAmount $_currency',
+                        '${reception.operator.name} - $formattedAmount ${reception.currency ?? "GNF"}',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[700],
@@ -261,7 +265,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${transaction.pdv?.name ?? 'PDV'} - $formattedDate',
+                        '${reception.pdv?.name ?? 'PDV'} - $formattedDate',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
@@ -295,15 +299,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TransactionReceiptScreen(transaction: transaction),
+                        builder: (context) => ReceptionReceiptScreen(reception: reception),
                       ),
                     );
                   },
                   icon: const Icon(Icons.receipt_outlined, size: 18),
-                  label: const Text('Voir le reçu'),
+                  label: const Text('Voir les détails'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.secondary,
-                    side: BorderSide(color: AppColors.secondary),
+                    foregroundColor: AppColors.accent,
+                    side: BorderSide(color: AppColors.accent),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

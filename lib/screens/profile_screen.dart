@@ -44,74 +44,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isTablet = constraints.maxWidth > 600;
-            final maxContentWidth = isTablet ? 600.0 : constraints.maxWidth;
-
-            return Stack(
-              children: [
-                Positioned(
-                  right: 20,
-                  child: Material(
-                    color: Colors.transparent,
-                    elevation: 10,
-                    child: _buildLogoutButton(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isTablet = constraints.maxWidth > 600;
+              final maxContentWidth = isTablet ? 600.0 : constraints.maxWidth;
+              return Stack(
+                children: [
+                  Positioned(
+                    right: 20,
+                    child: Material(
+                      color: Colors.transparent,
+                      elevation: 10,
+                      child: _buildLogoutButton(),
+                    ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: Center(
-                    child: Container(
-                      constraints: BoxConstraints(maxWidth: maxContentWidth),
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundColor: AppColors.lightGrey,
-                            child: Text(
-                              _getInitials(userModel!.name),
-                              style: const TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.secondary,
+                  SingleChildScrollView(
+                    child: Center(
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: maxContentWidth),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 60,
+                              backgroundColor: AppColors.lightGrey,
+                              child: Text(
+                                _getInitials(userModel!.name),
+                                style: const TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.secondary,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16,),
-                          _buildInfoSection(context, 'Informations Personnelles', [
-                            _buildInfoTile(context, 'Adresse e-mail', userModel!.email, Icons.email),
-                            _buildInfoTile(context, 'Type de compte', userModel!.role == 'ADMIN' ? 'Administrateur' : userModel!.accountType, Icons.badge),
-                          ]),
-                          const SizedBox(height: 16),
-                          if (userModel!.pdv != null) ...[
-                            _buildInfoSection(context, 'Point de Vente', [
-                              _buildInfoTile(context, 'Nom PDV', userModel!.pdv!.name, Icons.store),
-                              _buildInfoTile(context, 'Commission', userModel!.commission.toString(), Icons.percent_outlined),
-                              _buildInfoTile(context, 'Adresse', userModel!.pdv!.address, Icons.location_on),
-                              _buildInfoTile(context, 'Téléphone', userModel!.pdv!.phone, Icons.phone),
-                              _buildInfoTile(context, 'Horaires',
-                                '${userModel!.pdv!.openingTime} - ${userModel!.pdv!.closingTime}',
-                                Icons.access_time
-                              ),
-                              _buildInfoTile(
-                                context,
-                                'Ouvert le weekend',
-                                userModel!.pdv!.openWeekend ? 'Oui' : 'Non',
-                                Icons.calendar_today
-                              ),
+                            const SizedBox(height: 16,),
+                            _buildInfoSection(context, 'Informations Personnelles', [
+                              _buildInfoTile(context, 'Adresse e-mail', userModel!.email, Icons.email),
+                              _buildInfoTile(context, 'Type de compte', userModel!.role == 'ADMIN' ? 'Administrateur' : userModel!.accountType, Icons.badge),
                             ]),
+                            const SizedBox(height: 16),
+                            if (userModel!.pdv != null) ...[
+                              _buildInfoSection(context, 'Point de Vente', [
+                                _buildInfoTile(context, 'Nom PDV', userModel!.pdv!.name, Icons.store),
+                                _buildInfoTile(context, 'Commission', userModel!.commission.toString(), Icons.percent_outlined),
+                                _buildInfoTile(context, 'Adresse', userModel!.pdv!.address, Icons.location_on),
+                                _buildInfoTile(context, 'Téléphone', userModel!.pdv!.phone, Icons.phone),
+                                _buildInfoTile(context, 'Horaires',
+                                  '${userModel!.pdv!.openingTime} - ${userModel!.pdv!.closingTime}',
+                                  Icons.access_time
+                                ),
+                                _buildInfoTile(
+                                  context,
+                                  'Ouvert le weekend',
+                                  userModel!.pdv!.openWeekend ? 'Oui' : 'Non',
+                                  Icons.calendar_today
+                                ),
+                              ]),
+                            ],
+                            const SizedBox(height: 50),
                           ],
-                          const SizedBox(height: 90),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ]
-            );
-          },
+                ]
+              );
+            },
+          ),
         ),
       ),
     );
