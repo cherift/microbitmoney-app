@@ -166,6 +166,8 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
   }
 
   Widget _buildOperatorGrid() {
+    List<Operator> activeOperators = _operators.where((operator) => operator.isActive).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -178,9 +180,9 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
             mainAxisSpacing: 16,
             childAspectRatio: 0.9,
           ),
-          itemCount: _operators.length,
+          itemCount: activeOperators.length,
           itemBuilder: (context, index) {
-            final operator = _operators[index];
+            final operator = activeOperators[index];
             final isSelected = _selectedOperator?.id == operator.id;
 
             return GestureDetector(
