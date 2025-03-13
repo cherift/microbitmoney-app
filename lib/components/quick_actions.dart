@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/screens/receive_transfer_screen.dart';
 import 'package:flutter/material.dart';
 
 class QuickActionsWidget extends StatefulWidget {
@@ -47,22 +48,7 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
 
   Widget _buildActionButton(IconData icon, String title, Color color, double width) {
     return GestureDetector(
-      onTap: () {
-        switch (title) {
-          case 'Envoyer':
-            // Logique pour l'envoi
-            break;
-          case 'Recevoir':
-            // Logique pour la réception
-            break;
-          case 'Enrôler':
-            // Logique pour l'enrôlement
-            break;
-          case 'Rapports':
-            // Logique pour les rapports
-            break;
-        }
-      },
+      onTap: () {},
       child: Container(
         width: width,
         height: 52,
@@ -81,7 +67,27 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: () {},
+            onTap: () {
+              switch (title) {
+                case 'Envoyer':
+                  // Logique pour l'envoi
+                  break;
+                case 'Recevoir':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ReceiveTransferOperatorScreen(),
+                    ),
+                  );
+                  break;
+                case 'Enrôler':
+                  // Logique pour l'enrôlement
+                  break;
+                case 'Rapports':
+                  // Logique pour les rapports
+                  break;
+              }
+            },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
