@@ -135,4 +135,31 @@ class ReceptionService {
         r.createdAt.day == endDate.day))
     ).toList();
   }
+
+  Future<Map<String, dynamic>?> createReception(Map<String, dynamic> data) async {
+    try {
+      String? headerCookies = await _secureStorage.read(key: 'Cookies');
+      final response = await _dio.post(
+        '$baseUrl/api/receptions',
+        data: data,
+        options: Options(
+          headers: {
+            'Cookie': headerCookies
+          },
+          validateStatus: (status) => true,
+        ),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return response.data;
+      } else {
+        debugPrint('Erreur lors de la création de la réception: ${response.statusCode}');
+        debugPrint('Message: ${response.data}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Exception lors de la création de la réception: $e');
+      return null;
+    }
+  }
 }
