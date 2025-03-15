@@ -1,5 +1,6 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/models/operator_model.dart';
+import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/services/reception_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,7 +49,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
 
       if (response != null) {
         if (!mounted) return;
-        _showSuccessDialog();
+        _showSuccessDialog(widget.recipientData['referenceId']);
       } else {
         _showErrorMessage('Erreur lors de la création de la réception');
       }
@@ -63,7 +64,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     }
   }
 
-  void _showSuccessDialog() {
+  void _showSuccessDialog(String transactionId) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -77,14 +78,34 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'La demande de réception est en cours de traitement. Vous pouvez à tout moment retrouver le reçu dans l\'historique des réceptions.',
-                textAlign: TextAlign.center,
+              const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 60,
               ),
               const SizedBox(height: 16),
+              const Text(
+                'La demande de réception est en cours de traitement.',
+                textAlign: TextAlign.center,
+              ),
+              if (transactionId.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'Référence: $transactionId',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              const SizedBox(height: 8),
+              const Text(
+                'Vous pouvez à tout moment retrouver le reçu dans l\'historique des réceptions.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: AppColors.darkGrey),
+              ),
+              const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.background,
+                  backgroundColor: AppColors.secondary,
                   minimumSize: const Size.fromHeight(44),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -94,11 +115,11 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: const Text(
-                  'OK',
+                  'Retour à l\'accueil',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.black
-                    )
+                    color: Colors.white,
+                  )
                 ),
               ),
             ],
@@ -140,7 +161,10 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
       body: SafeArea(
         child: Column(
           children: [
-            _buildStepper(),
+            TransferStepper(
+              currentStep: 3,
+              totalSteps: 3,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -156,59 +180,11 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     );
   }
 
-  Widget _buildStepper() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      color: AppColors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildStepCircle('1', true, AppColors.secondary, AppColors.white),
-          _buildStepLine(AppColors.secondary),
-          _buildStepCircle('2', true, AppColors.secondary, AppColors.white),
-          _buildStepLine(AppColors.secondary),
-          _buildStepCircle('3', true, AppColors.secondary, AppColors.white),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStepCircle(String text, bool isActive, Color bgColor, Color textColor) {
-    return Container(
-      width: 30,
-      height: 30,
-      decoration: BoxDecoration(
-        color: bgColor,
-        shape: BoxShape.circle,
-        border: isActive ? null : Border.all(color: AppColors.darkGrey),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStepLine(Color color) {
-    return Container(
-      width: 70,
-      height: 1,
-      color: color,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-    );
-  }
-
   Widget _buildConfirmationCard() {
     // Formatter pour la date
     final birthdayFormatter = DateFormat('dd/MM/yyyy');
     DateTime birthDate = DateTime.parse(widget.recipientData['recipientBirthDate']);
 
-    // Obtenir le label du genre
     String genderLabel = widget.recipientData['recipientGender'] == 'M' ? 'Homme' : 'Femme';
 
     return Container(
