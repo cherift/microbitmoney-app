@@ -30,6 +30,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   final _idExpirationDateController = TextEditingController();
   final _birthPlaceController = TextEditingController();
   final _selectedCountryController = TextEditingController(text: 'Guinée');
+  final _reasonController = TextEditingController(text: 'Assistance famille');
 
   DateTime? _selectedBirthDate;
   DateTime? _selectedIdExpirationDate;
@@ -50,6 +51,13 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     'AUTRE': 'Autre'
   };
 
+  final List<String> _reasons = [
+    'Assistance famille',
+    'Paiement factures',
+    'Achat',
+    'Autre'
+  ];
+
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -64,6 +72,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     _idExpirationDateController.dispose();
     _birthDateController.dispose();
     _birthPlaceController.dispose();
+    _reasonController.dispose();
     super.dispose();
   }
 
@@ -183,6 +192,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
       widget.transferData.senderBirthPlace = _birthPlaceController.text;
       widget.transferData.senderGender = _selectedGender;
       widget.transferData.senderCountry = _selectedCountryController.text;
+      widget.transferData.reason = _reasonController.text;
     });
 
     try {
@@ -279,6 +289,10 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
           keyboardType: TextInputType.emailAddress,
           validator: _emailValidator
         ),
+
+        const SizedBox(height: 16),
+        _reasonDropdown(),
+
         const SizedBox(height: 16),
 
         Row(
@@ -368,6 +382,55 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
               if (newValue != null) {
                 setState(() {
                   _idTypeController.text = newValue;
+                });
+              }
+            },
+            validator: _requiredValidator,
+            isExpanded: true,
+            icon: const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+            dropdownColor: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _reasonDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Motif du transfert',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: DropdownButtonFormField<String>(
+            value: _reasonController.text.isEmpty ? _idTypes[0] : _reasonController.text,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            items: _reasons.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _reasonController.text = newValue;
                 });
               }
             },
