@@ -2,6 +2,7 @@ import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/screens/general_screen.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth_service.dart';
+import 'package:bit_money/services/api_client.dart'; // Importer le client API
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -31,7 +32,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final apiClient = ApiClient();
+
     return MaterialApp(
+      navigatorKey: apiClient.navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -76,17 +80,19 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
   Future<void> _checkAuth() async {
     try {
       final isLoggedIn = await _authService.isLoggedIn();
-      setState(() {
-        _isAuthenticated = isLoggedIn;
-      });
+      if (mounted) {
+        setState(() {
+          _isAuthenticated = isLoggedIn;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isAuthenticated = false;
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isAuthenticated = false;
+          _isLoading = false;
+        });
+      }
     }
   }
 

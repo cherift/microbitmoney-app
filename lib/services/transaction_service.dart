@@ -1,9 +1,7 @@
 
-import 'package:bit_money/config/env_config.dart';
 import 'package:bit_money/models/transaction_model.dart';
-import 'package:dio/dio.dart';
+import 'package:bit_money/services/api_client.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 class TransactionStats {
@@ -19,12 +17,9 @@ class TransactionStats {
 }
 
 class TransactionService {
-  final Dio _dio;
-  final String baseUrl = EnvConfig.baseUrl;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final ApiClient _apiClient;
 
-
-  TransactionService() : _dio = Dio();
+  TransactionService() : _apiClient = ApiClient();
 
   String formatAmount(double amount) {
     final formatter = NumberFormat('#,###', 'fr');
@@ -34,16 +29,7 @@ class TransactionService {
   // Obtenir la liste des transactions
   Future<List<Transaction>> getTransactions() async {
     try {
-      String? headerCookies = await _secureStorage.read(key: 'Cookies');
-      final response = await _dio.get(
-        '$baseUrl/api/transactions',
-        options: Options(
-          headers: {
-          'Cookie': headerCookies
-          },
-          validateStatus: (status) => true,
-        ),
-      );
+      final response = await _apiClient.get('/transactions',);
 
       if (response.statusCode == 200) {
         final data = response.data;

@@ -1,25 +1,15 @@
-import 'package:bit_money/config/env_config.dart';
+import 'package:bit_money/services/api_client.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TransferService {
-  final Dio _dio;
-  final String baseUrl = EnvConfig.baseUrl;
+  final ApiClient _apiClient;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
-  TransferService(): _dio = Dio();
+  TransferService(): _apiClient = ApiClient();
 
   Future<dynamic> requestAuthorization() async {
-    String? headerCookies = await _secureStorage.read(key: 'Cookies');
-    final response = await _dio.post(
-      '$baseUrl/api/transactions/auth',
-      options: Options(
-        headers: {
-          'Cookie': headerCookies
-        },
-        validateStatus: (status) => true,
-      ),
-    );
+    final response = await _apiClient.post('/transactions/auth');
 
     if (response.statusCode == 200) {
       final data = response.data;
@@ -37,18 +27,14 @@ class TransferService {
   }
 
   Future<dynamic> submitSenderInfo(Map<String, dynamic> senderData) async {
-    String? headerCookies = await _secureStorage.read(key: 'Cookies');
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _dio.post(
-      '$baseUrl/api/transactions/sender',
+    final response = await _apiClient.dio.post(
+      '/transactions/sender',
       options: Options(
         headers: {
-          'Content-Type': 'application/json',
           'X-Session-Key': sessionKey,
-          'Cookie': headerCookies
         },
-        validateStatus: (status) => true,
       ),
       data: senderData,
     );
@@ -62,18 +48,14 @@ class TransferService {
   }
 
   Future<dynamic> submitRecipientInfo(Map<String, dynamic> recipientData) async {
-    String? headerCookies = await _secureStorage.read(key: 'Cookies');
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _dio.post(
-      '$baseUrl/api/transactions/recipient',
+    final response = await _apiClient.dio.post(
+      '/transactions/recipient',
       options: Options(
         headers: {
-          'Content-Type': 'application/json',
           'X-Session-Key': sessionKey,
-          'Cookie': headerCookies
         },
-        validateStatus: (status) => true,
       ),
       data: recipientData,
     );
@@ -87,18 +69,14 @@ class TransferService {
   }
 
   Future<dynamic> submitAmount(Map<String, dynamic> amountData) async {
-    String? headerCookies = await _secureStorage.read(key: 'Cookies');
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _dio.post(
-      '$baseUrl/api/transactions/amount',
+    final response = await _apiClient.dio.post(
+      '/transactions/amount',
       options: Options(
         headers: {
-          'Content-Type': 'application/json',
           'X-Session-Key': sessionKey,
-          'Cookie': headerCookies
         },
-        validateStatus: (status) => true,
       ),
       data: amountData,
     );
@@ -112,18 +90,14 @@ class TransferService {
   }
 
   Future<Map<String, dynamic>> confirmTransaction() async {
-    String? headerCookies = await _secureStorage.read(key: 'Cookies');
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _dio.post(
-      '$baseUrl/api/transactions',
+    final response = await _apiClient.dio.post(
+      '/transactions',
       options: Options(
         headers: {
-          'Content-Type': 'application/json',
           'X-Session-Key': sessionKey,
-          'Cookie': headerCookies
         },
-        validateStatus: (status) => true,
       ),
     );
 
@@ -131,11 +105,11 @@ class TransferService {
       _secureStorage.delete(key: 'SessionKey');
 
       return {
-        'sucess': true,
+        'success': true,
       };
     } else {
       return {
-        'sucess': false,
+        'success': false,
         'message': 'Échec de la confirmation de la transaction'
       };
     }

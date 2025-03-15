@@ -1,28 +1,15 @@
-import 'package:bit_money/config/env_config.dart';
 import 'package:bit_money/models/operator_model.dart';
-import 'package:dio/dio.dart';
+import 'package:bit_money/services/api_client.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class OperatorService {
-  final Dio _dio;
-  final String baseUrl = EnvConfig.baseUrl;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final ApiClient _apiClient;
 
-  OperatorService() : _dio = Dio();
+  OperatorService() : _apiClient = ApiClient();
 
   Future<List<Operator>> getOperators() async {
     try {
-      String? headerCookies = await _secureStorage.read(key: 'Cookies');
-      final response = await _dio.get(
-        '$baseUrl/api/operators',
-        options: Options(
-          headers: {
-            'Cookie': headerCookies
-          },
-          validateStatus: (status) => true,
-        ),
-      );
+      final response = await _apiClient.get('/operators');
 
       if (response.statusCode == 200) {
         final data = response.data;
