@@ -1,23 +1,14 @@
-import 'package:bit_money/config/env_config.dart';
 import 'package:bit_money/models/pdv_model.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bit_money/services/api_client.dart';
 
 class PdvService {
-  final String baseUrl = EnvConfig.baseUrl;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  final Dio _dio;
+  final ApiClient _apiClient;
 
-  PdvService() : _dio = Dio();
+  PdvService() : _apiClient = ApiClient();
 
   Future<List<PDV>> getPdvs() async {
     try {
-      String? headerCookies = await _secureStorage.read(key: 'Cookies');
-      final response = await _dio.get('$baseUrl/api/pdvs',
-        options: Options(
-          headers: {'Cookie': headerCookies}
-        ),
-      );
+      final response = await _apiClient.get('/pdvs');
 
       if (response.statusCode == 200) {
         final data = response.data;

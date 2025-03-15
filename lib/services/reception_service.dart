@@ -1,8 +1,6 @@
-import 'package:bit_money/config/env_config.dart';
 import 'package:bit_money/models/reception_model.dart';
-import 'package:dio/dio.dart';
+import 'package:bit_money/services/api_client.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 class ReceptionStats {
@@ -18,11 +16,9 @@ class ReceptionStats {
 }
 
 class ReceptionService {
-  final Dio _dio;
-  final String baseUrl = EnvConfig.baseUrl;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final ApiClient _apiClient ;
 
-  ReceptionService() : _dio = Dio();
+  ReceptionService() : _apiClient = ApiClient();
 
   String formatAmount(double amount) {
     final formatter = NumberFormat('#,###', 'fr');
@@ -31,16 +27,7 @@ class ReceptionService {
 
   Future<List<Reception>> getReceptions() async {
     try {
-      String? headerCookies = await _secureStorage.read(key: 'Cookies');
-      final response = await _dio.get(
-        '$baseUrl/api/receptions',
-        options: Options(
-          headers: {
-            'Cookie': headerCookies
-          },
-          validateStatus: (status) => true,
-        ),
-      );
+      final response = await _apiClient.get('/receptions');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -138,16 +125,9 @@ class ReceptionService {
 
   Future<Map<String, dynamic>?> createReception(Map<String, dynamic> data) async {
     try {
-      String? headerCookies = await _secureStorage.read(key: 'Cookies');
-      final response = await _dio.post(
-        '$baseUrl/api/receptions',
+      final response = await _apiClient.post(
+        '/receptions',
         data: data,
-        options: Options(
-          headers: {
-            'Cookie': headerCookies
-          },
-          validateStatus: (status) => true,
-        ),
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {

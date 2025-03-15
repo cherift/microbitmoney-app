@@ -1,29 +1,13 @@
-import 'package:bit_money/config/env_config.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bit_money/services/api_client.dart';
 
 class UsersService {
-  final String baseUrl = EnvConfig.baseUrl;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  final Dio _dio;
+  final ApiClient _apiClient;
 
-  UsersService(): _dio = Dio();
+  UsersService(): _apiClient = ApiClient();
 
   Future<Map<String, dynamic> > createNewUser(Map<String, dynamic> userData) async {
     try {
-      String? headerCookies = await _secureStorage.read(key: 'Cookies');
-
-      final response = await _dio.post(
-        '$baseUrl/api/users',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Cookie': headerCookies
-          },
-          validateStatus: (status) => true,
-        ),
-        data: userData,
-      );
+      final response = await _apiClient.post('/users', data: userData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return {
