@@ -17,6 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
+    super.initState(); // Déplacer l'appel à super.initState() au début
     authService.getStoredSession().then((value) {
       setState(() {
         userModel = value?.user!;
@@ -24,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }).catchError((error) {
       debugPrint('Error: $error');
     });
-    super.initState();
   }
 
   @override
@@ -42,6 +42,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: _buildLogoutButton(),
+          ),
+        ],
+      ),
       body: SafeArea(
         bottom: false,
         child: Padding(
@@ -50,67 +60,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
             builder: (context, constraints) {
               final isTablet = constraints.maxWidth > 600;
               final maxContentWidth = isTablet ? 600.0 : constraints.maxWidth;
-              return Stack(
-                children: [
-                  Positioned(
-                    right: 20,
-                    child: Material(
-                      color: Colors.transparent,
-                      elevation: 10,
-                      child: _buildLogoutButton(),
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    child: Center(
-                      child: Container(
-                        constraints: BoxConstraints(maxWidth: maxContentWidth),
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 60,
-                              backgroundColor: AppColors.lightGrey,
-                              child: Text(
-                                _getInitials(userModel!.name),
-                                style: const TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.secondary,
-                                ),
-                              ),
+              return SingleChildScrollView(
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: maxContentWidth),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundColor: AppColors.lightGrey,
+                          child: Text(
+                            _getInitials(userModel!.name),
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondary,
                             ),
-                            const SizedBox(height: 16,),
-                            _buildInfoSection(context, 'Informations Personnelles', [
-                              _buildInfoTile(context, 'Adresse e-mail', userModel!.email, Icons.email),
-                              _buildInfoTile(context, 'Type de compte', userModel!.role == 'ADMIN' ? 'Administrateur' : userModel!.accountType, Icons.badge),
-                            ]),
-                            const SizedBox(height: 16),
-                            if (userModel!.pdv != null) ...[
-                              _buildInfoSection(context, 'Point de Vente', [
-                                _buildInfoTile(context, 'Nom PDV', userModel!.pdv!.name, Icons.store),
-                                _buildInfoTile(context, 'Commission', userModel!.commission.toString(), Icons.percent_outlined),
-                                _buildInfoTile(context, 'Adresse', userModel!.pdv!.address, Icons.location_on),
-                                _buildInfoTile(context, 'Téléphone', userModel!.pdv!.phone, Icons.phone),
-                                _buildInfoTile(context, 'Horaires',
-                                  '${userModel!.pdv!.openingTime} - ${userModel!.pdv!.closingTime}',
-                                  Icons.access_time
-                                ),
-                                _buildInfoTile(
-                                  context,
-                                  'Ouvert le weekend',
-                                  userModel!.pdv!.openWeekend ? 'Oui' : 'Non',
-                                  Icons.calendar_today
-                                ),
-                              ]),
-                            ],
-                            const SizedBox(height: 50),
-                          ],
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 16,),
+                        _buildInfoSection(context, 'Informations Personnelles', [
+                          _buildInfoTile(context, 'Adresse e-mail', userModel!.email, Icons.email),
+                          _buildInfoTile(context, 'Type de compte', userModel!.role == 'ADMIN' ? 'Administrateur' : userModel!.accountType, Icons.badge),
+                        ]),
+                        const SizedBox(height: 16),
+                        if (userModel!.pdv != null) ...[
+                          _buildInfoSection(context, 'Point de Vente', [
+                            _buildInfoTile(context, 'Nom PDV', userModel!.pdv!.name, Icons.store),
+                            _buildInfoTile(context, 'Commission', userModel!.commission.toString(), Icons.percent_outlined),
+                            _buildInfoTile(context, 'Adresse', userModel!.pdv!.address, Icons.location_on),
+                            _buildInfoTile(context, 'Téléphone', userModel!.pdv!.phone, Icons.phone),
+                            _buildInfoTile(context, 'Horaires',
+                              '${userModel!.pdv!.openingTime} - ${userModel!.pdv!.closingTime}',
+                              Icons.access_time
+                            ),
+                            _buildInfoTile(
+                              context,
+                              'Ouvert le weekend',
+                              userModel!.pdv!.openWeekend ? 'Oui' : 'Non',
+                              Icons.calendar_today
+                            ),
+                          ]),
+                        ],
+                        const SizedBox(height: 50),
+                      ],
                     ),
                   ),
-                ]
+                ),
               );
             },
           ),
@@ -119,26 +117,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Bouton de déconnexion rond en haut
+  // Bouton de déconnexion
   Widget _buildLogoutButton() {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.accent,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: .1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+    return InkWell(
+      onTap: () => _showLogoutDialog(context),
+      borderRadius: BorderRadius.circular(50),
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.accent,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(12),
+          child: Icon(
+            Icons.settings_power,
+            color: AppColors.white,
+            size: 24,
           ),
-        ],
-      ),
-      child: IconButton(
-        icon: const Icon(Icons.settings_power, color: AppColors.white),
-        onPressed: () => _showLogoutDialog(context),
-        tooltip: 'Déconnexion',
-        padding: const EdgeInsets.all(12),
-        iconSize: 24,
+        ),
       ),
     );
   }
@@ -153,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: .05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -222,7 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text(
           'Déconnexion',
           style: TextStyle(
@@ -238,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text(
               'Annuler',
               style: TextStyle(
@@ -250,11 +253,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
             ),
-            onPressed: () {
-              authService.logout();
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              );
+            onPressed: () async {
+              await authService.logout();
+              // Utiliser dialogContext.mounted pour vérifier si le widget est encore monté
+              if (dialogContext.mounted) {
+                Navigator.of(dialogContext).pop(); // Fermer d'abord la boîte de dialogue
+              }
+              // Utiliser context.mounted pour vérifier si le widget principal est encore monté
+              if (context.mounted) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+              }
             },
             child: const Text(
               'Déconnexion',
