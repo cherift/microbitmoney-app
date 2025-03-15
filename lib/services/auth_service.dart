@@ -76,7 +76,7 @@ class AuthService {
       };
 
       final data = {
-        'email': email,
+        'email': email.toLowerCase(),
         'password': password,
         'csrfToken': csrfToken,
         'callbackUrl': baseUrl,

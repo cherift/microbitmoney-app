@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/screens/enrollment_screen.dart';
 import 'package:bit_money/screens/pdv_list_screen.dart';
 import 'package:bit_money/screens/receive/receive_transfer_screen.dart';
 import 'package:bit_money/screens/send/send_transfer_operator_screen.dart';
@@ -110,7 +111,12 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
                   break;
                 case 'Enrôler':
                   if (_isAdmin) {
-                    // Logique pour l'enrôlement
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EnrollmentScreen()
+                      ),
+                    );
                   }
                   break;
                 case 'Nos PDVs':
