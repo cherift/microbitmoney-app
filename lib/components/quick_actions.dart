@@ -34,7 +34,7 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
   Future<void> _checkAdminStatus() async {
     final session = await _authService.getStoredSession();
     setState(() {
-      _isAdmin = session?.user?.role == 'ADMIN';
+      _isAdmin = session?.user?.role == 'ADMIN' || session?.user?.accountType == 'PROMOTEUR';
       _isLoading = false;
     });
   }
