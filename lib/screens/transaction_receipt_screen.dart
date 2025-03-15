@@ -86,7 +86,6 @@ class TransactionReceiptScreen extends StatelessWidget {
     final double totalAmount = transaction.totalAmount;
     final double receivedAmountForeign = amountSent / 1000;
     final String foreignCurrency = "USD";
-    final String truncatedRef = _truncateWithEllipsis(transaction.finalTransactionNumber ?? transaction.referenceId, 18);
 
     return Card(
       elevation: 0,
@@ -128,7 +127,12 @@ class TransactionReceiptScreen extends StatelessWidget {
 
             _buildDetailRow('Date de la transaction', _formatDate(transaction.createdAt)),
             const SizedBox(height: 12),
-            _buildDetailRowWithWrap('Numéro de transaction', truncatedRef, screenWidth),
+            _buildDetailRowWithWrap('Numéro de transaction', _truncateWithEllipsis(transaction.referenceId, 18), screenWidth),
+
+            if (transaction.finalTransactionNumber != null && transaction.finalTransactionNumber!.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              _buildDetailRowWithWrap('Numéro de référence ${transaction.operator!.code}', _truncateWithEllipsis(transaction.finalTransactionNumber!, 18), screenWidth),
+            ],
 
             const SizedBox(height: 24),
             const Text(
