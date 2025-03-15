@@ -1,7 +1,9 @@
+import 'package:bit_money/components/operator_grid.dart';
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/models/operator_model.dart';
+import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/services/operator_service.dart';
-import 'package:bit_money/screens/reception_reference_screen.dart';
+import 'package:bit_money/screens/receive/reception_reference_screen.dart';
 import 'package:flutter/material.dart';
 
 class ReceiveTransferOperatorScreen extends StatefulWidget {
@@ -98,14 +100,25 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildStepper(),
+                  TransferStepper(
+                    currentStep: 1,
+                    totalSteps: 3,
+                  ),
                   Expanded(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildOperatorGrid(),
+                          OperatorGrid(
+                            operators: _operators.where((operator) => operator.isActive).toList(),
+                            onOperatorSelected: (operator) {
+                              setState(() {
+                                _selectedOperator = operator;
+                              });
+                            },
+                            selectedOperator: _selectedOperator,
+                          ),
                           const SizedBox(height: 24),
                           _buildReferenceForm(),
                         ],
@@ -118,152 +131,6 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
     );
   }
 
-  Widget _buildStepper() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      color: AppColors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildStepCircle('1', true, AppColors.secondary, Colors.white),
-          _buildStepLine(Colors.grey.shade300),
-          _buildStepCircle('2', false, Colors.grey.shade300, Colors.grey),
-          _buildStepLine(Colors.grey.shade300),
-          _buildStepCircle('3', false, Colors.grey.shade300, Colors.grey),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStepCircle(String text, bool isActive, Color bgColor, Color textColor) {
-    return Container(
-      width: 30,
-      height: 30,
-      decoration: BoxDecoration(
-        color: bgColor,
-        shape: BoxShape.circle,
-        border: isActive ? null : Border.all(color: Colors.grey),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStepLine(Color color) {
-    return Container(
-      width: 70,
-      height: 1,
-      color: color,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-    );
-  }
-
-  Widget _buildOperatorGrid() {
-    List<Operator> activeOperators = _operators.where((operator) => operator.isActive).toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.9,
-          ),
-          itemCount: activeOperators.length,
-          itemBuilder: (context, index) {
-            final operator = activeOperators[index];
-            final isSelected = _selectedOperator?.id == operator.id;
-
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedOperator = operator;
-                });
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected ? AppColors.secondary : Colors.grey.shade300,
-                    width: isSelected ? 2 : 1,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: operator.logo.isNotEmpty
-                            ? Image.network(
-                                operator.logo,
-                                fit: BoxFit.contain,
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                          : null,
-                                      strokeWidth: 2,
-                                    ),
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    color: Colors.grey.shade200,
-                                    child: Icon(Icons.business, color: Colors.grey.shade400),
-                                  );
-                                },
-                              )
-                            : Container(
-                                color: Colors.grey.shade200,
-                                child: Icon(Icons.business, color: Colors.grey.shade400),
-                              ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        operator.name.length > 9
-                            ? operator.name.substring(0, 9)
-                            : operator.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        textWidthBasis: TextWidthBasis.parent,
-                        strutStyle: StrutStyle.disabled,
-                        semanticsLabel: operator.name.substring(0, 9),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: AppColors.text,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
 
   Widget _buildReferenceForm() {
     return Form(

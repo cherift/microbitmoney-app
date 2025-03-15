@@ -1,5 +1,6 @@
 import 'package:bit_money/constants/app_colors.dart';
-import 'package:bit_money/screens/receive_transfer_screen.dart';
+import 'package:bit_money/screens/receive/receive_transfer_screen.dart';
+import 'package:bit_money/screens/send/send_transfer_operator_screen.dart';
 import 'package:flutter/material.dart';
 
 class QuickActionsWidget extends StatefulWidget {
@@ -70,13 +71,18 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
             onTap: () {
               switch (title) {
                 case 'Envoyer':
-                  // Logique pour l'envoi
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SendTransferOperatorScreen(),
+                    ),
+                  );
                   break;
                 case 'Recevoir':
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ReceiveTransferOperatorScreen(),
+                      builder: (context) => ReceiveTransferOperatorScreen(),
                     ),
                   );
                   break;
