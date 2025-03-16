@@ -28,17 +28,19 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
   final _addressController = TextEditingController();
   final _idTypeController = TextEditingController(text: 'PASSPORT');
   final _idNumberController = TextEditingController();
+  final _idExpirationDateController = TextEditingController();
   final _nationalityController = TextEditingController(text: 'GN');
   final _birthDateController = TextEditingController();
   final _birthPlaceController = TextEditingController();
   final _selectedCountryController = TextEditingController(text: 'Guinée');
+    final _reasonController = TextEditingController(text: 'Assistance famille');
+
 
   DateTime? _selectedBirthDate;
-  String _selectedGender = 'M';
+  DateTime? _selectedIdExpirationDate;
 
   final List<String> _idTypes = [
     'PASSPORT',
@@ -54,18 +56,25 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     'AUTRE': 'Autre'
   };
 
+  final List<String> _reasons = [
+    'Assistance famille',
+    'Paiement factures',
+    'Achat',
+    'Autre'
+  ];
+
   @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
-    _emailController.dispose();
     _addressController.dispose();
     _idTypeController.dispose();
     _idNumberController.dispose();
+    _idExpirationDateController.dispose();
     _nationalityController.dispose();
     _selectedCountryController.dispose();
-
+    _reasonController.dispose();
     _birthDateController.dispose();
     _birthPlaceController.dispose();
     super.dispose();
@@ -99,23 +108,51 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     }
   }
 
+  Future<void> _selectExpirationDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().add(const Duration(days: 365)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 3650)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.secondary,
+              onPrimary: Colors.white,
+              onSurface: AppColors.text,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != _selectedIdExpirationDate) {
+      setState(() {
+        _selectedIdExpirationDate = picked;
+        _idExpirationDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
+
   void _continueToConfirmation() {
     if (_formKey.currentState!.validate()) {
       final recipientData = {
         "recipientFirstName": _firstNameController.text,
         "recipientLastName": _lastNameController.text,
         "recipientPhone": _phoneController.text,
-        "recipientEmail": _emailController.text,
         "recipientAddress": _addressController.text,
         "recipientIdType": _idTypeController.text,
         "recipientIdNumber": _idNumberController.text,
         "recipientNationality": _nationalityController.text,
         "recipientBirthDate": _selectedBirthDate?.toUtc().toIso8601String(),
+        "recipientIdExpiryDate": _selectedIdExpirationDate?.toUtc().toIso8601String(),
         "recipientBirthPlace": _birthPlaceController.text,
-        "recipientGender": _selectedGender,
         "recipientCountry": _selectedCountryController.text,
         "operatorId": widget.operator.id,
-        "referenceId": widget.referenceId
+        "referenceId": widget.referenceId,
+        "reason": _reasonController.text,
       };
 
       Navigator.push(
@@ -174,6 +211,55 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     );
   }
 
+  Widget _reasonDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Motif du transfert',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: DropdownButtonFormField<String>(
+            value: _reasonController.text.isEmpty ? _idTypes[0] : _reasonController.text,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            items: _reasons.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _reasonController.text = newValue;
+                });
+              }
+            },
+            validator: _requiredValidator,
+            isExpanded: true,
+            icon: const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+            dropdownColor: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildRecipientForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,12 +275,10 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-        _buildTextField('Email', _emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: _emailValidator
+        _buildTextField('Pays de résidence', _selectedCountryController,
+          validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-
         Row(
           children: [
             Expanded(
@@ -207,6 +291,14 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
               ),
             ),
           ],
+        ),
+
+        const SizedBox(height: 16),
+        _buildTextField('Date d\'expiration', _idExpirationDateController,
+          readOnly: true,
+          onTap: () => _selectExpirationDate(context),
+          suffixIcon: const Icon(Icons.calendar_today, size: 20),
+          validator: _expirationValidator
         ),
 
         const SizedBox(height: 16),
@@ -223,17 +315,12 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
 
         const SizedBox(height: 16),
-        _buildTextField('Pays', _selectedCountryController,
-          validator: _requiredValidator
-        ),
-
-        const SizedBox(height: 16),
         _buildTextField('Nationalité', _nationalityController,
           validator: _requiredValidator
         ),
 
         const SizedBox(height: 16),
-        _buildGenderSelector(),
+        _reasonDropdown(),
       ],
     );
   }
@@ -340,61 +427,6 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     );
   }
 
-  Widget _buildGenderSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Genre',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: RadioListTile<String>(
-                  title: const Text('Homme'),
-                  value: 'M',
-                  groupValue: _selectedGender,
-                  activeColor: AppColors.primary,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: RadioListTile<String>(
-                  title: const Text('Femme'),
-                  value: 'F',
-                  groupValue: _selectedGender,
-                  activeColor: AppColors.primary,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildButtonBar() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -453,16 +485,14 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     return null;
   }
 
-  String? _emailValidator(String? value) {
+  String? _expirationValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Ce champ est obligatoire';
     }
-
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Veuillez entrer une adresse email valide';
+    final expirationDate = DateFormat('dd/MM/yyyy').parse(value, true);
+    if (expirationDate.isBefore(DateTime.now())) {
+      return 'La date d\'expiration doit être dans le futur';
     }
-
     return null;
   }
 }
