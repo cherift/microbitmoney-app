@@ -4,7 +4,6 @@ import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/screens/send/send_confirmation_screen.dart';
 import 'package:bit_money/services/transfer_service.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class RecipientInformationForm extends StatefulWidget {
   final TransferData transferData;
@@ -20,76 +19,16 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
 
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _idTypeController = TextEditingController(text: 'PASSPORT');
-  final _idNumberController = TextEditingController();
-  final _nationalityController = TextEditingController(text: 'GN');
-  final _birthDateController = TextEditingController();
-  final _birthPlaceController = TextEditingController();
   final _selectedCountryController = TextEditingController(text: 'Guinée');
 
-  DateTime? _selectedBirthDate;
-  String _selectedGender = 'M';
   bool _isProcessing = false;
-
-  final List<String> _idTypes = [
-    'PASSPORT',
-    'CARTE_IDENTITE',
-    'PERMIS',
-    'AUTRE'
-  ];
-
-  final Map<String, String> _idTypeLabels = {
-    'PASSPORT': 'Passeport',
-    'CARTE_IDENTITE': 'Carte d\'identité',
-    'PERMIS': 'Permis de conduire',
-    'AUTRE': 'Autre'
-  };
 
   @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _addressController.dispose();
-    _idTypeController.dispose();
-    _idNumberController.dispose();
-    _nationalityController.dispose();
     _selectedCountryController.dispose();
-    _birthDateController.dispose();
-    _birthPlaceController.dispose();
     super.dispose();
-  }
-
-  Future<void> _selectBirthDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedBirthDate ?? DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppColors.secondary,
-              onPrimary: Colors.white,
-              onSurface: AppColors.text,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null && picked != _selectedBirthDate) {
-      setState(() {
-        _selectedBirthDate = picked;
-        _birthDateController.text = DateFormat('dd/MM/yyyy').format(picked);
-      });
-    }
   }
 
   void _showErrorSnackBar(String message) {
@@ -126,25 +65,11 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
       return;
     }
 
-    if (_selectedBirthDate == null) {
-      _showErrorSnackBar('Veuillez sélectionner une date de naissance');
-      return;
-    }
-
     setState(() {
       _isProcessing = true;
 
       widget.transferData.recipientFirstName = _firstNameController.text;
       widget.transferData.recipientLastName = _lastNameController.text;
-      widget.transferData.recipientPhone = _phoneController.text;
-      widget.transferData.recipientEmail = _emailController.text;
-      widget.transferData.recipientAddress = _addressController.text;
-      widget.transferData.recipientIdType = _idTypeController.text;
-      widget.transferData.recipientIdNumber = _idNumberController.text;
-      widget.transferData.recipientNationality = _nationalityController.text;
-      widget.transferData.recipientBirthDate = _selectedBirthDate;
-      widget.transferData.recipientBirthPlace = _birthPlaceController.text;
-      widget.transferData.recipientGender = _selectedGender;
       widget.transferData.recipientCountry = _selectedCountryController.text;
     });
 
@@ -231,106 +156,8 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
         const SizedBox(height: 16),
         _buildTextField('Prénom', _firstNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Adresse', _addressController, validator: _requiredValidator),
-        const SizedBox(height: 16),
-        _buildTextField('Téléphone', _phoneController,
-          keyboardType: TextInputType.phone,
-          validator: _requiredValidator
-        ),
-        const SizedBox(height: 16),
-        _buildTextField('Email', _emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: _emailValidator
-        ),
-        const SizedBox(height: 16),
-
-        Row(
-          children: [
-            Expanded(
-              child: _buildIdTypeDropdown(),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildTextField('Numéro ID', _idNumberController,
-                validator: _requiredValidator
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 16),
-        _buildTextField('Lieu de naissance', _birthPlaceController,
-          validator: _requiredValidator
-        ),
-
-        const SizedBox(height: 16),
-        _buildTextField('Date de naissance', _birthDateController,
-          readOnly: true,
-          onTap: () => _selectBirthDate(context),
-          suffixIcon: const Icon(Icons.calendar_today, size: 20),
-          validator: _requiredValidator
-        ),
-
-        const SizedBox(height: 16),
         _buildTextField('Pays', _selectedCountryController,
           validator: _requiredValidator
-        ),
-
-        const SizedBox(height: 16),
-        _buildTextField('Nationalité', _nationalityController,
-          validator: _requiredValidator
-        ),
-
-        const SizedBox(height: 16),
-        _buildGenderSelector(),
-      ],
-    );
-  }
-
-  Widget _buildIdTypeDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Type de pièce',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: DropdownButtonFormField<String>(
-            value: _idTypeController.text.isEmpty ? _idTypes[0] : _idTypeController.text,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-            items: _idTypes.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(_idTypeLabels[value] ?? value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  _idTypeController.text = newValue;
-                });
-              }
-            },
-            validator: _requiredValidator,
-            isExpanded: true,
-            icon: const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
-            dropdownColor: Colors.white,
-          ),
         ),
       ],
     );
@@ -384,61 +211,6 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
             suffixIcon: suffixIcon,
           ),
           validator: validator,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGenderSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Genre',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: RadioListTile<String>(
-                  title: const Text('Homme'),
-                  value: 'M',
-                  groupValue: _selectedGender,
-                  activeColor: AppColors.secondary,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: RadioListTile<String>(
-                  title: const Text('Femme'),
-                  value: 'F',
-                  groupValue: _selectedGender,
-                  activeColor: AppColors.secondary,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
         ),
       ],
     );
@@ -509,19 +281,6 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
     if (value == null || value.isEmpty) {
       return 'Ce champ est obligatoire';
     }
-    return null;
-  }
-
-  String? _emailValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return null; // Email is optional
-    }
-
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Veuillez entrer une adresse email valide';
-    }
-
     return null;
   }
 }

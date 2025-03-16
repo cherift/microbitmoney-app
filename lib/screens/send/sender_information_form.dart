@@ -21,7 +21,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
   final _addressController = TextEditingController();
   final _idTypeController = TextEditingController(text: 'PASSPORT');
   final _idNumberController = TextEditingController();
@@ -34,7 +33,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
 
   DateTime? _selectedBirthDate;
   DateTime? _selectedIdExpirationDate;
-  String _selectedGender = 'M';
   bool _isProcessing = false;
 
   final List<String> _idTypes = [
@@ -63,7 +61,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
-    _emailController.dispose();
     _addressController.dispose();
     _idTypeController.dispose();
     _idNumberController.dispose();
@@ -182,7 +179,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
       widget.transferData.senderFirstName = _firstNameController.text;
       widget.transferData.senderLastName = _lastNameController.text;
       widget.transferData.senderPhone = _phoneController.text;
-      widget.transferData.senderEmail = _emailController.text;
       widget.transferData.senderAddress = _addressController.text;
       widget.transferData.senderIdType = _idTypeController.text;
       widget.transferData.senderIdExpiryDate = _selectedIdExpirationDate;
@@ -190,7 +186,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
       widget.transferData.senderNationality = _nationalityController.text;
       widget.transferData.senderBirthDate = _selectedBirthDate;
       widget.transferData.senderBirthPlace = _birthPlaceController.text;
-      widget.transferData.senderGender = _selectedGender;
       widget.transferData.senderCountry = _selectedCountryController.text;
       widget.transferData.reason = _reasonController.text;
     });
@@ -285,16 +280,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-        _buildTextField('Email', _emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: _emailValidator
-        ),
-
-        const SizedBox(height: 16),
-        _reasonDropdown(),
-
-        const SizedBox(height: 16),
-
         Row(
           children: [
             Expanded(
@@ -308,20 +293,13 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
             ),
           ],
         ),
-
         const SizedBox(height: 16),
-        _buildTextField('Date d\'expiration de la pièce', _idExpirationDateController,
+        _buildTextField('Date d\'expiration', _idExpirationDateController,
           readOnly: true,
           onTap: () => _selectExpirationDate(context),
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
           validator: _requiredValidator
         ),
-
-        const SizedBox(height: 16),
-        _buildTextField('Lieu de naissance', _birthPlaceController,
-          validator: _requiredValidator
-        ),
-
         const SizedBox(height: 16),
         _buildTextField('Date de naissance', _birthDateController,
           readOnly: true,
@@ -329,19 +307,20 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
           validator: _requiredValidator
         ),
-
+        const SizedBox(height: 16),
+        _buildTextField('Lieu de naissance', _birthPlaceController,
+          validator: _requiredValidator
+        ),
         const SizedBox(height: 16),
         _buildTextField('Pays', _selectedCountryController,
           validator: _requiredValidator
         ),
-
         const SizedBox(height: 16),
         _buildTextField('Nationalité', _nationalityController,
           validator: _requiredValidator
         ),
-
         const SizedBox(height: 16),
-        _buildGenderSelector(),
+        _reasonDropdown(),
       ],
     );
   }
@@ -497,61 +476,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     );
   }
 
-  Widget _buildGenderSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Genre',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: RadioListTile<String>(
-                  title: const Text('Homme'),
-                  value: 'M',
-                  groupValue: _selectedGender,
-                  activeColor: AppColors.secondary,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: RadioListTile<String>(
-                  title: const Text('Femme'),
-                  value: 'F',
-                  groupValue: _selectedGender,
-                  activeColor: AppColors.secondary,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildButtonBar() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -617,19 +541,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     if (value == null || value.isEmpty) {
       return 'Ce champ est obligatoire';
     }
-    return null;
-  }
-
-  String? _emailValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return null; // Email is optional
-    }
-
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Veuillez entrer une adresse email valide';
-    }
-
     return null;
   }
 }
