@@ -185,8 +185,6 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     final birthdayFormatter = DateFormat('dd/MM/yyyy');
     DateTime birthDate = DateTime.parse(widget.recipientData['recipientBirthDate']);
 
-    String genderLabel = widget.recipientData['recipientGender'] == 'M' ? 'Homme' : 'Femme';
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -223,11 +221,11 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
             ),
           ),
           const SizedBox(height: 24),
-
           _buildDetailRow('Date de la transaction', _today),
           const SizedBox(height: 12),
           _buildDetailRow('Numéro de référence', _transactionNumber),
-
+          const SizedBox(height: 12),
+          _buildDetailRow('Motif', widget.recipientData['reason'],),
           const SizedBox(height: 24),
           const Text(
             'Informations du bénéficiaire',
@@ -238,14 +236,11 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
             ),
           ),
           const SizedBox(height: 12),
-
           _buildDetailRow('Nom', widget.recipientData['recipientLastName']),
           const SizedBox(height: 8),
           _buildDetailRow('Prénom', widget.recipientData['recipientFirstName']),
           const SizedBox(height: 8),
           _buildDetailRow('Téléphone', widget.recipientData['recipientPhone']),
-          const SizedBox(height: 8),
-          _buildDetailRow('Email', widget.recipientData['recipientEmail']),
           const SizedBox(height: 8),
           _buildDetailRow('Adresse', widget.recipientData['recipientAddress']),
           const SizedBox(height: 8),
@@ -259,10 +254,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           const SizedBox(height: 8),
           _buildDetailRow('Lieu de naissance', widget.recipientData['recipientBirthPlace']),
           const SizedBox(height: 8),
-          _buildDetailRow('Genre', genderLabel),
-          const SizedBox(height: 8),
           _buildDetailRow('Pays', widget.recipientData['recipientCountry']),
-
           const SizedBox(height: 16),
           _buildDetailRow('Opérateur', widget.operator.name),
         ],
