@@ -277,10 +277,6 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
         _buildDetailRow('Prénom', widget.transferData.senderFirstName!),
         const SizedBox(height: 8),
         _buildDetailRow('Téléphone', widget.transferData.senderPhone ?? ''),
-        if (widget.transferData.senderEmail != null && widget.transferData.senderEmail!.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          _buildDetailRow('Email', widget.transferData.senderEmail!),
-        ],
         const SizedBox(height: 8),
         _buildDetailRow('Adresse', widget.transferData.senderAddress ?? ''),
         const SizedBox(height: 8),
@@ -294,15 +290,13 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
         const SizedBox(height: 8),
         _buildDetailRow('Lieu de naissance', widget.transferData.senderBirthPlace ?? ''),
         const SizedBox(height: 8),
-        _buildDetailRow('Genre', widget.transferData.senderGender == 'M' ? 'Masculin' : 'Féminin'),
-        const SizedBox(height: 8),
         _buildDetailRow('Pays', widget.transferData.senderCountry ?? ''),
       ],
     );
   }
 
   Widget _buildRecipientInfos() {
-    if (widget.transferData.recipientBirthDate == null ||
+    if (widget.transferData.recipientCountry == null ||
         widget.transferData.recipientLastName == null ||
         widget.transferData.recipientFirstName == null) {
       return const Center(
@@ -312,9 +306,6 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
         ),
       );
     }
-
-    final birthdayFormatter = DateFormat('dd/MM/yyyy');
-    final birthDate = widget.transferData.recipientBirthDate!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,26 +322,6 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
         _buildDetailRow('Nom', widget.transferData.recipientLastName!),
         const SizedBox(height: 8),
         _buildDetailRow('Prénom', widget.transferData.recipientFirstName!),
-        const SizedBox(height: 8),
-        _buildDetailRow('Téléphone', widget.transferData.recipientPhone ?? ''),
-        if (widget.transferData.recipientEmail != null && widget.transferData.recipientEmail!.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          _buildDetailRow('Email', widget.transferData.recipientEmail!),
-        ],
-        const SizedBox(height: 8),
-        _buildDetailRow('Adresse', widget.transferData.recipientAddress ?? ''),
-        const SizedBox(height: 8),
-        _buildDetailRow('Type de pièce', _idTypeLabels[widget.transferData.recipientIdType!] ?? widget.transferData.recipientIdType ?? ''),
-        const SizedBox(height: 8),
-        _buildDetailRow('Numéro ID', widget.transferData.recipientIdNumber ?? ''),
-        const SizedBox(height: 8),
-        _buildDetailRow('Nationalité', widget.transferData.recipientNationality ?? ''),
-        const SizedBox(height: 8),
-        _buildDetailRow('Date de naissance', birthdayFormatter.format(birthDate)),
-        const SizedBox(height: 8),
-        _buildDetailRow('Lieu de naissance', widget.transferData.recipientBirthPlace ?? ''),
-        const SizedBox(height: 8),
-        _buildDetailRow('Genre', widget.transferData.recipientGender == 'M' ? 'Masculin' : 'Féminin'),
         const SizedBox(height: 8),
         _buildDetailRow('Pays', widget.transferData.recipientCountry ?? ''),
       ],

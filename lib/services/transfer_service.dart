@@ -101,7 +101,7 @@ class TransferService {
       ),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       _secureStorage.delete(key: 'SessionKey');
 
       return {

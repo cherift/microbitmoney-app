@@ -5,7 +5,6 @@ class TransferData {
   String? senderFirstName;
   String? senderLastName;
   String? senderPhone;
-  String? senderEmail;
   String? senderAddress;
   String? senderIdType;
   String? senderIdNumber;
@@ -13,21 +12,18 @@ class TransferData {
   String? senderNationality;
   DateTime? senderBirthDate;
   String? senderBirthPlace;
-  String? senderGender;
   String? senderCountry;
 
   // Recipient information
   String? recipientFirstName;
   String? recipientLastName;
   String? recipientPhone;
-  String? recipientEmail;
   String? recipientAddress;
   String? recipientIdType;
   String? recipientIdNumber;
   String? recipientNationality;
   DateTime? recipientBirthDate;
   String? recipientBirthPlace;
-  String? recipientGender;
   String? recipientCountry;
 
   // Transaction details
@@ -47,7 +43,6 @@ class TransferData {
       "senderFirstName": senderFirstName,
       "senderLastName": senderLastName,
       "senderPhone": senderPhone,
-      "senderEmail": senderEmail,
       "senderAddress": senderAddress,
       "senderIdType": senderIdType,
       "senderIdNumber": senderIdNumber,
@@ -55,7 +50,6 @@ class TransferData {
       "senderNationality": senderNationality,
       "senderBirthDate": senderBirthDate?.toUtc().toIso8601String(),
       "senderBirthPlace": senderBirthPlace,
-      "senderGender": senderGender,
       "senderCountry": senderCountry,
       "reason": reason
     };
@@ -66,14 +60,12 @@ class TransferData {
       "recipientFirstName": recipientFirstName,
       "recipientLastName": recipientLastName,
       "recipientPhone": recipientPhone,
-      "recipientEmail": recipientEmail,
       "recipientAddress": recipientAddress,
       "recipientIdType": recipientIdType,
       "recipientIdNumber": recipientIdNumber,
       "recipientNationality": recipientNationality,
       "recipientBirthDate": recipientBirthDate?.toUtc().toIso8601String(),
       "recipientBirthPlace": recipientBirthPlace,
-      "recipientGender": recipientGender,
       "recipientCountry": recipientCountry
     };
   }
