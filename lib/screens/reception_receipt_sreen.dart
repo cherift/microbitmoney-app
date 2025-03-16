@@ -83,8 +83,6 @@ class ReceptionReceiptScreen extends StatelessWidget {
     final amountFormatter = NumberFormat('#,###', 'fr_FR');
     final double amountReceived = reception.amount ?? 0;
     final String currency = reception.currency ?? 'GNF';
-    final double receivedAmountForeign = amountReceived / 1000;
-    final String foreignCurrency = "USD";
     final String truncatedRef = _truncateWithEllipsis(reception.referenceId, 18);
 
     return Card(
@@ -128,7 +126,21 @@ class ReceptionReceiptScreen extends StatelessWidget {
             _buildDetailRow('Date de la transaction', _formatDate(reception.createdAt)),
             const SizedBox(height: 12),
             _buildDetailRowWithWrap('Numéro de transaction', truncatedRef, screenWidth),
-
+            if (reception.reason != null) ...[
+              const SizedBox(height: 24),
+              const Text(
+                'Motif du transfert',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                reception.reason!,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
             const SizedBox(height: 24),
             const Text(
               'Bénéficiaire',
@@ -144,7 +156,7 @@ class ReceptionReceiptScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              reception.recipientNationality,
+              reception.recipientCountry,
               style: const TextStyle(fontSize: 16),
             ),
 
@@ -170,23 +182,6 @@ class ReceptionReceiptScreen extends StatelessWidget {
                 ),
               ],
             ],
-
-            if (reception.reason != null) ...[
-              const SizedBox(height: 24),
-              const Text(
-                'Motif du transfert',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                reception.reason!,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-
             const SizedBox(height: 24),
             const Text(
               'Détails du transfert',
@@ -198,14 +193,6 @@ class ReceptionReceiptScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             _buildDetailRow('Montant reçu', '${amountFormatter.format(amountReceived)} $currency'),
-            const SizedBox(height: 8),
-            _buildDetailRow('Équivalent en devise', '${receivedAmountForeign.toStringAsFixed(0)} $foreignCurrency'),
-            const SizedBox(height: 8),
-            _buildDetailRowWithWrap(
-              'Taux de change',
-              '1 $foreignCurrency = ${amountFormatter.format(1000)} $currency',
-              screenWidth
-            ),
             const SizedBox(height: 8),
             _buildDetailRow('Opérateur', reception.operator.name),
             const SizedBox(height: 8),

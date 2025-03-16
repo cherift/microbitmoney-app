@@ -1,6 +1,5 @@
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/models/pdv_model.dart';
-import 'package:flutter/material.dart';
 
 class Transaction {
   final String id;
@@ -10,31 +9,25 @@ class Transaction {
   final String senderFirstName;
   final String senderLastName;
   final String senderPhone;
-  final String senderEmail;
   final String senderAddress;
   final String senderIdType;
   final String senderIdNumber;
-  final DateTime? senderIdIssueDate;
   final DateTime senderIdExpiryDate;
   final String senderNationality;
   final DateTime senderBirthDate;
   final String senderBirthPlace;
-  final String? senderOccupation;
-  final String senderGender;
   final String? senderCountry;
 
   // Recipient information
   final String recipientFirstName;
   final String recipientLastName;
-  final String recipientPhone;
-  final String recipientEmail;
-  final String recipientAddress;
-  final String recipientIdType;
-  final String recipientIdNumber;
-  final String recipientNationality;
-  final DateTime recipientBirthDate;
-  final String recipientBirthPlace;
-  final String recipientGender;
+  final String? recipientPhone;
+  final String? recipientAddress;
+  final String? recipientIdType;
+  final String? recipientIdNumber;
+  final String? recipientNationality;
+  final DateTime? recipientBirthDate;
+  final String? recipientBirthPlace;
   final String? recipientCountry;
 
   // Transaction details
@@ -64,29 +57,23 @@ class Transaction {
     required this.senderFirstName,
     required this.senderLastName,
     required this.senderPhone,
-    required this.senderEmail,
     required this.senderAddress,
     required this.senderIdType,
     required this.senderIdNumber,
-    this.senderIdIssueDate,
     required this.senderIdExpiryDate,
     required this.senderNationality,
     required this.senderBirthDate,
     required this.senderBirthPlace,
-    this.senderOccupation,
-    required this.senderGender,
     this.senderCountry,
     required this.recipientFirstName,
     required this.recipientLastName,
-    required this.recipientPhone,
-    required this.recipientEmail,
-    required this.recipientAddress,
-    required this.recipientIdType,
-    required this.recipientIdNumber,
-    required this.recipientNationality,
-    required this.recipientBirthDate,
-    required this.recipientBirthPlace,
-    required this.recipientGender,
+    this.recipientPhone,
+    this.recipientAddress,
+    this.recipientIdType,
+    this.recipientIdNumber,
+    this.recipientNationality,
+    this.recipientBirthDate,
+    this.recipientBirthPlace,
     this.recipientCountry,
     required this.amount,
     required this.fees,
@@ -108,36 +95,29 @@ class Transaction {
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
-    debugPrint(json.toString());
     return Transaction(
       id: json['id'],
       referenceId: json['referenceId'],
       senderFirstName: json['senderFirstName'],
       senderLastName: json['senderLastName'],
       senderPhone: json['senderPhone'],
-      senderEmail: json['senderEmail'],
       senderAddress: json['senderAddress'],
       senderIdType: json['senderIdType'],
       senderIdNumber: json['senderIdNumber'],
-      senderIdIssueDate: json['senderIdIssueDate'] != null ? DateTime.parse(json['senderIdIssueDate']) : null,
       senderIdExpiryDate: DateTime.parse(json['senderIdExpiryDate']),
       senderNationality: json['senderNationality'],
       senderBirthDate: DateTime.parse(json['senderBirthDate']),
       senderBirthPlace: json['senderBirthPlace'],
-      senderOccupation: json['senderOccupation'],
-      senderGender: json['senderGender'],
       senderCountry: json['senderCountry'],
       recipientFirstName: json['recipientFirstName'],
       recipientLastName: json['recipientLastName'],
       recipientPhone: json['recipientPhone'],
-      recipientEmail: json['recipientEmail'],
       recipientAddress: json['recipientAddress'],
       recipientIdType: json['recipientIdType'],
       recipientIdNumber: json['recipientIdNumber'],
       recipientNationality: json['recipientNationality'],
-      recipientBirthDate: DateTime.parse(json['recipientBirthDate']),
+      recipientBirthDate: json['recipientBirthDate'] != null ? DateTime.parse(json['recipientBirthDate']) : null,
       recipientBirthPlace: json['recipientBirthPlace'],
-      recipientGender: json['recipientGender'],
       recipientCountry: json['recipientCountry'],
       amount: (json['amount'] as num).toDouble(),
       fees: (json['fees'] as num).toDouble(),
@@ -166,29 +146,23 @@ class Transaction {
       'senderFirstName': senderFirstName,
       'senderLastName': senderLastName,
       'senderPhone': senderPhone,
-      'senderEmail': senderEmail,
       'senderAddress': senderAddress,
       'senderIdType': senderIdType,
       'senderIdNumber': senderIdNumber,
-      'senderIdIssueDate': senderIdIssueDate?.toIso8601String(),
       'senderIdExpiryDate': senderIdExpiryDate.toIso8601String(),
       'senderNationality': senderNationality,
       'senderBirthDate': senderBirthDate.toIso8601String(),
       'senderBirthPlace': senderBirthPlace,
-      'senderOccupation': senderOccupation,
-      'senderGender': senderGender,
       'senderCountry': senderCountry,
       'recipientFirstName': recipientFirstName,
       'recipientLastName': recipientLastName,
       'recipientPhone': recipientPhone,
-      'recipientEmail': recipientEmail,
       'recipientAddress': recipientAddress,
       'recipientIdType': recipientIdType,
       'recipientIdNumber': recipientIdNumber,
       'recipientNationality': recipientNationality,
-      'recipientBirthDate': recipientBirthDate.toIso8601String(),
+      'recipientBirthDate': recipientBirthDate?.toIso8601String(),
       'recipientBirthPlace': recipientBirthPlace,
-      'recipientGender': recipientGender,
       'recipientCountry': recipientCountry,
       'amount': amount,
       'fees': fees,

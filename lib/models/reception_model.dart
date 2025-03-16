@@ -9,7 +9,6 @@ class Reception {
   final String? senderFirstName;
   final String? senderLastName;
   final String? senderPhone;
-  final String? senderEmail;
   final String? senderAddress;
   final String? senderIdType;
   final String? senderIdNumber;
@@ -17,14 +16,12 @@ class Reception {
   final String? senderNationality;
   final DateTime? senderBirthDate;
   final String? senderBirthPlace;
-  final String? senderGender;
   final String? senderCountry;
 
   // Recipient information
   final String recipientFirstName;
   final String recipientLastName;
   final String recipientPhone;
-  final String recipientEmail;
   final String recipientAddress;
   final String recipientIdType;
   final String recipientIdNumber;
@@ -32,7 +29,6 @@ class Reception {
   final String recipientNationality;
   final DateTime recipientBirthDate;
   final String recipientBirthPlace;
-  final String recipientGender;
 
   // Transaction details
   final String? reason;
@@ -58,7 +54,6 @@ class Reception {
     this.senderFirstName,
     this.senderLastName,
     this.senderPhone,
-    this.senderEmail,
     this.senderAddress,
     this.senderIdType,
     this.senderIdNumber,
@@ -66,12 +61,10 @@ class Reception {
     this.senderNationality,
     this.senderBirthDate,
     this.senderBirthPlace,
-    this.senderGender,
     this.senderCountry,
     required this.recipientFirstName,
     required this.recipientLastName,
     required this.recipientPhone,
-    required this.recipientEmail,
     required this.recipientAddress,
     required this.recipientIdType,
     required this.recipientIdNumber,
@@ -79,7 +72,6 @@ class Reception {
     required this.recipientNationality,
     required this.recipientBirthDate,
     required this.recipientBirthPlace,
-    required this.recipientGender,
     this.reason,
     this.amount,
     this.currency,
@@ -103,7 +95,6 @@ class Reception {
       senderFirstName: json['senderFirstName'],
       senderLastName: json['senderLastName'],
       senderPhone: json['senderPhone'],
-      senderEmail: json['senderEmail'],
       senderAddress: json['senderAddress'],
       senderIdType: json['senderIdType'],
       senderIdNumber: json['senderIdNumber'],
@@ -115,12 +106,10 @@ class Reception {
           ? DateTime.parse(json['senderBirthDate'])
           : null,
       senderBirthPlace: json['senderBirthPlace'],
-      senderGender: json['senderGender'],
       senderCountry: json['senderCountry'],
       recipientFirstName: json['recipientFirstName'],
       recipientLastName: json['recipientLastName'],
       recipientPhone: json['recipientPhone'],
-      recipientEmail: json['recipientEmail'],
       recipientAddress: json['recipientAddress'],
       recipientIdType: json['recipientIdType'],
       recipientIdNumber: json['recipientIdNumber'],
@@ -128,7 +117,6 @@ class Reception {
       recipientNationality: json['recipientNationality'],
       recipientBirthDate: DateTime.parse(json['recipientBirthDate']),
       recipientBirthPlace: json['recipientBirthPlace'],
-      recipientGender: json['recipientGender'],
       reason: json['reason'],
       amount: json['amount'] != null ? (json['amount'] as num).toDouble() : null,
       currency: json['currency'],

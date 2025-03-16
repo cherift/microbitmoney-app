@@ -82,10 +82,7 @@ class TransactionReceiptScreen extends StatelessWidget {
   Widget _buildReceiptCard(BuildContext context, double screenWidth) {
     final amountFormatter = NumberFormat('#,###', 'fr_FR');
     final double amountSent = transaction.amount;
-    final double fees = transaction.fees;
     final double totalAmount = transaction.totalAmount;
-    final double receivedAmountForeign = amountSent / 1000;
-    final String foreignCurrency = "USD";
 
     return Card(
       elevation: 0,
@@ -133,26 +130,6 @@ class TransactionReceiptScreen extends StatelessWidget {
               const SizedBox(height: 12),
               _buildDetailRowWithWrap('Numéro de référence ${transaction.operator!.code}', _truncateWithEllipsis(transaction.finalTransactionNumber!, 18), screenWidth),
             ],
-
-            const SizedBox(height: 24),
-            const Text(
-              'Destination',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              transaction.recipientFullName,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              transaction.recipientNationality,
-              style: const TextStyle(fontSize: 16),
-            ),
-
             const SizedBox(height: 24),
             const Text(
               'Motif de transfert',
@@ -166,7 +143,37 @@ class TransactionReceiptScreen extends StatelessWidget {
               transaction.reason ?? 'Assistance famille',
               style: TextStyle(fontSize: 16),
             ),
-
+            const SizedBox(height: 24),
+            const Text(
+              'Bénéficaire',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              transaction.recipientFullName,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Destinataire',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              transaction.senderFullName,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              transaction.senderCountry!,
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 24),
             const Text(
               'Détails du transfert',
@@ -176,18 +183,7 @@ class TransactionReceiptScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-
             _buildDetailRow('montant envoyé', '${amountFormatter.format(amountSent)} ${transaction.currency}'),
-            const SizedBox(height: 8),
-            _buildDetailRow('montant reçu', '${receivedAmountForeign.toStringAsFixed(0)} $foreignCurrency'),
-            const SizedBox(height: 8),
-            _buildDetailRow('Frais', '${amountFormatter.format(fees)} ${transaction.currency}'),
-            const SizedBox(height: 8),
-            _buildDetailRowWithWrap(
-              'Total en ${transaction.currency}',
-              '(1 $foreignCurrency = ${amountFormatter.format(1000)} ${transaction.currency})\n${amountFormatter.format(amountSent + fees)} ${transaction.currency}',
-              screenWidth
-            ),
             const SizedBox(height: 8),
             _buildDetailRow('Opérateur', transaction.operator!.name),
             const SizedBox(height: 8),
