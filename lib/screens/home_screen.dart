@@ -1,5 +1,5 @@
 import 'package:bit_money/components/home_header.dart';
-import 'package:bit_money/components/notifications.dart';
+import 'package:bit_money/components/recent_activities.dart';
 import 'package:bit_money/components/quick_actions.dart';
 import 'package:bit_money/components/stat_card.dart';
 import 'package:bit_money/constants/app_colors.dart';
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 24),
                   QuickActionsWidget(),
                   SizedBox(height: 24),
-                  RecentNotificationsWidget(),
+                  RecentActivitiesWidget(),
                 ],
               ),
             ),
