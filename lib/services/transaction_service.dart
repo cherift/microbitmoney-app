@@ -145,4 +145,14 @@ class TransactionService {
         t.createdAt.day == endDate.day))
     ).toList();
   }
+
+  Future<dynamic> getTransactionStatus(referenceId) async {
+    final response = await _apiClient.get('/transactions/$referenceId/status',);
+
+    if (response.statusCode! > 201) {
+      final data = response.data;
+      return data;
+    }
+    return {'error': false};
+  }
 }

@@ -4,6 +4,7 @@ import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/services/operator_service.dart';
 import 'package:bit_money/screens/receive/reception_reference_screen.dart';
+import 'package:bit_money/services/transaction_service.dart';
 import 'package:flutter/material.dart';
 
 class ReceiveTransferOperatorScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class ReceiveTransferOperatorScreen extends StatefulWidget {
 
 class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorScreen> {
   final OperatorService _operatorService = OperatorService();
+  final TransactionService _transactionService = TransactionService();
   List<Operator> _operators = [];
   bool _isLoading = true;
   Operator? _selectedOperator;
@@ -40,19 +42,25 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
 
     try {
       final operators = await _operatorService.getOperators();
-      setState(() {
-        _operators = operators;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _operators = operators;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showErrorSnackBar("Impossible de charger les opérateurs");
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showErrorSnackBar("Impossible de charger les opérateurs");
+      }
     }
   }
 
   void _showErrorSnackBar(String message) {
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -61,8 +69,21 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
     );
   }
 
-  void _verifyReference() {
+  void _verifyReference() async {
     if (_formKey.currentState!.validate() && _selectedOperator != null) {
+      if (!mounted) return;
+
+      if (_selectedOperator!.code == 'MBM') {
+        final response = await _transactionService.getTransactionStatus(_referenceController.text);
+
+
+        if (response['error'] != false) {
+          _showErrorSnackBar(response['error'] ?? "Une erreur s'est produite");
+          return;
+        }
+      }
+
+
       Navigator.push(
         context,
         MaterialPageRoute(
