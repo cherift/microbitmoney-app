@@ -2,6 +2,7 @@ import 'package:bit_money/screens/general_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_money/services/auth_service.dart';
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -72,6 +73,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final availableHeight = size.height - padding.top - padding.bottom;
 
     return Scaffold(
+      appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
+      ),
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: _isInitializing

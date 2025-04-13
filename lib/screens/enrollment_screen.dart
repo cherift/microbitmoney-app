@@ -1,6 +1,7 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/services/users_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class EnrollmentScreen extends StatefulWidget {
@@ -242,6 +243,10 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: Text(
           'Nouveau Point de Vente',
           style: TextStyle(
@@ -527,7 +532,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
             ),
           ),
           child: Text(
-            'Créer l\'utilisateur',
+            'Créer le PDV',
             style: TextStyle(
               color: AppColors.white,
               fontWeight: FontWeight.w600,

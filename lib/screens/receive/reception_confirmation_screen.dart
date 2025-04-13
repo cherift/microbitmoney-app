@@ -3,19 +3,18 @@ import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/services/reception_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ReceptionConfirmationScreen extends StatefulWidget {
   final Operator operator;
   final Map<String, dynamic> recipientData;
-  final double amount;
   final String currency;
 
   const ReceptionConfirmationScreen({
     super.key,
     required this.operator,
     required this.recipientData,
-    required this.amount,
     required this.currency,
   });
 
@@ -146,6 +145,10 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Recevoir un transfert',
           style: TextStyle(fontWeight: FontWeight.bold),

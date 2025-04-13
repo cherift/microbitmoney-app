@@ -9,7 +9,11 @@ class OperatorService {
 
   Future<List<Operator>> getOperators() async {
     try {
-      final response = await _apiClient.get('/operators');
+      final response = await _apiClient.get(
+        '/operators',
+        useCache: true,
+        cacheDuration: const Duration(hours: 1),
+      );
 
       if (response.statusCode == 200) {
         final data = response.data;

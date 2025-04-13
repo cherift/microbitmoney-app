@@ -3,6 +3,7 @@ import 'package:bit_money/models/reception_model.dart';
 import 'package:bit_money/screens/reception_receipt_sreen.dart';
 import 'package:bit_money/services/reception_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ReceptionsScreen extends StatefulWidget {
@@ -13,49 +14,174 @@ class ReceptionsScreen extends StatefulWidget {
 }
 
 class _ReceptionsScreenState extends State<ReceptionsScreen> {
-  late ReceptionService _receptionService;
+  // Initialisation optimisée des services et formateurs
+  final ReceptionService _receptionService = ReceptionService();
+  final NumberFormat _amountFormatter = NumberFormat('#,###', 'fr');
+  final DateFormat _dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
+  final ScrollController _scrollController = ScrollController();
+
+  // États de données
   List<Reception> _receptions = [];
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   double _totalAmount = 0;
   String _currency = 'GNF';
+
+  // États de pagination
+  int _currentPage = 1;
+  final int _itemsPerPage = 10;
+  bool _hasMoreData = true;
+
+  // Cache pour les états de réception
+  final Map<String, _StatusInfo> _statusCache = {
+    'PENDING': _StatusInfo(Colors.orange, 'En attente'),
+    'COMPLETED': _StatusInfo(Colors.green, 'Terminé'),
+    'CANCELLED': _StatusInfo(Colors.red, 'Annulé'),
+  };
 
   @override
   void initState() {
     super.initState();
-    _receptionService = ReceptionService();
-    _loadReceptions();
+    _scrollController.addListener(_scrollListener);
+    _loadInitialData();
   }
 
-  Future<void> _loadReceptions() async {
-    setState(() {
-      _isLoading = true;
-    });
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // Écoute de défilement pour le chargement paresseux
+  void _scrollListener() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    if (currentScroll >= maxScroll * 0.8 && !_isLoadingMore && _hasMoreData) {
+      _loadMoreReceptions();
+    }
+  }
+
+  // Chargement initial séparé
+  Future<void> _loadInitialData() async {
+    if (!mounted) return;
 
     try {
-      final receptions = await _receptionService.getReceptions();
-      receptions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      // Simuler la pagination pour les réceptions (à implémenter côté API)
+      final receptions = await _receptionService.getReceptionsPaginated(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
 
+      if (!mounted) return;
+
+      setState(() {
+        _receptions = receptions.items;
+        _hasMoreData = receptions.pagination.hasNext;
+        _currency = (_receptions.isNotEmpty && _receptions.first.currency != null)
+          ? _receptions.first.currency! : 'GNF';
+        _isLoading = false;
+      });
+
+      // Charger les statistiques séparément
+      _loadStats();
+    } catch (e) {
+      debugPrint('Erreur lors du chargement des réceptions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  // Chargement des statistiques
+  Future<void> _loadStats() async {
+    try {
+      // Calculer le montant total (à remplacer par un appel d'API dédié)
       double total = 0;
-      for (var reception in receptions) {
+      for (var reception in _receptions) {
         if (reception.amount != null) {
           total += reception.amount!;
         }
       }
 
-      final currency = (receptions.isNotEmpty && receptions.first.currency != null)
-        ? receptions.first.currency! : 'GNF';
+      if (mounted) {
+        setState(() {
+          _totalAmount = total;
+        });
+      }
+    } catch (e) {
+      debugPrint('Erreur lors du chargement des statistiques: $e');
+    }
+  }
+
+  Future<void> _loadReceptions() async {
+    setState(() {
+      _isLoading = true;
+      _currentPage = 1;
+    });
+
+    try {
+      final receptions = await _receptionService.getReceptionsPaginated(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
+
+      if (!mounted) return;
 
       setState(() {
-        _receptions = receptions;
-        _totalAmount = total;
-        _currency = currency;
+        _receptions = receptions.items;
+        _hasMoreData = receptions.pagination.hasNext;
+        _currency = (_receptions.isNotEmpty && _receptions.first.currency != null)
+          ? _receptions.first.currency! : 'GNF';
         _isLoading = false;
       });
+
+      // Charger les statistiques séparément
+      _loadStats();
     } catch (e) {
       debugPrint('Erreur lors du chargement des réceptions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadMoreReceptions() async {
+    if (_isLoadingMore || !_hasMoreData) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final receptions = await _receptionService.getReceptionsPaginated(
+        page: nextPage,
+        limit: _itemsPerPage,
+      );
+
+      if (!mounted) return;
+
       setState(() {
-        _isLoading = false;
+        _receptions.addAll(receptions.items);
+        _currentPage = nextPage;
+        _hasMoreData = receptions.pagination.hasNext;
+        _isLoadingMore = false;
       });
+    } catch (e) {
+      debugPrint('Erreur lors du chargement de plus de réceptions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
     }
   }
 
@@ -65,45 +191,46 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-            onRefresh: _loadReceptions,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: SafeArea(
-                bottom: false,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildTotalAmountCard(),
-                        const SizedBox(height: 24),
-                        const Text(
-                          'Liste des réceptions',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+              onRefresh: _loadReceptions,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildTotalAmountCard(),
+                            const SizedBox(height: 24),
+                            const Text(
+                              'Liste des réceptions',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        _buildReceptionsList(),
-                      ],
-                    ),
+                      ),
+                      Expanded(
+                        child: _buildReceptionsList(),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
     );
   }
 
   Widget _buildTotalAmountCard() {
-    final formatter = NumberFormat('#,###', 'fr');
-    final formattedAmount = formatter.format(_totalAmount);
+    final formattedAmount = _amountFormatter.format(_totalAmount);
 
     return Container(
       width: double.infinity,
@@ -167,8 +294,8 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
     if (_receptions.isEmpty) {
       return Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 40),
             Icon(
               Icons.hourglass_empty,
               size: 80,
@@ -189,10 +316,21 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
     }
 
     return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: _receptions.length,
+      controller: _scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      itemCount: _receptions.length + (_hasMoreData ? 1 : 0),
+      cacheExtent: 200, // Préchargement des éléments
       itemBuilder: (context, index) {
+        // Si on est au dernier élément et qu'il y a plus de données, afficher un loader
+        if (index == _receptions.length) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
         final reception = _receptions[index];
         return _buildReceptionCard(reception);
       },
@@ -200,34 +338,15 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
   }
 
   Widget _buildReceptionCard(Reception reception) {
-    final formatter = NumberFormat('#,###', 'fr');
     final formattedAmount = reception.amount != null
-        ? formatter.format(reception.amount)
+        ? _amountFormatter.format(reception.amount)
         : 'N/A';
 
-    final dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
-    final formattedDate = dateFormatter.format(reception.createdAt);
+    final formattedDate = _dateFormatter.format(reception.createdAt);
 
-    Color statusColor;
-    String statusText;
-
-    switch (reception.status) {
-      case 'PENDING':
-        statusColor = Colors.orange;
-        statusText = 'En attente';
-        break;
-      case 'COMPLETED':
-        statusColor = Colors.green;
-        statusText = 'Terminé';
-        break;
-      case 'CANCELLED':
-        statusColor = Colors.red;
-        statusText = 'Annulé';
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusText = 'Inconnu';
-    }
+    // Utilisation du cache de statut
+    final statusInfo = _statusCache[reception.status] ??
+        _StatusInfo(Colors.grey, 'Inconnu');
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -277,13 +396,13 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: .15),
+                    color: statusInfo.color.withValues(alpha: .15),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Text(
-                    statusText,
+                    statusInfo.text,
                     style: TextStyle(
-                      color: statusColor,
+                      color: statusInfo.color,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -320,4 +439,12 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
       ),
     );
   }
+}
+
+// Classe utilitaire pour stocker les infos de statut
+class _StatusInfo {
+  final Color color;
+  final String text;
+
+  _StatusInfo(this.color, this.text);
 }

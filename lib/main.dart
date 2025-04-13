@@ -100,6 +100,13 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.secondary,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: AppColors.secondary,
+            statusBarIconBrightness: Brightness.light,
+          ),
+        ),
         backgroundColor: AppColors.background,
         body: Center(
           child: Column(

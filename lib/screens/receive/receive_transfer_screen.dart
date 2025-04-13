@@ -6,6 +6,7 @@ import 'package:bit_money/services/operator_service.dart';
 import 'package:bit_money/screens/receive/reception_reference_screen.dart';
 import 'package:bit_money/services/transaction_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ReceiveTransferOperatorScreen extends StatefulWidget {
   const ReceiveTransferOperatorScreen({super.key});
@@ -71,8 +72,6 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
 
   void _verifyReference() async {
     if (_formKey.currentState!.validate() && _selectedOperator != null) {
-      if (!mounted) return;
-
       if (_selectedOperator!.code == 'MBM') {
         final response = await _transactionService.getTransactionStatus(_referenceController.text);
 
@@ -83,16 +82,17 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
         }
       }
 
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ReceptionReferenceScreen(
-            operator: _selectedOperator!,
-            referenceId: _referenceController.text,
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReceptionReferenceScreen(
+              operator: _selectedOperator!,
+              referenceId: _referenceController.text,
+            ),
           ),
-        ),
-      );
+        );
+      }
     } else if (_selectedOperator == null) {
       _showErrorSnackBar("Veuillez sélectionner un opérateur");
     }
@@ -103,6 +103,10 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Recevoir un transfert',
           style: TextStyle(fontWeight: FontWeight.bold),

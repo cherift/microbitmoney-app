@@ -1,6 +1,7 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/models/transaction_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class TransactionReceiptScreen extends StatelessWidget {
@@ -17,31 +18,17 @@ class TransactionReceiptScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text("Détails de transaction"),
+        backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: AppColors.black),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'Détails de transaction',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -156,9 +143,14 @@ class TransactionReceiptScreen extends StatelessWidget {
               transaction.recipientFullName,
               style: const TextStyle(fontSize: 16),
             ),
+            const SizedBox(height: 8),
+            Text(
+              transaction.recipientCountry!,
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 24),
             const Text(
-              'Destinataire',
+              'Expéditeur',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
