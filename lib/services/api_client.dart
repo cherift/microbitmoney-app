@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:bit_money/config/env_config.dart';
 import 'package:bit_money/services/auth_service.dart';
 import 'auth_interceptor.dart';
+import 'cache_interceptor.dart';
 
 class ApiClient {
   static final ApiClient _instance = ApiClient._internal();
@@ -12,6 +13,7 @@ class ApiClient {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final AuthService _authService = AuthService();
   final String baseUrl = EnvConfig.baseUrl;
+  late CacheInterceptor _cacheInterceptor;
 
   ApiClient._internal() {
     _initDio();
@@ -31,6 +33,14 @@ class ApiClient {
       ),
     );
 
+    _cacheInterceptor = CacheInterceptor(
+      defaultCacheDuration: const Duration(hours: 1),
+      useMemoryCache: true,
+      useSharedPreferences: true,
+    );
+
+    dio.interceptors.add(_cacheInterceptor);
+
     dio.interceptors.add(
       AuthInterceptor(
         dio: dio,
@@ -49,11 +59,28 @@ class ApiClient {
     );
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? queryParams}) {
-    return dio.get(path, queryParameters: queryParams);
+  Future<Response> get(String path, {
+    Map<String, dynamic>? queryParams,
+    bool useCache = false,
+    Duration? cacheDuration,
+  }) {
+    return dio.get(
+      path,
+      queryParameters: queryParams,
+      options: Options(
+        extra: {
+          'useCache': useCache,
+          if (cacheDuration != null) 'cacheDuration': cacheDuration,
+        },
+      ),
+    );
   }
 
   Future<Response> post(String path, {dynamic data}) {
     return dio.post(path, data: data);
+  }
+
+  Future<void> clearCache() async {
+    await _cacheInterceptor.clearCache();
   }
 }

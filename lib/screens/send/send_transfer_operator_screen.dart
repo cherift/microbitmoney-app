@@ -2,7 +2,6 @@ import 'package:bit_money/components/operator_grid.dart';
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/models/transfer_data.dart';
-import 'package:bit_money/models/user_model.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/screens/send/sender_information_form.dart';
 import 'package:bit_money/services/auth_service.dart';
@@ -29,23 +28,16 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final AuthService authService = AuthService();
-  UserModel? user;
+
+  final List<String> _currencies = ['GNF', 'USD'];
+
+  String _selectedCurrency = 'GNF';
 
   @override
   void initState() {
     super.initState();
     _apiService = TransferService();
-
-    authService.getStoredSession().then((value) {
-      setState(() {
-        user = value?.user!;
-        _amountData.pdvId = user?.pdv?.id;
-      });
-    }).catchError((error) {
-      debugPrint('Error: $error');
-    });
-
-    _amountData.currency = 'GNF';
+    _amountData.currency = _selectedCurrency;
     _amountData.fees = 0;
 
     _initializeTransfer();
@@ -90,6 +82,10 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Envoyer un transfert',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -183,11 +179,16 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
 
     final amount = double.tryParse(_amountController.text) ?? 0;
     if (_selectedOperator != null) {
-      if (amount < _selectedOperator!.minAmount) {
+      double checkAmount = amount;
+      if (_selectedCurrency == 'USD') {
+        checkAmount = amount * 9000;
+      }
+
+      if (checkAmount < _selectedOperator!.minAmount) {
         _showErrorSnackBar('Le montant minimum est de ${_selectedOperator!.minAmount} GNF');
         return;
       }
-      if (amount > _selectedOperator!.maxAmount) {
+      if (checkAmount > _selectedOperator!.maxAmount) {
         _showErrorSnackBar('Le montant maximum est de ${_selectedOperator!.maxAmount} GNF');
         return;
       }
@@ -196,9 +197,12 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
     setState(() {
       _isProcessing = true;
       _amountData.amount = amount;
+      _amountData.currency = _selectedCurrency;
     });
 
     try {
+      final session = await authService.getStoredSession();
+      _amountData.pdvId = session?.user?.pdv?.id;
       final response = await _apiService.submitAmount(_amountData.toAmountJson());
 
       if (response is Map<String, dynamic> && response.containsKey('success') && !response['success']) {
@@ -238,7 +242,7 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Montant (en GNF)',
+            'Montant',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -246,52 +250,90 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
             ),
           ),
           const SizedBox(height: 12),
-          TextFormField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            decoration: InputDecoration(
-              hintText: 'Entrez le montant en GNF',
-              suffixText: 'GNF',
-              hintStyle: TextStyle(color: Colors.grey.shade400),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey.shade200),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppColors.secondary, width: 2),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.red.shade300),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Veuillez entrer un montant';
-              }
+            child: Row(
+              children: [
+                // Champ du montant
+                Expanded(
+                  child: TextFormField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    decoration: InputDecoration(
+                      hintText: 'Entrez le montant',
+                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer un montant';
+                      }
 
-              final amount = int.tryParse(value);
-              if (amount == null) {
-                return 'Veuillez entrer un montant valide';
-              }
+                      final amount = int.tryParse(value);
+                      if (amount == null) {
+                        return 'Veuillez entrer un montant valide';
+                      }
 
-              if (amount <= 0) {
-                return 'Le montant doit être supérieur à 0';
-              }
+                      if (amount <= 0) {
+                        return 'Le montant doit être supérieur à 0';
+                      }
 
-              return null;
-            },
+                      return null;
+                    },
+                  ),
+                ),
+
+                // Séparateur vertical
+                Container(
+                  height: 30,
+                  width: 1,
+                  color: Colors.grey.shade300,
+                ),
+
+                // Sélecteur de devise
+                Container(
+                  padding: const EdgeInsets.only(left: 8, right: 4),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedCurrency,
+                      isDense: true,
+                      icon: const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedCurrency = newValue;
+                            _amountData.currency = newValue;
+                          });
+                        }
+                      },
+                      items: _currencies.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
           SizedBox(

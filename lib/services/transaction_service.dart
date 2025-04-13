@@ -1,4 +1,3 @@
-
 import 'package:bit_money/models/transaction_model.dart';
 import 'package:bit_money/services/api_client.dart';
 import 'package:flutter/widgets.dart';
@@ -7,17 +6,59 @@ import 'package:intl/intl.dart';
 class TransactionStats {
   final int weeklyTransactionCount;
   final double monthlyCommissionTotal;
+  final double totalAmount;
   final String currencySymbol;
 
   TransactionStats({
     required this.weeklyTransactionCount,
     required this.monthlyCommissionTotal,
     required this.currencySymbol,
+    required this.totalAmount,
+  });
+
+  factory TransactionStats.empty() {
+    return TransactionStats(
+      weeklyTransactionCount: 0,
+      monthlyCommissionTotal: 0,
+      totalAmount: 0,
+      currencySymbol: 'GNF',
+    );
+  }
+}
+
+class PaginationInfo {
+  final int total;
+  final int page;
+  final int limit;
+  final int totalPages;
+  final bool hasNext;
+  final bool hasPrevious;
+
+  PaginationInfo({
+    required this.total,
+    required this.page,
+    required this.limit,
+    required this.totalPages,
+  }) :
+    hasNext = page < totalPages,
+    hasPrevious = page > 1;
+}
+
+class PaginatedResponse<T> {
+  final List<T> items;
+  final PaginationInfo pagination;
+
+  PaginatedResponse({
+    required this.items,
+    required this.pagination,
   });
 }
 
 class TransactionService {
   final ApiClient _apiClient;
+  List<Transaction>? _cachedTransactions;
+  DateTime? _cacheTimestamp;
+  final Duration _cacheDuration = const Duration(minutes: 30);
 
   TransactionService() : _apiClient = ApiClient();
 
@@ -26,17 +67,36 @@ class TransactionService {
     return formatter.format(amount);
   }
 
-  // Obtenir la liste des transactions
-  Future<List<Transaction>> getTransactions() async {
+  Future<List<Transaction>> getTransactions({bool forceRefresh = false}) async {
     try {
-      final response = await _apiClient.get('/transactions',);
+      final now = DateTime.now();
+      final isCacheValid = _cachedTransactions != null &&
+                          _cacheTimestamp != null &&
+                          now.difference(_cacheTimestamp!) < _cacheDuration;
+
+      if (!forceRefresh && isCacheValid) {
+        return _cachedTransactions!;
+      }
+
+      final response = await _apiClient.get(
+        '/transactions',
+        useCache: !forceRefresh,
+        cacheDuration: _cacheDuration,
+      );
 
       if (response.statusCode == 200) {
         final data = response.data;
         final List<dynamic> transactionsList = data['transactions'];
-        return transactionsList.map((json) => Transaction.fromJson(json)).toList();
+        final transactions = transactionsList
+            .map((json) => Transaction.fromJson(json))
+            .toList();
+
+        _cachedTransactions = transactions;
+        _cacheTimestamp = now;
+
+        return transactions;
       } else {
-        debugPrint('Impossible d\'accéder au transactions');
+        debugPrint('Impossible d\'accéder aux transactions (code: ${response.statusCode})');
       }
     } catch (e) {
       debugPrint('Erreur d\'accès aux transactions: $e');
@@ -44,9 +104,75 @@ class TransactionService {
     return [];
   }
 
-  // Obtenir les statistiques des transactions
-  Future<TransactionStats> getTransactionStats() async {
-    final transactions = await getTransactions();
+  Future<PaginatedResponse<Transaction>> getTransactionsPaginated({
+    int page = 1,
+    int limit = 20,
+    String? date,
+    String? status,
+  }) async {
+    try {
+      final queryParams = {
+        'page': page.toString(),
+        'limit': limit.toString(),
+        if (date != null) 'date': date,
+        if (status != null) 'status': status,
+      };
+
+      final response = await _apiClient.get(
+        '/transactions',
+        queryParams: queryParams,
+        useCache: false,
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final List<dynamic> transactionsList = data['transactions'];
+        final transactions = transactionsList
+            .map((json) => Transaction.fromJson(json))
+            .toList();
+
+        final paginationData = data['pagination'];
+        final pagination = PaginationInfo(
+          total: paginationData['total'] ?? 0,
+          page: paginationData['page'] ?? 1,
+          limit: paginationData['limit'] ?? 20,
+          totalPages: paginationData['totalPages'] ?? 1,
+        );
+
+        return PaginatedResponse(
+          items: transactions,
+          pagination: pagination,
+        );
+      } else {
+        debugPrint('Impossible d\'accéder aux transactions paginées (code: ${response.statusCode})');
+      }
+    } catch (e) {
+      debugPrint('Erreur d\'accès aux transactions paginées: $e');
+    }
+
+    return PaginatedResponse(
+      items: [],
+      pagination: PaginationInfo(
+        total: 0,
+        page: page,
+        limit: limit,
+        totalPages: 0,
+      ),
+    );
+  }
+
+  Future<List<Transaction>> refreshTransactions() async {
+    _cachedTransactions = null;
+    _cacheTimestamp = null;
+    return await getTransactions(forceRefresh: true);
+  }
+
+  Future<TransactionStats> getTransactionStats({bool forceRefresh = false}) async {
+    final transactions = await getTransactions(forceRefresh: forceRefresh);
+
+    if (transactions.isEmpty) {
+      return TransactionStats.empty();
+    }
 
     final completedTransactions = transactions.where((t) => t.status == 'COMPLETED').toList();
 
@@ -76,18 +202,20 @@ class TransactionService {
       0, (sum, transaction) => sum + transaction.amount
     );
 
-    final currencySymbol = completedTransactions.isNotEmpty ? completedTransactions.first.currency : 'GNF';
+    final totalAmount = completedTransactions.fold<double>(
+      0, (sum, transaction) => sum + transaction.amount
+    );
 
     return TransactionStats(
       weeklyTransactionCount: weeklyTransactionCount,
       monthlyCommissionTotal: monthlyCommissionTotal,
-      currencySymbol: currencySymbol,
+      totalAmount: totalAmount,
+      currencySymbol: 'GNF',
     );
   }
 
-  // Obtenir le total des transactions par opérateur
-  Future<Map<String, double>> getTransactionAmountsByOperator() async {
-    final transactions = await getTransactions();
+  Future<Map<String, double>> getTransactionAmountsByOperator({bool forceRefresh = false}) async {
+    final transactions = await getTransactions(forceRefresh: forceRefresh);
     final completedTransactions = transactions.where((t) => t.status == 'COMPLETED').toList();
 
     final Map<String, double> amountsByOperator = {};
@@ -106,9 +234,8 @@ class TransactionService {
     return amountsByOperator;
   }
 
-  // Obtenir le nombre de transactions par point de vente
-  Future<Map<String, int>> getTransactionCountByPDV() async {
-    final transactions = await getTransactions();
+  Future<Map<String, int>> getTransactionCountByPDV({bool forceRefresh = false}) async {
+    final transactions = await getTransactions(forceRefresh: forceRefresh);
     final completedTransactions = transactions.where((t) => t.status == 'COMPLETED').toList();
 
     final Map<String, int> countByPDV = {};
@@ -127,12 +254,12 @@ class TransactionService {
     return countByPDV;
   }
 
-  // Obtenir les transactions pour une période donnée
   Future<List<Transaction>> getTransactionsForPeriod({
     required DateTime startDate,
-    required DateTime endDate
+    required DateTime endDate,
+    bool forceRefresh = false,
   }) async {
-    final transactions = await getTransactions();
+    final transactions = await getTransactions(forceRefresh: forceRefresh);
 
     return transactions.where((t) =>
       (t.createdAt.isAfter(startDate) ||
@@ -146,8 +273,11 @@ class TransactionService {
     ).toList();
   }
 
-  Future<dynamic> getTransactionStatus(referenceId) async {
-    final response = await _apiClient.get('/transactions/$referenceId/status',);
+  Future<dynamic> getTransactionStatus(String referenceId) async {
+    final response = await _apiClient.get(
+      '/transactions/$referenceId/status',
+      useCache: false,
+    );
 
     if (response.statusCode! > 201) {
       final data = response.data;

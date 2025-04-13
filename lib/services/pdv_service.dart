@@ -8,7 +8,11 @@ class PdvService {
 
   Future<List<PDV>> getPdvs() async {
     try {
-      final response = await _apiClient.get('/pdvs');
+      final response = await _apiClient.get(
+        '/pdvs',
+        useCache: true,
+        cacheDuration: const Duration(hours: 1),
+      );
 
       if (response.statusCode == 200) {
         final data = response.data;

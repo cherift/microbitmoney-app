@@ -312,9 +312,9 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.text),

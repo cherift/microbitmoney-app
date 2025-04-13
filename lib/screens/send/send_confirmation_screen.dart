@@ -3,6 +3,7 @@ import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/services/transfer_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class SendConfirmationScreen extends StatefulWidget {
@@ -156,6 +157,10 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Confirmation de transfert',
           style: TextStyle(fontWeight: FontWeight.bold),

@@ -4,7 +4,9 @@ import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/screens/send/recipient_information_form.dart';
 import 'package:bit_money/services/transfer_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:country_picker/country_picker.dart';
 
 class SenderInformationForm extends StatefulWidget {
   final TransferData transferData;
@@ -25,6 +27,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   final _idTypeController = TextEditingController(text: 'PASSPORT');
   final _idNumberController = TextEditingController();
   final _nationalityController = TextEditingController(text: 'GN');
+  final _nationalityNameController = TextEditingController(text: 'Guinée');
   final _birthDateController = TextEditingController();
   final _idExpirationDateController = TextEditingController();
   final _birthPlaceController = TextEditingController();
@@ -34,6 +37,9 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   DateTime? _selectedBirthDate;
   DateTime? _selectedIdExpirationDate;
   bool _isProcessing = false;
+
+  Country? _selectedCountry;
+  Country? _selectedNationality;
 
   final List<String> _idTypes = [
     'PASSPORT',
@@ -57,6 +63,32 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _initDefaultCountry();
+  }
+
+  void _initDefaultCountry() {
+    try {
+      final List<Country> countries = CountryService().getAll();
+      final Country guinea = countries.firstWhere(
+        (country) => country.countryCode == 'GN',
+        orElse: () => countries.first,
+      );
+
+      setState(() {
+        _selectedCountry = guinea;
+        _selectedNationality = guinea;
+        _selectedCountryController.text = guinea.name;
+        _nationalityNameController.text = guinea.name;
+        _nationalityController.text = guinea.countryCode;
+      });
+    } catch (e) {
+      debugPrint('Erreur lors de l\'initialisation du pays: $e');
+    }
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -65,6 +97,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     _idTypeController.dispose();
     _idNumberController.dispose();
     _nationalityController.dispose();
+    _nationalityNameController.dispose();
     _selectedCountryController.dispose();
     _idExpirationDateController.dispose();
     _birthDateController.dispose();
@@ -228,6 +261,10 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Infos de l\'expéditeur',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -280,6 +317,8 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
+        _buildCountrySelector(),
+        const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
@@ -312,15 +351,156 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-        _buildTextField('Pays', _selectedCountryController,
-          validator: _requiredValidator
-        ),
-        const SizedBox(height: 16),
-        _buildTextField('Nationalité', _nationalityController,
-          validator: _requiredValidator
-        ),
+        _buildNationalitySelector(),
         const SizedBox(height: 16),
         _reasonDropdown(),
+      ],
+    );
+  }
+
+  Widget _buildNationalitySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Nationalité',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () {
+            showCountryPicker(
+              context: context,
+              showPhoneCode: false,
+              countryListTheme: CountryListThemeData(
+                borderRadius: BorderRadius.circular(8),
+                inputDecoration: InputDecoration(
+                  hintText: 'Rechercher une nationalité',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                searchTextStyle: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 16,
+                ),
+              ),
+              onSelect: (Country country) {
+                setState(() {
+                  _selectedNationality = country;
+                  _nationalityNameController.text = country.name;
+                  _nationalityController.text = country.countryCode;
+                });
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              children: [
+                if (_selectedNationality != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    _selectedNationality!.flagEmoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    _nationalityNameController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCountrySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Pays',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () {
+            showCountryPicker(
+              context: context,
+              showPhoneCode: false,
+              countryListTheme: CountryListThemeData(
+                borderRadius: BorderRadius.circular(8),
+                inputDecoration: InputDecoration(
+                  hintText: 'Rechercher un pays',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                searchTextStyle: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 16,
+                ),
+              ),
+              onSelect: (Country country) {
+                setState(() {
+                  _selectedCountry = country;
+                  _selectedCountryController.text = country.name;
+                });
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              children: [
+                if (_selectedCountry != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    _selectedCountry!.flagEmoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    _selectedCountryController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -393,7 +573,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
             border: Border.all(color: Colors.grey.shade200),
           ),
           child: DropdownButtonFormField<String>(
-            value: _reasonController.text.isEmpty ? _idTypes[0] : _reasonController.text,
+            value: _reasonController.text.isEmpty ? _reasons[0] : _reasonController.text,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               border: InputBorder.none,
@@ -536,7 +716,6 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     );
   }
 
-  // Validateurs
   String? _requiredValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Ce champ est obligatoire';

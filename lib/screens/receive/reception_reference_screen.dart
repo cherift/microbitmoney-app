@@ -3,7 +3,9 @@ import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/screens/receive/reception_confirmation_screen.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:country_picker/country_picker.dart';
 
 class ReceptionReferenceScreen extends StatefulWidget {
   final Operator operator;
@@ -22,7 +24,6 @@ class ReceptionReferenceScreen extends StatefulWidget {
 class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final double _amount = 1000;
   final String _currency = 'GNF';
 
   final _firstNameController = TextEditingController();
@@ -33,12 +34,14 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   final _idNumberController = TextEditingController();
   final _idExpirationDateController = TextEditingController();
   final _nationalityController = TextEditingController(text: 'GN');
+  final _nationalityNameController = TextEditingController(text: 'Guinea');
   final _birthDateController = TextEditingController();
   final _birthPlaceController = TextEditingController();
-  final _selectedCountryController = TextEditingController(text: 'Guinée');
-    final _reasonController = TextEditingController(text: 'Assistance famille');
+  final _selectedCountryController = TextEditingController(text: 'Guinea');
+  final _reasonController = TextEditingController(text: 'Assistance famille');
 
-
+  Country? _selectedCountry;
+  Country? _selectedNationality;
   DateTime? _selectedBirthDate;
   DateTime? _selectedIdExpirationDate;
 
@@ -64,6 +67,32 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _initDefaultCountry();
+  }
+
+  void _initDefaultCountry() {
+    try {
+      final List<Country> countries = CountryService().getAll();
+      final Country guinea = countries.firstWhere(
+        (country) => country.countryCode == 'GN',
+        orElse: () => countries.first,
+      );
+
+      setState(() {
+        _selectedCountry = guinea;
+        _selectedNationality = guinea;
+        _selectedCountryController.text = guinea.name;
+        _nationalityNameController.text = guinea.name;
+        _nationalityController.text = guinea.countryCode;
+      });
+    } catch (e) {
+      debugPrint('Erreur lors de l\'initialisation du pays: $e');
+    }
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -73,6 +102,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     _idNumberController.dispose();
     _idExpirationDateController.dispose();
     _nationalityController.dispose();
+    _nationalityNameController.dispose();
     _selectedCountryController.dispose();
     _reasonController.dispose();
     _birthDateController.dispose();
@@ -161,7 +191,6 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
           builder: (context) => ReceptionConfirmationScreen(
             operator: widget.operator,
             recipientData: recipientData,
-            amount: _amount,
             currency: _currency,
           ),
         ),
@@ -174,6 +203,10 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Infos du bénéficiaire',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -230,7 +263,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
             border: Border.all(color: Colors.grey.shade200),
           ),
           child: DropdownButtonFormField<String>(
-            value: _reasonController.text.isEmpty ? _idTypes[0] : _reasonController.text,
+            value: _reasonController.text.isEmpty ? _reasons[0] : _reasonController.text,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               border: InputBorder.none,
@@ -275,9 +308,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-        _buildTextField('Pays de résidence', _selectedCountryController,
-          validator: _requiredValidator
-        ),
+        _buildCountrySelector(),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -315,64 +346,210 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
 
         const SizedBox(height: 16),
-        _buildTextField('Nationalité', _nationalityController,
-          validator: _requiredValidator
-        ),
-
+        _buildNationalitySelector(),
         const SizedBox(height: 16),
         _reasonDropdown(),
       ],
     );
   }
 
-  Widget _buildIdTypeDropdown() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Type de pièce',
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey[700],
-        ),
-      ),
-      const SizedBox(height: 8),
-      Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: DropdownButtonFormField<String>(
-          value: _idTypeController.text.isEmpty ? _idTypes[0] : _idTypeController.text,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
+  Widget _buildNationalitySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Nationalité',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
           ),
-          items: _idTypes.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(_idTypeLabels[value] ?? value),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            if (newValue != null) {
-              setState(() {
-                _idTypeController.text = newValue;
-              });
-            }
-          },
-          validator: _requiredValidator,
-          isExpanded: true,
-          icon: const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
-          dropdownColor: Colors.white,
         ),
-      ),
-    ],
-  );
-}
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () {
+            showCountryPicker(
+              context: context,
+              showPhoneCode: false,
+              favorite: ['GN'],
+              countryListTheme: CountryListThemeData(
+                borderRadius: BorderRadius.circular(8),
+                inputDecoration: InputDecoration(
+                  hintText: 'Rechercher une nationalité',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                searchTextStyle: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 16,
+                ),
+              ),
+              onSelect: (Country country) {
+                setState(() {
+                  _selectedNationality = country;
+                  _nationalityNameController.text = country.name;
+                  _nationalityController.text = country.countryCode;
+                });
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              children: [
+                if (_selectedNationality != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    _selectedNationality!.flagEmoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    _nationalityNameController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCountrySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Pays de résidence',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () {
+            showCountryPicker(
+              context: context,
+              showPhoneCode: false,
+              favorite: ['GN'],
+              countryListTheme: CountryListThemeData(
+                borderRadius: BorderRadius.circular(8),
+                inputDecoration: InputDecoration(
+                  hintText: 'Rechercher un pays',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                searchTextStyle: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 16,
+                ),
+              ),
+              onSelect: (Country country) {
+                setState(() {
+                  _selectedCountry = country;
+                  _selectedCountryController.text = country.name;
+                });
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              children: [
+                if (_selectedCountry != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    _selectedCountry!.flagEmoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    _selectedCountryController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIdTypeDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Type de pièce',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: DropdownButtonFormField<String>(
+            value: _idTypeController.text.isEmpty ? _idTypes[0] : _idTypeController.text,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+            items: _idTypes.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(_idTypeLabels[value] ?? value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _idTypeController.text = newValue;
+                });
+              }
+            },
+            validator: _requiredValidator,
+            isExpanded: true,
+            icon: const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+            dropdownColor: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildTextField(
     String label,

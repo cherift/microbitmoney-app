@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/screens/devis_list_screen.dart';
 import 'package:bit_money/screens/enrollment_screen.dart';
 import 'package:bit_money/screens/pdv_list_screen.dart';
 import 'package:bit_money/screens/receive/receive_transfer_screen.dart';
@@ -19,6 +20,7 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
     {'icon': Icons.download, 'title': 'Recevoir', 'color': AppColors.secondary},
     {'icon': Icons.add_circle_outline, 'title': 'Enrôler', 'color': AppColors.secondary},
     {'icon': Icons.store_mall_directory, 'title': 'Nos PDVs', 'color': AppColors.lightSecondary},
+    {'icon': Icons.currency_exchange_rounded, 'title': 'Devis', 'color': Colors.green},
   ];
 
   bool _isAdmin = false;
@@ -48,6 +50,7 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
           double buttonWidth = (constraints.maxWidth - 16) / 2;
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,10 +63,17 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildActionButton(_actions[2]['icon'], _actions[2]['title'], _actions[2]['color'], buttonWidth, _isAdmin),
+                  if (_isAdmin)
+                    _buildActionButton(_actions[2]['icon'], _actions[2]['title'], _actions[2]['color'], buttonWidth, _isAdmin),
+                  if (!_isAdmin)
+                    _buildActionButton(_actions[4]['icon'], _actions[4]['title'], _actions[4]['color'], buttonWidth, true),
                   _buildActionButton(_actions[3]['icon'], _actions[3]['title'], _actions[3]['color'], buttonWidth, true)
                 ],
               ),
+              if (_isAdmin) ... [
+                const SizedBox(height: 16),
+                _buildActionButton(_actions[4]['icon'], _actions[4]['title'], _actions[4]['color'], buttonWidth, true),
+              ],
             ],
           );
         }
@@ -127,6 +137,15 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
                     ),
                   );
                   break;
+                case 'Devis':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DevisListScreen(),
+                    ),
+                  );
+                  break;
+
               }
             } : null,
             child: Padding(

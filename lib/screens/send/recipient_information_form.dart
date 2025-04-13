@@ -4,6 +4,8 @@ import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/screens/send/send_confirmation_screen.dart';
 import 'package:bit_money/services/transfer_service.dart';
 import 'package:flutter/material.dart';
+import 'package:country_picker/country_picker.dart';
+import 'package:flutter/services.dart';
 
 class RecipientInformationForm extends StatefulWidget {
   final TransferData transferData;
@@ -21,7 +23,31 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
   final _lastNameController = TextEditingController();
   final _selectedCountryController = TextEditingController(text: 'Guinée');
 
+  Country? _selectedCountry;
   bool _isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDefaultCountry();
+  }
+
+  void _initDefaultCountry() {
+    try {
+      final List<Country> countries = CountryService().getAll();
+      final Country guinea = countries.firstWhere(
+        (country) => country.countryCode == 'GN',
+        orElse: () => countries.first,
+      );
+
+      setState(() {
+        _selectedCountry = guinea;
+        _selectedCountryController.text = guinea.name;
+      });
+    } catch (e) {
+      debugPrint('Erreur lors de l\'initialisation du pays: $e');
+    }
+  }
 
   @override
   void dispose() {
@@ -111,6 +137,10 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         title: const Text(
           'Infos du bénéficiaire',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -156,8 +186,79 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
         const SizedBox(height: 16),
         _buildTextField('Prénom', _firstNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Pays', _selectedCountryController,
-          validator: _requiredValidator
+        _buildCountrySelector(),
+      ],
+    );
+  }
+
+  Widget _buildCountrySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Pays',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () {
+            showCountryPicker(
+              context: context,
+              showPhoneCode: false,
+              countryListTheme: CountryListThemeData(
+                borderRadius: BorderRadius.circular(8),
+                inputDecoration: InputDecoration(
+                  hintText: 'Rechercher un pays',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                searchTextStyle: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 16,
+                ),
+              ),
+              onSelect: (Country country) {
+                setState(() {
+                  _selectedCountry = country;
+                  _selectedCountryController.text = country.name;
+                });
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              children: [
+                if (_selectedCountry != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    _selectedCountry!.flagEmoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    _selectedCountryController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -276,7 +377,6 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
     );
   }
 
-  // Validateurs
   String? _requiredValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Ce champ est obligatoire';

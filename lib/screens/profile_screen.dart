@@ -3,6 +3,7 @@ import 'package:bit_money/models/user_model.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    super.initState(); // Déplacer l'appel à super.initState() au début
+    super.initState();
     authService.getStoredSession().then((value) {
       setState(() {
         userModel = value?.user!;
@@ -44,6 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.secondary,
+          statusBarIconBrightness: Brightness.light,
+        ),
         elevation: 0,
         actions: [
           Padding(

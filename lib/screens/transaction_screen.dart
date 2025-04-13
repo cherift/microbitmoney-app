@@ -3,10 +3,10 @@ import 'package:bit_money/models/transaction_model.dart';
 import 'package:bit_money/screens/transaction_receipt_screen.dart';
 import 'package:bit_money/services/transaction_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class TransactionsScreen extends StatefulWidget {
-
   const TransactionsScreen({
     super.key,
   });
@@ -16,44 +16,156 @@ class TransactionsScreen extends StatefulWidget {
 }
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
-  late TransactionService _transactionService;
+  final TransactionService _transactionService = TransactionService();
+  final NumberFormat _amountFormatter = NumberFormat('#,###', 'fr');
+  final DateFormat _dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
+  final ScrollController _scrollController = ScrollController();
+
   List<Transaction> _transactions = [];
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   double _totalAmount = 0;
   String _currency = 'GNF';
+
+  int _currentPage = 1;
+  final int _itemsPerPage = 10;
+  bool _hasMoreData = true;
+
+  final Map<String, _StatusInfo> _statusCache = {
+    'PENDING': _StatusInfo(Colors.orange, 'En attente'),
+    'COMPLETED': _StatusInfo(Colors.green, 'Terminé'),
+    'CANCELLED': _StatusInfo(Colors.red, 'Annulé'),
+  };
 
   @override
   void initState() {
     super.initState();
-    _transactionService = TransactionService();
-    _loadTransactions();
+    _scrollController.addListener(_scrollListener);
+    _loadInitialData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    if (currentScroll >= maxScroll * 0.8 && !_isLoadingMore && _hasMoreData) {
+      _loadMoreTransactions();
+    }
+  }
+
+  Future<void> _loadInitialData() async {
+    if (!mounted) return;
+
+    try {
+      final paginatedResponse = await _transactionService.getTransactionsPaginated(
+        page: _currentPage,
+        limit: _itemsPerPage,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _transactions = paginatedResponse.items;
+        _hasMoreData = paginatedResponse.pagination.hasNext;
+        _currency = _transactions.isNotEmpty ? _transactions.first.currency : 'GNF';
+        _isLoading = false;
+      });
+
+      _loadStats();
+    } catch (e) {
+      debugPrint('Erreur lors du chargement des transactions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadStats() async {
+    try {
+      final statsResponse = await _transactionService.getTransactionStats(forceRefresh: false);
+
+      if (mounted) {
+        setState(() {
+          _totalAmount = statsResponse.totalAmount;
+        });
+      }
+    } catch (e) {
+      debugPrint('Erreur lors du chargement des statistiques: $e');
+    }
   }
 
   Future<void> _loadTransactions() async {
     setState(() {
       _isLoading = true;
+      _currentPage = 1;
     });
 
     try {
-      final transactions = await _transactionService.getTransactions();
-      transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
-      final total = transactions.fold<double>(
-        0, (sum, transaction) => sum + transaction.amount
+      final paginatedResponse = await _transactionService.getTransactionsPaginated(
+        page: _currentPage,
+        limit: _itemsPerPage,
       );
-      final currency = transactions.isNotEmpty ? transactions.first.currency : 'GNF';
+
+      if (!mounted) return;
 
       setState(() {
-        _transactions = transactions;
-        _totalAmount = total;
-        _currency = currency;
+        _transactions = paginatedResponse.items;
+        _hasMoreData = paginatedResponse.pagination.hasNext;
+        _currency = _transactions.isNotEmpty ? _transactions.first.currency : 'GNF';
         _isLoading = false;
       });
+
+      _loadStats();
     } catch (e) {
       debugPrint('Erreur lors du chargement des transactions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadMoreTransactions() async {
+    if (_isLoadingMore || !_hasMoreData) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final paginatedResponse = await _transactionService.getTransactionsPaginated(
+        page: nextPage,
+        limit: _itemsPerPage,
+      );
+
+      if (!mounted) return;
+
       setState(() {
-        _isLoading = false;
+        _transactions.addAll(paginatedResponse.items);
+        _currentPage = nextPage;
+        _hasMoreData = paginatedResponse.pagination.hasNext;
+        _isLoadingMore = false;
       });
+    } catch (e) {
+      debugPrint('Erreur lors du chargement de plus de transactions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
     }
   }
 
@@ -63,45 +175,46 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-            onRefresh: _loadTransactions,
-            child: Container(
+              onRefresh: _loadTransactions,
+              child: Container(
                 decoration: const BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: SafeArea(
-                bottom: false,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildTotalAmountCard(),
-                          const SizedBox(height: 24),
-                          const Text(
-                            'Liste des envois',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                  color: Colors.transparent,
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildTotalAmountCard(),
+                            const SizedBox(height: 24),
+                            const Text(
+                              'Liste des envois',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          _buildTransactionsList(),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: _buildTransactionsList(),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ),
-          ),
     );
   }
 
   Widget _buildTotalAmountCard() {
-    final formatter = NumberFormat('#,###', 'fr');
-    final formattedAmount = formatter.format(_totalAmount);
+    final formattedAmount = _amountFormatter.format(_totalAmount);
 
     return Container(
       width: double.infinity,
@@ -165,8 +278,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     if (_transactions.isEmpty) {
       return Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 40),
             Icon(
               Icons.hourglass_empty,
               size: 80,
@@ -187,10 +300,20 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     }
 
     return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: _transactions.length,
+      controller: _scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      itemCount: _transactions.length + (_hasMoreData ? 1 : 0),
+      cacheExtent: 200,
       itemBuilder: (context, index) {
+        if (index == _transactions.length) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
         final transaction = _transactions[index];
         return _buildTransactionCard(transaction);
       },
@@ -198,32 +321,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Widget _buildTransactionCard(Transaction transaction) {
-    final formatter = NumberFormat('#,###', 'fr');
-    final formattedAmount = formatter.format(transaction.amount);
+    final formattedAmount = _amountFormatter.format(transaction.amount);
+    final formattedDate = _dateFormatter.format(transaction.createdAt);
 
-    final dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
-    final formattedDate = dateFormatter.format(transaction.createdAt);
-
-    Color statusColor;
-    String statusText;
-
-    switch (transaction.status) {
-      case 'PENDING':
-        statusColor = Colors.orange;
-        statusText = 'En attente';
-        break;
-      case 'COMPLETED':
-        statusColor = Colors.green;
-        statusText = 'Terminé';
-        break;
-      case 'CANCELLED':
-        statusColor = Colors.red;
-        statusText = 'Annulé';
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusText = transaction.status;
-    }
+    final statusInfo = _statusCache[transaction.status] ??
+        _StatusInfo(Colors.grey, transaction.status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -273,13 +375,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: .15),
+                    color: statusInfo.color.withValues(alpha: .15),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Text(
-                    statusText,
+                    statusInfo.text,
                     style: TextStyle(
-                      color: statusColor,
+                      color: statusInfo.color,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -316,4 +418,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       ),
     );
   }
+}
+
+class _StatusInfo {
+  final Color color;
+  final String text;
+
+  _StatusInfo(this.color, this.text);
 }
