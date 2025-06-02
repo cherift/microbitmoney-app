@@ -8,14 +8,14 @@ class Transaction {
   // Sender information
   final String senderFirstName;
   final String senderLastName;
-  final String senderPhone;
-  final String senderAddress;
+  final String? senderPhone;
+  final String? senderAddress;
   final String senderIdType;
   final String senderIdNumber;
-  final DateTime senderIdExpiryDate;
+  final DateTime? senderIdExpiryDate;
   final String senderNationality;
-  final DateTime senderBirthDate;
-  final String senderBirthPlace;
+  final DateTime? senderBirthDate;
+  final String? senderBirthPlace;
   final String? senderCountry;
 
   // Recipient information
@@ -29,6 +29,7 @@ class Transaction {
   final DateTime? recipientBirthDate;
   final String? recipientBirthPlace;
   final String? recipientCountry;
+  final DateTime? recipientIdExpiryDate;
 
   // Transaction details
   final double amount;
@@ -37,7 +38,7 @@ class Transaction {
   final String currency;
   final String status;
   final String operatorId;
-  final String pdvId;
+  final String? pdvId;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? completedAt;
@@ -56,14 +57,14 @@ class Transaction {
     required this.referenceId,
     required this.senderFirstName,
     required this.senderLastName,
-    required this.senderPhone,
-    required this.senderAddress,
+    this.senderPhone,
+    this.senderAddress,
     required this.senderIdType,
     required this.senderIdNumber,
-    required this.senderIdExpiryDate,
+    this.senderIdExpiryDate,
     required this.senderNationality,
-    required this.senderBirthDate,
-    required this.senderBirthPlace,
+    this.senderBirthDate,
+    this.senderBirthPlace,
     this.senderCountry,
     required this.recipientFirstName,
     required this.recipientLastName,
@@ -71,6 +72,7 @@ class Transaction {
     this.recipientAddress,
     this.recipientIdType,
     this.recipientIdNumber,
+    this.recipientIdExpiryDate,
     this.recipientNationality,
     this.recipientBirthDate,
     this.recipientBirthPlace,
@@ -81,7 +83,7 @@ class Transaction {
     required this.currency,
     required this.status,
     required this.operatorId,
-    required this.pdvId,
+    this.pdvId,
     required this.createdAt,
     required this.updatedAt,
     this.completedAt,
@@ -93,6 +95,7 @@ class Transaction {
     this.operator,
     this.pdv,
   });
+
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
@@ -149,9 +152,9 @@ class Transaction {
       'senderAddress': senderAddress,
       'senderIdType': senderIdType,
       'senderIdNumber': senderIdNumber,
-      'senderIdExpiryDate': senderIdExpiryDate.toIso8601String(),
+      'senderIdExpiryDate': senderIdExpiryDate?.toIso8601String(),
       'senderNationality': senderNationality,
-      'senderBirthDate': senderBirthDate.toIso8601String(),
+      'senderBirthDate': senderBirthDate?.toIso8601String(),
       'senderBirthPlace': senderBirthPlace,
       'senderCountry': senderCountry,
       'recipientFirstName': recipientFirstName,
