@@ -48,6 +48,10 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
 
       if (response != null) {
         if (!mounted) return;
+        if (response['error'] !=null ) {
+          _showErrorMessage(response['error']);
+          return;
+        }
         _showSuccessDialog(widget.recipientData['referenceId']);
       } else {
         _showErrorMessage('Erreur lors de la création de la réception');

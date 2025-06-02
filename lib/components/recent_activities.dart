@@ -121,8 +121,10 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
       );
     }
 
-    return SizedBox(
-      height: 500,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 500,
+      ),
       child: ListView.separated(
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),

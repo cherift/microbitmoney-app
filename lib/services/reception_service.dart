@@ -348,7 +348,7 @@ class ReceptionService {
       } else {
         debugPrint('Erreur lors de la création de la réception: ${response.statusCode}');
         debugPrint('Message: ${response.data}');
-        return null;
+        return response.data;
       }
     } catch (e) {
       debugPrint('Exception lors de la création de la réception: $e');
