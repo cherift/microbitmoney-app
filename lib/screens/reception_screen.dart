@@ -3,7 +3,6 @@ import 'package:bit_money/models/reception_model.dart';
 import 'package:bit_money/screens/reception_receipt_sreen.dart';
 import 'package:bit_money/services/reception_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ReceptionsScreen extends StatefulWidget {

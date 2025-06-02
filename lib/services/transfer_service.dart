@@ -1,5 +1,4 @@
-import 'package:bit_money/services/api_client.dart';
-import 'package:dio/dio.dart';
+import 'package:bit_money/services/client/api_client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TransferService {
@@ -13,14 +12,14 @@ class TransferService {
 
     if (response.statusCode == 200) {
       final data = response.data;
-      _secureStorage.write(key: 'SessionKey', value:data['sessionKey']);
+      _secureStorage.write(key: 'SessionKey', value: data['sessionKey']);
 
       return {
-        'sucess': true,
+        'success': true,
       };
     } else {
       return {
-        'sucess': false,
+        'success': false,
         'message': 'Échec de l\'autorisation'
       };
     }
@@ -29,76 +28,74 @@ class TransferService {
   Future<dynamic> submitSenderInfo(Map<String, dynamic> senderData) async {
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _apiClient.dio.post(
+    final response = await _apiClient.postWithOptions(
       '/transactions/sender',
-      options: Options(
-        headers: {
-          'X-Session-Key': sessionKey,
-        },
-      ),
       data: senderData,
+      headers: {
+        'X-Session-Key': sessionKey ?? '',
+      },
     );
 
     if (response.statusCode != 200) {
       return {
-        'sucess': false,
+        'success': false,
         'message': 'Échec de l\'envoi des infos de l\'expéditeur'
       };
     }
+
+    return {'success': true};
   }
 
   Future<dynamic> submitRecipientInfo(Map<String, dynamic> recipientData) async {
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _apiClient.dio.post(
+    final response = await _apiClient.postWithOptions(
       '/transactions/recipient',
-      options: Options(
-        headers: {
-          'X-Session-Key': sessionKey,
-        },
-      ),
       data: recipientData,
+      headers: {
+        'X-Session-Key': sessionKey ?? '',
+      },
     );
 
     if (response.statusCode != 200) {
       return {
-        'sucess': false,
+        'success': false,
         'message': 'Échec de l\'envoi des infos du bénéficiaire'
       };
     }
+
+    return {'success': true};
   }
 
   Future<dynamic> submitAmount(Map<String, dynamic> amountData) async {
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _apiClient.dio.post(
+    final response = await _apiClient.postWithOptions(
       '/transactions/amount',
-      options: Options(
-        headers: {
-          'X-Session-Key': sessionKey,
-        },
-      ),
       data: amountData,
+      headers: {
+        'X-Session-Key': sessionKey ?? '',
+      },
     );
 
     if (response.statusCode != 200) {
       return {
-        'sucess': false,
+        'success': false,
         'message': 'Échec de la submission du montant'
       };
     }
+
+    return {'success': true};
   }
 
   Future<Map<String, dynamic>> confirmTransaction() async {
     String? sessionKey = await _secureStorage.read(key: 'SessionKey');
 
-    final response = await _apiClient.dio.post(
+    final response = await _apiClient.postWithOptions(
       '/transactions',
-      options: Options(
-        headers: {
-          'X-Session-Key': sessionKey,
-        },
-      ),
+      headers: {
+        'X-Session-Key': sessionKey ?? '',
+      },
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {

@@ -1,5 +1,5 @@
 name: bit_money
-description: "A new Flutter project."
+description: "Microbit Money."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -41,6 +41,8 @@ dependencies:
   intl: ^0.18.0
   country_picker: ^2.0.27
   country_currency_pickers: ^2.0.0
+  flutter_launcher_icons: ^0.14.3
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:

@@ -378,7 +378,7 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 23),
               ),
               child: const Text(
                 'Retour',
@@ -399,7 +399,7 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 23),
                 elevation: 0,
               ),
               child: _isSubmitting

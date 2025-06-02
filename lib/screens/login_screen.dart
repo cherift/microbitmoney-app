@@ -1,8 +1,7 @@
 import 'package:bit_money/screens/general_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:bit_money/services/auth_service.dart';
+import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:bit_money/constants/app_colors.dart';
-import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,31 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   Future<Map<String, dynamic>>? _loginFuture;
   String? _errorMessage;
-  bool _isInitializing = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchCsrfToken();
-  }
-
-  Future<void> _fetchCsrfToken() async {
-    setState(() => _isInitializing = true);
-
-    try {
-      final csrfToken = await _authService.getCsrfToken();
-      if (csrfToken == null) {
-        setState(() {
-          _errorMessage = 'Impossible de se connecter au serveur. Veuillez réessayer.';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Erreur de connexion. Veuillez vérifier votre connexion internet.';
-      });
-    } finally {
-      setState(() => _isInitializing = false);
-    }
   }
 
   @override
@@ -73,19 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final availableHeight = size.height - padding.top - padding.bottom;
 
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.secondary,
-          statusBarIconBrightness: Brightness.light,
-        ),
-      ),
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: _isInitializing
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : LayoutBuilder(
+        child:
+          LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
                   child: ConstrainedBox(

@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'package:bit_money/services/auth/auth_service_interface.dart';
+import 'package:bit_money/services/auth/auth_service_web.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_money/screens/login_screen.dart';
-import 'package:bit_money/services/auth_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
-  final AuthService authService;
+  final AuthServiceInterface authService;
   final GlobalKey<NavigatorState> navigatorKey;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
+  static const String _accessTokenKey = 'flutter_access_token';
 
   AuthInterceptor({
     required this.dio,
@@ -36,9 +39,9 @@ class AuthInterceptor extends Interceptor {
         );
       }
 
-      final cookies = await _secureStorage.read(key: 'Cookies');
-      if (cookies != null && cookies.isNotEmpty) {
-        options.headers['Cookie'] = cookies;
+      final accessToken = await _secureStorage.read(key: _accessTokenKey);
+      if (accessToken != null && accessToken.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $accessToken';
       }
 
       return handler.next(options);
@@ -54,35 +57,34 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401 || err.response?.statusCode == 403) {
-      _handleSessionExpired();
-      return handler.reject(err);
+      final authServiceWeb = authService as AuthServiceWeb;
+      final refreshSuccess = await authServiceWeb.refreshToken();
+
+      if (refreshSuccess) {
+        final newAccessToken = await _secureStorage.read(key: _accessTokenKey);
+        if (newAccessToken != null) {
+          err.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+
+          try {
+            final retryDio = Dio(dio.options);
+            final response = await retryDio.fetch(err.requestOptions);
+            return handler.resolve(response);
+          } catch (e) {
+            debugPrint('Échec de la retry après refresh: $e');
+          }
+        }
+      } else {
+        _handleSessionExpired();
+      }
     }
 
     return handler.next(err);
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (response.headers.map.containsKey('set-cookie')) {
-      _updateSessionCookies(response.headers.map['set-cookie'] ?? []);
-    }
-
-    return handler.next(response);
-  }
-
-  Future<void> _updateSessionCookies(List<String> cookies) async {
-    if (cookies.isNotEmpty) {
-      final nextAuthCookies = authService.getNextAtuthHeaersCookies(cookies);
-      if (nextAuthCookies.isNotEmpty) {
-        final cookieString = nextAuthCookies.join(';');
-        await _secureStorage.write(key: 'Cookies', value: cookieString);
-
-        await authService.fetchAndStoreSession(cookieString);
-      }
-    }
-  }
+  void onResponse(Response response, ResponseInterceptorHandler handler) => handler.next(response);
 
   Future<void> _handleSessionExpired() async {
     await authService.logout();

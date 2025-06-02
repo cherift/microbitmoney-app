@@ -1,5 +1,5 @@
 import 'package:bit_money/models/operator_model.dart';
-import 'package:bit_money/services/api_client.dart';
+import 'package:bit_money/services/client/api_client.dart';
 import 'package:flutter/material.dart';
 
 class OperatorService {

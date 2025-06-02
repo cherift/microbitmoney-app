@@ -330,7 +330,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 23),
               ),
               child: const Text(
                 'Annuler',
@@ -351,7 +351,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 23),
                 elevation: 0,
               ),
               child: _isProcessing

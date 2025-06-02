@@ -3,7 +3,6 @@ import 'package:bit_money/models/transaction_model.dart';
 import 'package:bit_money/screens/transaction_receipt_screen.dart';
 import 'package:bit_money/services/transaction_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class TransactionsScreen extends StatefulWidget {

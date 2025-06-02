@@ -1,5 +1,5 @@
 import 'package:bit_money/models/transaction_model.dart';
-import 'package:bit_money/services/api_client.dart';
+import 'package:bit_money/services/client/api_client.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 

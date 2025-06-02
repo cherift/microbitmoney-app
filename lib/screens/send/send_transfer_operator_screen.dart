@@ -4,7 +4,7 @@ import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/screens/send/sender_information_form.dart';
-import 'package:bit_money/services/auth_service.dart';
+import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:bit_money/services/operator_service.dart';
 import 'package:bit_money/services/transfer_service.dart';
 import 'package:flutter/material.dart';

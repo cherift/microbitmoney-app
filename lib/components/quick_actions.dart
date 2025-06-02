@@ -4,7 +4,7 @@ import 'package:bit_money/screens/enrollment_screen.dart';
 import 'package:bit_money/screens/pdv_list_screen.dart';
 import 'package:bit_money/screens/receive/receive_transfer_screen.dart';
 import 'package:bit_money/screens/send/send_transfer_operator_screen.dart';
-import 'package:bit_money/services/auth_service.dart';
+import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class QuickActionsWidget extends StatefulWidget {

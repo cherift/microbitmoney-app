@@ -121,15 +121,18 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
       );
     }
 
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _activities.length,
-      separatorBuilder: (context, index) => const Divider(),
-      itemBuilder: (context, index) {
-        final activity = _activities[index];
-        return _buildActivityItem(activity);
-      },
+    return SizedBox(
+      height: 500,
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemCount: _activities.length,
+        separatorBuilder: (context, index) => const Divider(),
+        itemBuilder: (context, index) {
+          final activity = _activities[index];
+          return _buildActivityItem(activity);
+        },
+      ),
     );
   }
 

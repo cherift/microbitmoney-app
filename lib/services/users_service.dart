@@ -1,4 +1,4 @@
-import 'package:bit_money/services/api_client.dart';
+import 'package:bit_money/services/client/api_client.dart';
 
 class UsersService {
   final ApiClient _apiClient;

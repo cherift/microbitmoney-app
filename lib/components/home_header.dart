@@ -1,5 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
-import 'package:bit_money/services/auth_service.dart';
+import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatefulWidget {
