@@ -15,6 +15,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool _openWeekend = false;
+  bool _isPasswordVisible = false;
   final List<String> _accountTypes = ['PROMOTEUR', 'PDV'];
   String _selectedAccountType = 'PDV';
 
@@ -366,7 +367,17 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
           label: 'Mot de passe',
           hint: '••••••••',
           icon: Icons.lock_outline,
-          isPassword: true,
+          isPassword: !_isPasswordVisible,
+          suffixIcon: IconButton(
+            icon: Icon(
+              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _isPasswordVisible = !_isPasswordVisible;
+              });
+            },
+          ),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Veuillez entrer un mot de passe';
@@ -551,6 +562,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
     bool isPassword = false,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
+    Widget? suffixIcon,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -570,6 +582,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
             hintText: hint,
             hintStyle: TextStyle(color: AppColors.mediumGrey),
             prefixIcon: Icon(icon, color: AppColors.darkGrey),
+            suffixIcon: suffixIcon,
             filled: true,
             fillColor: AppColors.white,
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
