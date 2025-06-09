@@ -129,7 +129,7 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
                     );
                   }
                   break;
-                case 'Nos PDVs':
+                case 'Nos PDV':
                   Navigator.push(
                     context,
                     MaterialPageRoute(

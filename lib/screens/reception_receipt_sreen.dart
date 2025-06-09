@@ -112,7 +112,7 @@ class ReceptionReceiptScreen extends StatelessWidget {
 
             _buildDetailRow('Date de la transaction', _formatDate(reception.createdAt)),
             const SizedBox(height: 12),
-            _buildDetailRowWithWrap('Numéro de transaction', truncatedRef, screenWidth),
+            _buildDetailRowWithWrap('Numéro de transaction', truncatedRef, screenWidth, isBold: true),
             if (reception.reason != null) ...[
               const SizedBox(height: 24),
               const Text(

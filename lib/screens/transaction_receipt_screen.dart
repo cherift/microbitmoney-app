@@ -115,7 +115,7 @@ class TransactionReceiptScreen extends StatelessWidget {
 
             if (transaction.finalTransactionNumber != null && transaction.finalTransactionNumber!.isNotEmpty) ...[
               const SizedBox(height: 12),
-              _buildDetailRowWithWrap('Numéro de référence ${transaction.operator!.code}', _truncateWithEllipsis(transaction.finalTransactionNumber!, 18), screenWidth),
+              _buildDetailRowWithWrap('Numéro de référence ${transaction.operator!.code}', _truncateWithEllipsis(transaction.finalTransactionNumber!, 18), screenWidth, isBold: true),
             ],
             const SizedBox(height: 24),
             const Text(
