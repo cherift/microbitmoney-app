@@ -34,7 +34,7 @@ class AuthService {
     return null;
   }
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String identifier, String password) async {
     try {
       final response = await _client.post(
         Uri.parse('$baseUrl/api/flutter/auth'),
@@ -43,7 +43,7 @@ class AuthService {
           'Accept': 'application/json',
         },
         body: jsonEncode({
-          'email': email.toLowerCase(),
+          'identifier': identifier.trim(),
           'password': password,
         }),
       ).timeout(const Duration(seconds: 15));

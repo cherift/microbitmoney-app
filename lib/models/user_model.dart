@@ -5,8 +5,9 @@ class UserModel {
   final String email;
   final String id;
   final String role;
+  String? phone;
   final String accountType;
-  final int commission;
+  final num commission;
   PDV? pdv;
 
   UserModel({
@@ -14,6 +15,7 @@ class UserModel {
     required this.email,
     required this.id,
     required this.role,
+    this.phone,
     required this.accountType,
     required this.commission,
     this.pdv,
@@ -25,8 +27,9 @@ class UserModel {
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       role: json['role'] ?? '',
+      phone: json['phone'] ?? '',
       accountType: json['accountType'] ?? '',
-      commission: json['commission'] ?? '',
+      commission: json['commission'] ?? 0,
       pdv: json['pdv'] != null ? PDV.fromJson(json['pdv']) : null,
     );
   }
@@ -37,6 +40,7 @@ class UserModel {
       'name': name,
       'email': email,
       'role': role,
+      'phone': phone,
       'accountType': accountType,
       'commission': commission,
       'pdv': pdv?.toJson(),

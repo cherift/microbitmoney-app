@@ -89,6 +89,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildInfoSection(context, 'Informations Personnelles', [
                           _buildInfoTile(context, 'Adresse e-mail', userModel!.email, Icons.email),
                           _buildInfoTile(context, 'Type de compte', userModel!.role == 'ADMIN' ? 'Administrateur' : userModel!.accountType, Icons.badge),
+                          if (userModel!.phone != null && userModel!.phone != "")
+                            ...[
+                              _buildInfoTile(context, 'Téléphone', userModel!.phone!, Icons.phone),
+                            ]
                         ]),
                         const SizedBox(height: 16),
                         if (userModel!.pdv != null) ...[
@@ -96,7 +100,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             _buildInfoTile(context, 'Nom PDV', userModel!.pdv!.name, Icons.store),
                             _buildInfoTile(context, 'Commission', userModel!.commission.toString(), Icons.percent_outlined),
                             _buildInfoTile(context, 'Adresse', userModel!.pdv!.address, Icons.location_on),
-                            _buildInfoTile(context, 'Téléphone', userModel!.pdv!.phone, Icons.phone),
                             _buildInfoTile(context, 'Horaires',
                               '${userModel!.pdv!.openingTime} - ${userModel!.pdv!.closingTime}',
                               Icons.access_time

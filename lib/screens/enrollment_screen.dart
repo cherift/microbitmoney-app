@@ -209,6 +209,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         'firstName': _firstNameController.text,
         'lastName': _lastNameController.text,
         'email': _emailController.text.toLowerCase(),
+        'phone': _phoneController.text,
         'password': _passwordController.text,
         'accountType': _selectedAccountType,
         'commission': int.parse(_commissionController.text),
@@ -331,6 +332,20 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
             }
             if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
               return 'Veuillez entrer un email valide';
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 16),
+        _buildTextField(
+          controller: _phoneController,
+          label: 'Téléphone',
+          hint: '+224 000000000',
+          icon: Icons.phone_outlined,
+          keyboardType: TextInputType.phone,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez entrer un numéro de téléphone';
             }
             return null;
           },
@@ -460,20 +475,6 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Veuillez entrer une adresse';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: 16),
-        _buildTextField(
-          controller: _phoneController,
-          label: 'Téléphone',
-          hint: '+224 000000000',
-          icon: Icons.phone_outlined,
-          keyboardType: TextInputType.phone,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un numéro de téléphone';
             }
             return null;
           },
