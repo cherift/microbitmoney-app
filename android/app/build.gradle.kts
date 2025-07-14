@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.developer.bitmoney"
+    namespace = "com.actoure.bitmoney"
     compileSdk = flutter.compileSdkVersion
 
     compileOptions {
@@ -28,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.developer.bitmoney"
+        applicationId = "com.actoure.bitmoney"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

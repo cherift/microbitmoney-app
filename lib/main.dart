@@ -2,7 +2,7 @@ import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/screens/general_screen.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth/auth_service.dart';
-import 'package:bit_money/services/client/api_client.dart'; // Importer le client API
+import 'package:bit_money/services/client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';

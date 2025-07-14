@@ -1,4 +1,4 @@
-package com.example.bit_money
+package com.actoure.bitmoney
 
 import io.flutter.embedding.android.FlutterActivity
 

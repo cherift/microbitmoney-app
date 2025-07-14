@@ -19,7 +19,7 @@ class _QuickActionsWidgetState extends State<QuickActionsWidget> {
     {'icon': Icons.send, 'title': 'Envoyer', 'color': AppColors.primary},
     {'icon': Icons.download, 'title': 'Recevoir', 'color': AppColors.secondary},
     {'icon': Icons.add_circle_outline, 'title': 'Enrôler', 'color': AppColors.secondary},
-    {'icon': Icons.store_mall_directory, 'title': 'Nos PDVs', 'color': AppColors.lightSecondary},
+    {'icon': Icons.store_mall_directory, 'title': 'Nos PDV', 'color': AppColors.lightSecondary},
     {'icon': Icons.currency_exchange_rounded, 'title': 'Devis', 'color': Colors.green},
   ];
 

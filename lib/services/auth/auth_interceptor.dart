@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'package:bit_money/services/auth/auth_service_interface.dart';
-import 'package:bit_money/services/auth/auth_service_web.dart';
+import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_money/screens/login_screen.dart';
@@ -8,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
-  final AuthServiceInterface authService;
+  final AuthService authService;
   final GlobalKey<NavigatorState> navigatorKey;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
@@ -59,8 +58,8 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401 || err.response?.statusCode == 403) {
-      final authServiceWeb = authService as AuthServiceWeb;
-      final refreshSuccess = await authServiceWeb.refreshToken();
+      // Tentative de refresh du token
+      final refreshSuccess = await authService.refreshToken();
 
       if (refreshSuccess) {
         final newAccessToken = await _secureStorage.read(key: _accessTokenKey);
@@ -76,7 +75,7 @@ class AuthInterceptor extends Interceptor {
           }
         }
       } else {
-        _handleSessionExpired();
+        await _handleSessionExpired();
       }
     }
 

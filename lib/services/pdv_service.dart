@@ -18,9 +18,8 @@ class PdvService {
         final data = response.data;
         final List<dynamic> pdvsList = data['pdvs'];
         return pdvsList.map((pdvJson) => PDV.fromJson(pdvJson)).toList();
-      } else {
-        throw Exception('Échec du chargement des PDVs');
       }
+      throw Exception('Échec du chargement des PDVs');
     } catch (e) {
       throw Exception('Erreur lors de la récupération des PDVs: $e');
     }
