@@ -46,8 +46,28 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
             signingConfig = signingConfigs.getByName("release")
         }
+
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
+    }
+
+    dependencies {
+        implementation("com.google.android.play:app-update:2.1.0")
+        implementation("com.google.android.play:app-update-ktx:2.1.0")
+        implementation("com.google.android.play:review:2.0.1")
+        implementation("com.google.android.play:review-ktx:2.0.1")
     }
 }
 
