@@ -16,7 +16,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   @override
   void initState() {
     AuthService().getStoredSession().then((value) {
-      _username = value?.user?.name.split(' ')[0];
+      _username = value?.user?.firstName;
       setState(() {});
     }).catchError((error) {
       debugPrint('Error: $error');
@@ -33,7 +33,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Bonjour, $_username',
+              'Bonjour $_username,',
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

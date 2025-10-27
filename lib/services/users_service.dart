@@ -25,4 +25,26 @@ class UsersService {
       };
     }
   }
+
+  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> profileData) async {
+    try {
+      final response = await _apiClient.put('/user/profile', data: profileData);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'user': response.data['user']
+        };
+      }
+      return {
+        'success': false,
+        'message': response.data['error'] ?? 'Erreur lors de la mise à jour du profil'
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
 }

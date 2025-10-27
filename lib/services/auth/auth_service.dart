@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bit_money/config/env_config.dart';
 import 'package:bit_money/models/session_model.dart';
+import 'package:bit_money/models/user_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,14 +26,6 @@ class AuthService {
   }
 
   static AuthService get instance => AuthService();
-
-  static void reset() {
-    _instance = null;
-  }
-
-  Future<String?> getCsrfToken() async {
-    return null;
-  }
 
   Future<Map<String, dynamic>> login(String identifier, String password) async {
     try {
@@ -197,6 +190,28 @@ class AuthService {
       return null;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<bool> updateStoredUserData(Map<String, dynamic> updatedUserData) async {
+    try {
+      await _secureStorage.write(key: _userKey, value: jsonEncode(updatedUserData));
+
+      final currentSession = await getStoredSession();
+      if (currentSession != null) {
+        final updatedUser = UserModel.fromJson(updatedUserData);
+
+        final updatedSession = SessionModel(
+          user: updatedUser,
+          expires: currentSession.expires,
+        );
+
+        await storeSession(updatedSession);
+      }
+
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
