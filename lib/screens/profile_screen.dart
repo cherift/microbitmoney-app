@@ -1,5 +1,6 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/controllers/app_language_controller.dart';
+import 'package:bit_money/l10n/generated/app_localizations.dart';
 import 'package:bit_money/models/user_model.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth/auth_service.dart';
@@ -88,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         elevation: 0,
         actions: [
-          _buildLanguageButton(),
+          _buildLanguageButton(context),
           Spacer(),
           if (!isEditing) ...[
             Padding(
@@ -116,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     constraints: BoxConstraints(maxWidth: maxContentWidth),
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: isEditing
-                      ? _buildEditForm()
+                      ? _buildEditForm(context)
                       : _buildProfileView(context),
                   ),
                 ),
@@ -129,6 +130,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileView(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -145,28 +148,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        _buildInfoSection(context, 'Informations Personnelles', [
-          _buildInfoTile(context, 'Prénom', userModel!.firstName, Icons.person_outline),
-          _buildInfoTile(context, 'Nom', userModel!.lastName, Icons.person),
-          _buildInfoTile(context, 'Adresse e-mail', userModel!.email, Icons.email),
-          _buildInfoTile(context, 'Type de compte', userModel!.role == 'ADMIN' ? 'Administrateur' : userModel!.accountType, Icons.badge),
+        _buildInfoSection(context, tr.personalInfo, [
+          _buildInfoTile(context, tr.firstName, userModel!.firstName, Icons.person_outline),
+          _buildInfoTile(context, tr.lastName, userModel!.lastName, Icons.person),
+          _buildInfoTile(context, tr.email, userModel!.email, Icons.email),
+          _buildInfoTile(context, tr.accountType, userModel!.role == 'ADMIN' ? tr.administrator : userModel!.accountType, Icons.badge),
           if (userModel!.phone != null && userModel!.phone!.isNotEmpty)
-            _buildInfoTile(context, 'Téléphone', userModel!.phone!, Icons.phone),
+            _buildInfoTile(context, tr.phone, userModel!.phone!, Icons.phone),
         ]),
         const SizedBox(height: 16),
         if (userModel!.pdv != null) ...[
-          _buildInfoSection(context, 'Point de Vente', [
-            _buildInfoTile(context, 'Nom PDV', userModel!.pdv!.name, Icons.store),
-            _buildInfoTile(context, 'Commission', '${userModel!.commission}%', Icons.percent_outlined),
-            _buildInfoTile(context, 'Adresse', userModel!.pdv!.address, Icons.location_on),
-            _buildInfoTile(context, 'Horaires',
+          _buildInfoSection(context, tr.pointOfSale, [
+            _buildInfoTile(context, tr.pdvName, userModel!.pdv!.name, Icons.store),
+            _buildInfoTile(context, tr.commission, '${userModel!.commission}%', Icons.percent_outlined),
+            _buildInfoTile(context, tr.address, userModel!.pdv!.address, Icons.location_on),
+            _buildInfoTile(context, tr.times,
               '${userModel!.pdv!.openingTime} - ${userModel!.pdv!.closingTime}',
               Icons.access_time
             ),
             _buildInfoTile(
               context,
-              'Ouvert le weekend',
-              userModel!.pdv!.openWeekend ? 'Oui' : 'Non',
+              tr.openOnWeekends,
+              userModel!.pdv!.openWeekend ? tr.yes : tr.no,
               Icons.calendar_today
             ),
           ]),
@@ -176,14 +179,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildEditForm() {
+  Widget _buildEditForm(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Modifier le profil',
+          Text(
+            tr.updateProfile,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -193,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 24),
 
           _buildFormField(
-            label: 'Prénom',
+            label: tr.firstName,
             controller: _firstNameController,
             icon: Icons.person_outline,
             validator: (value) {
@@ -206,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 16),
           _buildFormField(
-            label: 'Nom',
+            label: tr.lastName,
             controller: _lastNameController,
             icon: Icons.person,
             validator: (value) {
@@ -220,8 +225,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 24),
           const Divider(),
           const SizedBox(height: 16),
-          const Text(
-            'Changer le mot de passe (optionnel)',
+          Text(
+            "${tr.updatePassword} (${tr.optional})",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -231,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 16),
 
           _buildFormField(
-            label: 'Nouveau mot de passe',
+            label: tr.newPassword,
             controller: _passwordController,
             icon: Icons.lock_outline,
             obscureText: true,
@@ -245,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           const SizedBox(height: 16),
           _buildFormField(
-            label: 'Confirmer le mot de passe',
+            label: tr.confirmPassword,
             controller: _confirmPasswordController,
             icon: Icons.lock,
             obscureText: true,
@@ -278,8 +283,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Annuler',
+                  child: Text(
+                    tr.cancel,
                     style: TextStyle(
                       color: AppColors.darkGrey,
                       fontWeight: FontWeight.bold,
@@ -308,8 +313,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text(
-                        'Continuer',
+                    : Text(
+                        tr.save,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -429,7 +434,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildLanguageButton() {
+  Widget _buildLanguageButton(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: PopupMenuButton<String>(
@@ -453,7 +460,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(width: 10),
             Text(
-              'Langue',
+              tr.language,
               style: TextStyle(
                 color: AppColors.secondary,
                 fontWeight: FontWeight.w500,
