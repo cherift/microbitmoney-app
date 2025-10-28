@@ -41,5 +41,15 @@
   "passwordRegex": "Password must contain at least 6 characters",
   "passwordNotConfirmed": "Passwords do not match",
   "profileUpdated": "Profile successfully updated",
-  "updateFailed": "Update failed"
+  "updateFailed": "Update failed",
+  "pleaseLogin": "Log in to access your account",
+  "emailOrPhone": "Email or Phone",
+  "enterYourPassword": "Please enter your password",
+  "enterYourPasswordError": "Please enter your password",
+  "enterEmailOrPhoneError": "Please enter your email or phone number",
+  "login": "Log In",
+  "emailOrPhoneInvalid": "Invalid email or phone format",
+  "errorOccured": "An error has occurred. Please try again.",
+  "retry": "Retry",
+  "invalidCredentials": "Invalid Credentials"
 }

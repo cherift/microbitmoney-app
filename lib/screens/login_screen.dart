@@ -1,3 +1,4 @@
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/screens/general_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_money/services/auth/auth_service.dart';
@@ -32,9 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  String? _validateIdentifier(String? value) {
+  String? _validateIdentifier(String? value, AppLocalizations tr) {
     if (value == null || value.trim().isEmpty) {
-      return 'Veuillez saisir votre email ou téléphone';
+      return tr.enterEmailOrPhoneError;
     }
 
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final normalizedValue = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
 
     if (!emailRegex.hasMatch(value) && !phoneRegex.hasMatch(normalizedValue)) {
-      return 'Format email ou téléphone invalide';
+      return tr.emailOrPhoneInvalid;
     }
 
     return null;
@@ -65,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     final padding = MediaQuery.of(context).padding;
     final availableHeight = size.height - padding.top - padding.bottom;
+    final tr =  AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -91,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: availableHeight * 0.04),
                       Text(
-                        'Connectez-vous pour accéder à votre compte',
+                        tr.pleaseLogin,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: size.width * 0.035,
@@ -130,8 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
 
-                            const Text(
-                              'Email ou Téléphone',
+                            Text(
+                              tr.emailOrPhone,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.text,
@@ -143,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: _identifierController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                hintText: 'Email ou Téléphone',
+                                hintText: tr.emailOrPhone,
                                 hintStyle: TextStyle(
                                   color: AppColors.mediumGrey,
                                   fontSize: size.width * 0.035,
@@ -160,13 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(vertical: 16),
                               ),
-                              validator: _validateIdentifier,
+                              validator: (value) => _validateIdentifier(value, tr),
                             ),
 
                             SizedBox(height: availableHeight * 0.025),
 
-                            const Text(
-                              'Mot de passe',
+                            Text(
+                              tr.password,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.text,
@@ -178,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: _passwordController,
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
-                                hintText: 'Entrez votre mot de passe',
+                                hintText: tr.enterYourPassword,
                                 hintStyle: TextStyle(
                                   color: AppColors.mediumGrey,
                                   fontSize: size.width * 0.035,
@@ -206,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Veuillez entrer votre mot de passe';
+                                  return tr.enterYourPasswordError;
                                 }
                                 return null;
                               },
@@ -228,8 +230,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         elevation: 0,
                                         padding: const EdgeInsets.symmetric(vertical: 12),
                                       ),
-                                      child: const Text(
-                                        'Se connecter',
+                                      child: Text(
+                                        tr.login,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16,
@@ -262,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         } else if (snapshot.hasError) {
                                           WidgetsBinding.instance.addPostFrameCallback((_) {
                                             setState(() {
-                                              _errorMessage = 'Une erreur s\'est produite. Veuillez réessayer.';
+                                              _errorMessage = tr.errorOccured;
                                               _loginFuture = null;
                                             });
                                           });
@@ -276,8 +278,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ),
                                               elevation: 0,
                                             ),
-                                            child: const Text(
-                                              'Réessayer',
+                                            child: Text(
+                                              tr.retry,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 16,
@@ -293,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               );
                                             } else {
                                               setState(() {
-                                                _errorMessage = response['message'] ?? 'Identifiants invalides';
+                                                _errorMessage = tr.invalidCredentials;
                                                 _loginFuture = null;
                                               });
                                             }
@@ -309,8 +311,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ),
                                               elevation: 0,
                                             ),
-                                            child: const Text(
-                                              'Se connecter',
+                                            child: Text(
+                                              tr.login,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 16,
@@ -328,8 +330,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ),
                                               elevation: 0,
                                             ),
-                                            child: const Text(
-                                              'Se connecter',
+                                            child: Text(
+                                              tr.login,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 16,

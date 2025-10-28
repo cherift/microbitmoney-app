@@ -12,7 +12,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appTitle => 'Bit Money';
 
   @override
-  String get login => 'Connexion';
+  String get login => 'Se connecter';
 
   @override
   String get profile => 'Profil';
@@ -57,7 +57,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logout => 'Déconnexion';
 
   @override
-  String get logoutConfirmation => 'Êtes-vous sûr de vouloir vous déconnecter ?';
+  String get logoutConfirmation =>
+      'Êtes-vous sûr de vouloir vous déconnecter ?';
 
   @override
   String get loading => 'Chargement...';
@@ -108,7 +109,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enterALastName => 'Veuillez entrer un prénom';
 
   @override
-  String get passwordRegex => 'Le mot de passe doit contenir au moins 6 caractères';
+  String get passwordRegex =>
+      'Le mot de passe doit contenir au moins 6 caractères';
 
   @override
   String get passwordNotConfirmed => 'Les mots de passe ne correspondent pas';
@@ -118,4 +120,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get updateFailed => 'Échec de la mise à jour';
+
+  @override
+  String get pleaseLogin => 'Connectez-vous pour accéder à votre compte';
+
+  @override
+  String get emailOrPhone => 'Email ou Téléphone';
+
+  @override
+  String get enterYourPassword => 'Entrez votre mot de passe';
+
+  @override
+  String get enterYourPasswordError => 'Veuillez saisir votre mot de passe';
+
+  @override
+  String get enterEmailOrPhoneError =>
+      'Veuillez saisir votre email ou téléphone';
+
+  @override
+  String get emailOrPhoneInvalid => 'Format eamil ou téléphone invalide';
+
+  @override
+  String get errorOccured => 'Une erreur s\'est produite. Veuillez réessayer.';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get invalidCredentials => 'Identifiants invalides';
 }

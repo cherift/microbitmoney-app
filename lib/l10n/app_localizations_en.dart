@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Bit Money';
 
   @override
-  String get login => 'Login';
+  String get login => 'Log In';
 
   @override
   String get profile => 'Profile';
@@ -118,4 +118,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateFailed => 'Update failed';
+
+  @override
+  String get pleaseLogin => 'Log in to access your account';
+
+  @override
+  String get emailOrPhone => 'Email or Phone';
+
+  @override
+  String get enterYourPassword => 'Please enter your password';
+
+  @override
+  String get enterYourPasswordError => 'Please enter your password';
+
+  @override
+  String get enterEmailOrPhoneError =>
+      'Please enter your email or phone number';
+
+  @override
+  String get emailOrPhoneInvalid => 'Invalid email or phone format';
+
+  @override
+  String get errorOccured => 'An error has occurred. Please try again.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get invalidCredentials => 'Invalid Credentials';
 }

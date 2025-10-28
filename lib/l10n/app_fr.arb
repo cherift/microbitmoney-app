@@ -41,5 +41,15 @@
   "passwordRegex": "Le mot de passe doit contenir au moins 6 caractères",
   "passwordNotConfirmed": "Les mots de passe ne correspondent pas",
   "profileUpdated": "Profil mis à jour avec succès",
-  "updateFailed": "Échec de la mise à jour"
+  "updateFailed": "Échec de la mise à jour",
+  "pleaseLogin": "Connectez-vous pour accéder à votre compte",
+  "emailOrPhone": "Email ou Téléphone",
+  "enterYourPassword": "Entrez votre mot de passe",
+  "enterYourPasswordError": "Veuillez saisir votre mot de passe",
+  "enterEmailOrPhoneError": "Veuillez saisir votre email ou téléphone",
+  "login": "Se connecter",
+  "emailOrPhoneInvalid": "Format eamil ou téléphone invalide",
+  "errorOccured": "Une erreur s'est produite. Veuillez réessayer.",
+  "retry": "Réessayer",
+  "invalidCredentials": "Identifiants invalides"
 }
