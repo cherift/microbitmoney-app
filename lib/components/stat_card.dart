@@ -1,10 +1,10 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/services/transaction_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class StatCardsWidget extends StatefulWidget {
-
   const StatCardsWidget({
     super.key,
   });
@@ -15,9 +15,7 @@ class StatCardsWidget extends StatefulWidget {
 
 class _StatCardsWidgetState extends State<StatCardsWidget> {
   String transactionCount = '0';
-  String transactionGrowth = 'cette semaine';
   String commissionAmount = '0';
-  String commissionGrowth = 'ce mois';
   bool isLoading = true;
   String currencySymbol = 'GNF';
 
@@ -34,7 +32,8 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
     try {
       final stats = await _transactionService.getTransactionStats();
 
-      final formatter = NumberFormat('#,###', 'fr');
+      final locale = Localizations.localeOf(context).languageCode;
+      final formatter = NumberFormat('#,###', locale);
 
       setState(() {
         transactionCount = formatter.format(stats.weeklyTransactionCount);
@@ -58,6 +57,8 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return isLoading
       ? const Center(child: CircularProgressIndicator())
       : Row(
@@ -65,9 +66,9 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
             Expanded(
               flex: 1,
               child: _buildGradientStatCard(
-                title: 'Transactions',
+                title: tr.transactions,
                 value: transactionCount,
-                growth: transactionGrowth,
+                growth: tr.thisWeek,
                 gradientStart: AppColors.secondary,
                 gradientEnd: AppColors.lightSecondary,
                 icon: Icons.trending_up,
@@ -77,9 +78,9 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
             Expanded(
               flex: 1,
               child: _buildGradientStatCard(
-                title: 'Total',
+                title: tr.total,
                 value: commissionAmount,
-                growth: commissionGrowth,
+                growth: tr.thisMonth,
                 gradientStart: AppColors.primary,
                 gradientEnd: AppColors.darkPrimary,
                 currencySymbol: currencySymbol,
@@ -107,13 +108,13 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            title == 'Transactions' ? AppColors.secondary : AppColors.primary,
-            title == 'Transactions' ? AppColors.lightSecondary : AppColors.darkPrimary,
+            title == AppLocalizations.of(context)!.transactions ? AppColors.secondary : AppColors.primary,
+            title == AppLocalizations.of(context)!.transactions ? AppColors.lightSecondary : AppColors.darkPrimary,
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: (title == 'Transactions' ? AppColors.secondary : AppColors.primary).withValues(alpha: .3),
+            color: (title == AppLocalizations.of(context)!.transactions ? AppColors.secondary : AppColors.primary).withValues(alpha: .3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -156,7 +157,7 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
                     size: 16,
                   )
                   : Text(
-                    currencySymbol ?? 'GNF',
+                    currencySymbol ?? AppLocalizations.of(context)!.currency,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,

@@ -146,4 +146,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidCredentials => 'Invalid Credentials';
+
+  @override
+  String get hello => 'Hello';
+
+  @override
+  String get welcome => 'Welcome to your dashboard';
+
+  @override
+  String get transactions => 'Transactions';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get thisWeek => 'this week';
+
+  @override
+  String get thisMonth => 'this month';
+
+  @override
+  String get currency => 'GNF';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get receive => 'Receive';
+
+  @override
+  String get enroll => 'Enroll';
+
+  @override
+  String get ourPdv => 'Our Stores';
+
+  @override
+  String get quote => 'Quotes';
+
+  @override
+  String get recentActivities => 'Recent Activities';
+
+  @override
+  String get noRecentActivity => 'No recent activity';
 }

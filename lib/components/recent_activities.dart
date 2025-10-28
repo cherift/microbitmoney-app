@@ -1,6 +1,5 @@
-
-
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/activity_model.dart';
 import 'package:bit_money/services/activity_service.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +41,8 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -61,9 +62,9 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Activités récentes',
-                style: TextStyle(
+              Text(
+                tr.recentActivities,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -81,13 +82,15 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
             ],
           ),
           const SizedBox(height: 12),
-          _buildActivitiesList(),
+          _buildActivitiesList(tr),
         ],
       ),
     );
   }
 
-  Widget _buildActivitiesList() {
+  Widget _buildActivitiesList([AppLocalizations? tr]) {
+    tr ??= AppLocalizations.of(context)!;
+
     if (_isLoading) {
       return const Center(
         child: Padding(
@@ -110,7 +113,7 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Aucune activité récente',
+              tr.noRecentActivity,
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 14,
@@ -122,7 +125,7 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
     }
 
     return ConstrainedBox(
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         maxHeight: 500,
       ),
       child: ListView.separated(

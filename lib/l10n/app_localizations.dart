@@ -373,6 +373,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid Credentials'**
   String get invalidCredentials;
+
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
+  /// No description provided for @welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to your dashboard'**
+  String get welcome;
+
+  /// No description provided for @transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactions;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'this week'**
+  String get thisWeek;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'this month'**
+  String get thisMonth;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'GNF'**
+  String get currency;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @receive.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive'**
+  String get receive;
+
+  /// No description provided for @enroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Enroll'**
+  String get enroll;
+
+  /// No description provided for @ourPdv.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Stores'**
+  String get ourPdv;
+
+  /// No description provided for @quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotes'**
+  String get quote;
+
+  /// No description provided for @recentActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activities'**
+  String get recentActivities;
+
+  /// No description provided for @noRecentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent activity'**
+  String get noRecentActivity;
 }
 
 class _AppLocalizationsDelegate

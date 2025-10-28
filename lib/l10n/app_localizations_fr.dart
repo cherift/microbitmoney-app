@@ -148,4 +148,46 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get invalidCredentials => 'Identifiants invalides';
+
+  @override
+  String get hello => 'Bonjour';
+
+  @override
+  String get welcome => 'Bienvenue sur votre tableau de bord';
+
+  @override
+  String get transactions => 'Transactions';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get thisWeek => 'cette semaine';
+
+  @override
+  String get thisMonth => 'ce mois';
+
+  @override
+  String get currency => 'GNF';
+
+  @override
+  String get send => 'Envoyer';
+
+  @override
+  String get receive => 'Recevoir';
+
+  @override
+  String get enroll => 'Enrôler';
+
+  @override
+  String get ourPdv => 'Nos PDV';
+
+  @override
+  String get quote => 'Devis';
+
+  @override
+  String get recentActivities => 'Activités récentes';
+
+  @override
+  String get noRecentActivity => 'Aucune activité récente';
 }

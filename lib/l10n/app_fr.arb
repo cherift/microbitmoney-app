@@ -51,5 +51,19 @@
   "emailOrPhoneInvalid": "Format eamil ou téléphone invalide",
   "errorOccured": "Une erreur s'est produite. Veuillez réessayer.",
   "retry": "Réessayer",
-  "invalidCredentials": "Identifiants invalides"
+  "invalidCredentials": "Identifiants invalides",
+  "hello": "Bonjour",
+  "welcome": "Bienvenue sur votre tableau de bord",
+  "transactions": "Transactions",
+  "total": "Total",
+  "thisWeek": "cette semaine",
+  "thisMonth": "ce mois",
+  "currency": "GNF",
+  "send": "Envoyer",
+  "receive": "Recevoir",
+  "enroll": "Enrôler",
+  "ourPdv": "Nos PDV",
+  "quote": "Devis",
+  "recentActivities": "Activités récentes",
+  "noRecentActivity": "Aucune activité récente"
 }

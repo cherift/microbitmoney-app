@@ -51,5 +51,19 @@
   "emailOrPhoneInvalid": "Invalid email or phone format",
   "errorOccured": "An error has occurred. Please try again.",
   "retry": "Retry",
-  "invalidCredentials": "Invalid Credentials"
+  "invalidCredentials": "Invalid Credentials",
+  "hello": "Hello",
+  "welcome": "Welcome to your dashboard",
+  "transactions": "Transactions",
+  "total": "Total",
+  "thisWeek": "this week",
+  "thisMonth": "this month",
+  "currency": "GNF",
+  "send": "Send",
+  "receive": "Receive",
+  "enroll": "Enroll",
+  "ourPdv": "Our Stores",
+  "quote": "Quotes",
+  "recentActivities": "Recent Activities",
+  "noRecentActivity": "No recent activity"
 }

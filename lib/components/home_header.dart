@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -33,7 +35,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Bonjour $_username,',
+              '${tr.hello} $_username,',
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -41,8 +43,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Bienvenue sur votre tableau de bord',
+            Text(
+              tr.welcome,
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.darkGrey,
