@@ -1,6 +1,6 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/controllers/app_language_controller.dart';
-import 'package:bit_money/l10n/generated/app_localizations.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/screens/general_screen.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth/auth_service.dart';

@@ -57,8 +57,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logout => 'Déconnexion';
 
   @override
-  String get logoutConfirmation =>
-      'Êtes-vous sûr de vouloir vous déconnecter ?';
+  String get logoutConfirmation => 'Êtes-vous sûr de vouloir vous déconnecter ?';
 
   @override
   String get loading => 'Chargement...';
@@ -101,4 +100,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get newPassword => 'Nouveau mot de passe';
+
+  @override
+  String get enterAFirstName => 'Veuillez entrer un prénom';
+
+  @override
+  String get enterALastName => 'Veuillez entrer un prénom';
+
+  @override
+  String get passwordRegex => 'Le mot de passe doit contenir au moins 6 caractères';
+
+  @override
+  String get passwordNotConfirmed => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get profileUpdated => 'Profil mis à jour avec succès';
+
+  @override
+  String get updateFailed => 'Échec de la mise à jour';
 }

@@ -84,10 +84,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openOnWeekends => 'Open on weekends ?';
 
   @override
-  String get yes => 'Oui';
+  String get yes => 'Yes';
 
   @override
-  String get no => 'Non';
+  String get no => 'No';
 
   @override
   String get updateProfile => 'Update profile';
@@ -100,4 +100,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newPassword => 'New password';
+
+  @override
+  String get enterAFirstName => 'Please enter your first name';
+
+  @override
+  String get enterALastName => 'Please enter your last name';
+
+  @override
+  String get passwordRegex => 'Password must contain at least 6 characters';
+
+  @override
+  String get passwordNotConfirmed => 'Passwords do not match';
+
+  @override
+  String get profileUpdated => 'Profile successfully updated';
+
+  @override
+  String get updateFailed => 'Update failed';
 }

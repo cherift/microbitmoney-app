@@ -18,7 +18,7 @@ import 'app_localizations_fr.dart';
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'generated/app_localizations.dart';
+/// import 'l10n/app_localizations.dart';
 ///
 /// return MaterialApp(
 ///   localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -62,8 +62,7 @@ import 'app_localizations_fr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,209 +82,243 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('fr'),
+    Locale('fr')
   ];
 
   /// No description provided for @appTitle.
   ///
-  /// In fr, this message translates to:
+  /// In en, this message translates to:
   /// **'Bit Money'**
   String get appTitle;
 
   /// No description provided for @login.
   ///
-  /// In fr, this message translates to:
-  /// **'Connexion'**
+  /// In en, this message translates to:
+  /// **'Login'**
   String get login;
 
   /// No description provided for @profile.
   ///
-  /// In fr, this message translates to:
-  /// **'Profil'**
+  /// In en, this message translates to:
+  /// **'Profile'**
   String get profile;
 
   /// No description provided for @personalInfo.
   ///
-  /// In fr, this message translates to:
-  /// **'Informations Personnelles'**
+  /// In en, this message translates to:
+  /// **'Personal Information'**
   String get personalInfo;
 
   /// No description provided for @firstName.
   ///
-  /// In fr, this message translates to:
-  /// **'Prénom'**
+  /// In en, this message translates to:
+  /// **'First Name'**
   String get firstName;
 
   /// No description provided for @lastName.
   ///
-  /// In fr, this message translates to:
-  /// **'Nom'**
+  /// In en, this message translates to:
+  /// **'Last Name'**
   String get lastName;
 
   /// No description provided for @email.
   ///
-  /// In fr, this message translates to:
-  /// **'Adresse e-mail'**
+  /// In en, this message translates to:
+  /// **'Email'**
   String get email;
 
   /// No description provided for @phone.
   ///
-  /// In fr, this message translates to:
-  /// **'Téléphone'**
+  /// In en, this message translates to:
+  /// **'Phone'**
   String get phone;
 
   /// No description provided for @accountType.
   ///
-  /// In fr, this message translates to:
-  /// **'Type de compte'**
+  /// In en, this message translates to:
+  /// **'Account Type'**
   String get accountType;
 
   /// No description provided for @commission.
   ///
-  /// In fr, this message translates to:
+  /// In en, this message translates to:
   /// **'Commission'**
   String get commission;
 
   /// No description provided for @password.
   ///
-  /// In fr, this message translates to:
-  /// **'Mot de passe'**
+  /// In en, this message translates to:
+  /// **'Password'**
   String get password;
 
   /// No description provided for @confirmPassword.
   ///
-  /// In fr, this message translates to:
-  /// **'Confirmer le mot de passe'**
+  /// In en, this message translates to:
+  /// **'Confirm password'**
   String get confirmPassword;
 
   /// No description provided for @save.
   ///
-  /// In fr, this message translates to:
-  /// **'Enregistrer'**
+  /// In en, this message translates to:
+  /// **'Save'**
   String get save;
 
   /// No description provided for @cancel.
   ///
-  /// In fr, this message translates to:
-  /// **'Annuler'**
+  /// In en, this message translates to:
+  /// **'Cancel'**
   String get cancel;
 
   /// No description provided for @language.
   ///
-  /// In fr, this message translates to:
-  /// **'Langue'**
+  /// In en, this message translates to:
+  /// **'Language'**
   String get language;
 
   /// No description provided for @logout.
   ///
-  /// In fr, this message translates to:
-  /// **'Déconnexion'**
+  /// In en, this message translates to:
+  /// **'Logout'**
   String get logout;
 
   /// No description provided for @logoutConfirmation.
   ///
-  /// In fr, this message translates to:
-  /// **'Êtes-vous sûr de vouloir vous déconnecter ?'**
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
   String get logoutConfirmation;
 
   /// No description provided for @loading.
   ///
-  /// In fr, this message translates to:
-  /// **'Chargement...'**
+  /// In en, this message translates to:
+  /// **'Loading...'**
   String get loading;
 
   /// No description provided for @administrator.
   ///
-  /// In fr, this message translates to:
-  /// **'Administrateur'**
+  /// In en, this message translates to:
+  /// **'Administrator'**
   String get administrator;
 
   /// No description provided for @pointOfSale.
   ///
-  /// In fr, this message translates to:
-  /// **'Point de vente'**
+  /// In en, this message translates to:
+  /// **'Point Of Sale'**
   String get pointOfSale;
 
   /// No description provided for @pdv.
   ///
-  /// In fr, this message translates to:
-  /// **'PDV'**
+  /// In en, this message translates to:
+  /// **'POS'**
   String get pdv;
 
   /// No description provided for @pdvName.
   ///
-  /// In fr, this message translates to:
-  /// **'Nom du PDV'**
+  /// In en, this message translates to:
+  /// **'POS Name'**
   String get pdvName;
 
   /// No description provided for @address.
   ///
-  /// In fr, this message translates to:
-  /// **'Adresse'**
+  /// In en, this message translates to:
+  /// **'Address'**
   String get address;
 
   /// No description provided for @times.
   ///
-  /// In fr, this message translates to:
-  /// **'Horaires'**
+  /// In en, this message translates to:
+  /// **'Schedule'**
   String get times;
 
   /// No description provided for @openOnWeekends.
   ///
-  /// In fr, this message translates to:
-  /// **'Ouvert le week-end ?'**
+  /// In en, this message translates to:
+  /// **'Open on weekends ?'**
   String get openOnWeekends;
 
   /// No description provided for @yes.
   ///
-  /// In fr, this message translates to:
-  /// **'Oui'**
+  /// In en, this message translates to:
+  /// **'Yes'**
   String get yes;
 
   /// No description provided for @no.
   ///
-  /// In fr, this message translates to:
-  /// **'Non'**
+  /// In en, this message translates to:
+  /// **'No'**
   String get no;
 
   /// No description provided for @updateProfile.
   ///
-  /// In fr, this message translates to:
-  /// **'Modifier le profil'**
+  /// In en, this message translates to:
+  /// **'Update profile'**
   String get updateProfile;
 
   /// No description provided for @updatePassword.
   ///
-  /// In fr, this message translates to:
-  /// **'Changer le mot de passe'**
+  /// In en, this message translates to:
+  /// **'Update Password'**
   String get updatePassword;
 
   /// No description provided for @optional.
   ///
-  /// In fr, this message translates to:
-  /// **'Optionnel'**
+  /// In en, this message translates to:
+  /// **'Optional'**
   String get optional;
 
   /// No description provided for @newPassword.
   ///
-  /// In fr, this message translates to:
-  /// **'Nouveau mot de passe'**
+  /// In en, this message translates to:
+  /// **'New password'**
   String get newPassword;
+
+  /// No description provided for @enterAFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your first name'**
+  String get enterAFirstName;
+
+  /// No description provided for @enterALastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your last name'**
+  String get enterALastName;
+
+  /// No description provided for @passwordRegex.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain at least 6 characters'**
+  String get passwordRegex;
+
+  /// No description provided for @passwordNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordNotConfirmed;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile successfully updated'**
+  String get profileUpdated;
+
+  /// No description provided for @updateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Update failed'**
+  String get updateFailed;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -295,26 +327,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'fr':
-      return AppLocalizationsFr();
+    case 'en': return AppLocalizationsEn();
+    case 'fr': return AppLocalizationsFr();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

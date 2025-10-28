@@ -26,8 +26,8 @@
   "address": "Address",
   "times": "Schedule",
   "openOnWeekends": "Open on weekends ?",
-  "yes": "Oui",
-  "no": "Non",
+  "yes": "Yes",
+  "no": "No",
   "language": "Language",
   "updateProfile": "Update profile",
   "updatePassword": "Update Password",
@@ -35,5 +35,11 @@
   "newPassword": "New password",
   "confirmPassword": "Confirm password",
   "save": "Save",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "enterAFirstName": "Please enter your first name",
+  "enterALastName": "Please enter your last name",
+  "passwordRegex": "Password must contain at least 6 characters",
+  "passwordNotConfirmed": "Passwords do not match",
+  "profileUpdated": "Profile successfully updated",
+  "updateFailed": "Update failed"
 }

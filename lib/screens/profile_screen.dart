@@ -1,6 +1,6 @@
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/controllers/app_language_controller.dart';
-import 'package:bit_money/l10n/generated/app_localizations.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/user_model.dart';
 import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth/auth_service.dart';
@@ -203,7 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icons.person_outline,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Veuillez entrer votre prénom';
+                return tr.enterAFirstName;
               }
               return null;
             },
@@ -216,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icons.person,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Veuillez entrer votre nom';
+                return tr.enterALastName;
               }
               return null;
             },
@@ -242,7 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             obscureText: true,
             validator: (value) {
               if (value != null && value.isNotEmpty && value.length < 6) {
-                return 'Le mot de passe doit contenir au moins 6 caractères';
+                return tr.passwordRegex;
               }
               return null;
             },
@@ -257,7 +257,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             validator: (value) {
               if (_passwordController.text.isNotEmpty &&
                   value != _passwordController.text) {
-                return 'Les mots de passe ne correspondent pas';
+                return tr.passwordNotConfirmed;
               }
               return null;
             },
@@ -295,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _updateProfile,
+                  onPressed: _isLoading ? null : () => _updateProfile(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.secondary,
                     shape: RoundedRectangleBorder(
@@ -330,7 +330,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _updateProfile() async {
+  Future<void> _updateProfile(BuildContext content) async {
+    final tr = AppLocalizations.of(content)!;
+
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -366,8 +368,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Profil mis à jour avec succès'),
+              SnackBar(
+                content: Text(tr.profileUpdated),
                 backgroundColor: AppColors.lightSecondary,
               ),
             );
@@ -376,7 +378,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Erreur: ${result['message'] ?? "Échec de la mise à jour"}'),
+                content: Text(tr.updateFailed),
                 backgroundColor: AppColors.darkPrimary,
               ),
             );
@@ -652,18 +654,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Dialogue de confirmation de déconnexion
   void _showLogoutDialog(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text(
-          'Déconnexion',
+        title: Text(
+          tr.logout,
           style: TextStyle(
             color: AppColors.text,
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: const Text(
-          'Êtes-vous sûr de vouloir vous déconnecter ?',
+        content: Text(
+          tr.logoutConfirmation,
           style: TextStyle(
             color: AppColors.text,
           ),
@@ -671,8 +675,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text(
-              'Annuler',
+            child: Text(
+              tr.cancel,
               style: TextStyle(
                 color: AppColors.darkGrey,
               ),
@@ -684,19 +688,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             onPressed: () async {
               await authService.logout();
-              // Utiliser dialogContext.mounted pour vérifier si le widget est encore monté
               if (dialogContext.mounted) {
-                Navigator.of(dialogContext).pop(); // Fermer d'abord la boîte de dialogue
+                Navigator.of(dialogContext).pop();
               }
-              // Utiliser context.mounted pour vérifier si le widget principal est encore monté
               if (context.mounted) {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => const LoginScreen()),
                 );
               }
             },
-            child: const Text(
-              'Déconnexion',
+            child: Text(
+              tr.logout,
               style: TextStyle(
                 color: AppColors.white,
               ),
