@@ -258,13 +258,12 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
             ),
             child: Row(
               children: [
-                // Champ du montant
                 Expanded(
                   child: TextFormField(
                     controller: _amountController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
                     decoration: InputDecoration(
                       hintText: 'Entrez le montant',

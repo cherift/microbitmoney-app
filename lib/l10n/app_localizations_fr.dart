@@ -244,4 +244,47 @@ class AppLocalizationsFr extends AppLocalizations {
   String loadPdvsError(String error) {
     return 'Impossible de charger les PDVs: $error';
   }
+
+  @override
+  String get quotesList => 'Liste des Devis';
+
+  @override
+  String quoteNumber(String id) {
+    return 'Devis #$id';
+  }
+
+  @override
+  String get amountToSend => 'Montant à envoyer';
+
+  @override
+  String get amountToReceive => 'Montant à recevoir';
+
+  @override
+  String get notDefined => 'Non défini';
+
+  @override
+  String get fees => 'Frais';
+
+  @override
+  String get recipientCountry => 'Pays de réception';
+
+  @override
+  String get operator => 'Opérateur';
+
+  @override
+  String get noQuoteAvailable => 'Aucun devis disponible';
+
+  @override
+  String get createNewQuote =>
+      'Créez un nouveau devis en appuyant sur le bouton +';
+
+  @override
+  String quotesCount(int count) {
+    return '$count Devis';
+  }
+
+  @override
+  String loadQuotesError(String error) {
+    return 'Impossible de charger les devis: $error';
+  }
 }

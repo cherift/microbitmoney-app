@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/devis_model.dart';
 import 'package:bit_money/models/session_model.dart';
 import 'package:bit_money/screens/create_devis_screen.dart';
@@ -21,6 +22,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   final AuthService authService = AuthService();
+  bool _initialLoadDone = false;
 
   @override
   void initState() {
@@ -35,8 +37,15 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
         curve: Curves.easeInOut,
       ),
     );
+  }
 
-    _loadDevis();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialLoadDone) {
+      _loadDevis(context);
+      _initialLoadDone = true;
+    }
   }
 
   @override
@@ -45,7 +54,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
     super.dispose();
   }
 
-  Future<void> _loadDevis() async {
+  Future<void> _loadDevis(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
@@ -55,20 +64,26 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
 
       final devis = await _devisService.getDevis(session?.user?.id ?? '');
 
+      if (!mounted) return;
+
       setState(() {
         _devisList = devis;
         _isLoading = false;
       });
       _animationController.forward();
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _isLoading = false;
       });
-      _showErrorMessage('Impossible de charger les devis: $e');
+
+      final errorMessage = AppLocalizations.of(context)!.loadQuotesError(e.toString());
+      _showErrorMessage(errorMessage, context);
     }
   }
 
-  void _showErrorMessage(String message) {
+  void _showErrorMessage(String message, BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -81,6 +96,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
   }
 
   void _showDevisDetails(Devis devis) {
+    final tr = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
 
@@ -122,7 +138,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        "Devis #${devis.id}",
+                        tr.quoteNumber(devis.id.toString()),
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -140,24 +156,24 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                         children: [
                           _buildInfoCard(
                             icon: Icons.upload_outlined,
-                            title: 'Montant à envoyer',
+                            title: tr.amountToSend,
                             content: devis.amountToSend != null
                               ? '${devis.amountToSend} ${devis.currency}'
                               : devis.reponseDevis != null
                                 ? '${devis.reponseDevis!.amountToSend} ${devis.reponseDevis!.currency}'
-                                : 'Non défini',
+                                : tr.notDefined,
                             iconColor: AppColors.primary,
                             fullWidth: true,
                           ),
                           const SizedBox(height: 12),
                           _buildInfoCard(
                             icon: Icons.download_outlined,
-                            title: 'Montant à recevoir',
+                            title: tr.amountToReceive,
                             content: devis.amountToReceive != null
                               ? '${devis.amountToReceive} ${devis.recipientCurrency}'
                               : devis.reponseDevis != null
                                 ? '${devis.reponseDevis!.amountToReceive} ${devis.reponseDevis!.receiveCurrency}'
-                                : 'Non défini',
+                                : tr.notDefined,
                             iconColor: AppColors.primary,
                             fullWidth: true,
                           ),
@@ -170,12 +186,12 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                             Expanded(
                               child: _buildInfoCard(
                                 icon: Icons.upload_outlined,
-                                title: 'Montant à envoyer',
+                                title: tr.amountToSend,
                                 content: devis.amountToSend != null
                                   ? '${devis.amountToSend} ${devis.currency}'
                                   : devis.reponseDevis != null
                                     ? '${devis.reponseDevis!.amountToSend} ${devis.reponseDevis!.currency}'
-                                    : 'Non défini',
+                                    : tr.notDefined,
                                 iconColor: AppColors.primary,
                                 fullWidth: false,
                               ),
@@ -184,12 +200,12 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                             Expanded(
                               child: _buildInfoCard(
                                 icon: Icons.download_outlined,
-                                title: 'Montant à recevoir',
+                                title: tr.amountToReceive,
                                 content: devis.amountToReceive != null
-                                  ? '${devis.amountToReceive} ${devis.currency}'
+                                  ? '${devis.amountToReceive} ${devis.recipientCurrency}'
                                   : devis.reponseDevis != null
                                     ? '${devis.reponseDevis!.amountToReceive} ${devis.reponseDevis!.receiveCurrency}'
-                                    : 'Non défini',
+                                    : tr.notDefined,
                                 iconColor: AppColors.primary,
                                 fullWidth: false,
                               ),
@@ -205,19 +221,19 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                 if (devis.reponseDevis != null)
                   _buildDetailSection(
                     icon: Icons.money,
-                    title: 'Frais',
+                    title: tr.fees,
                     content: '${devis.reponseDevis!.fees} ${devis.reponseDevis!.currency}',
                   ),
 
                 _buildDetailSection(
                   icon: Icons.location_on,
-                  title: 'Pays de réception',
+                  title: tr.recipientCountry,
                   content: devis.recipientCountry,
                 ),
 
                 _buildDetailSection(
                   icon: Icons.business,
-                  title: 'Opérateur',
+                  title: tr.operator,
                   content: devis.operateur.name,
                 ),
               ],
@@ -277,6 +293,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
   }
 
   Widget _buildDevisItem(Devis devis) {
+    final tr = AppLocalizations.of(context)!;
     return Row(
       children: [
         Container(
@@ -360,7 +377,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                     const SizedBox(width: 8),
                     Flexible(
                       child: Text(
-                        '• Frais: ${devis.reponseDevis!.fees} ${devis.reponseDevis!.currency}',
+                        '• ${tr.fees}: ${devis.reponseDevis!.fees} ${devis.reponseDevis!.currency}',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.darkGrey,
@@ -432,13 +449,15 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+    final currentTime = "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-
-        title: const Text(
-          'Liste des Devis',
-          style: TextStyle(
+        title: Text(
+          tr.quotesList,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: AppColors.text,
@@ -458,7 +477,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.primary),
-            onPressed: _loadDevis,
+            onPressed: () => _loadDevis(context),
           ),
         ],
       ),
@@ -472,7 +491,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
         : FadeTransition(
             opacity: _fadeAnimation,
             child: RefreshIndicator(
-              onRefresh: _loadDevis,
+              onRefresh: () => _loadDevis(context),
               color: AppColors.primary,
               child: Column(
                 children: [
@@ -482,14 +501,14 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${_devisList.length} Devis',
+                          tr.quotesCount(_devisList.length),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.darkGrey,
                           ),
                         ),
                         Text(
-                          'Dernière mise à jour: ${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+                          tr.lastUpdate(currentTime),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.darkGrey.withValues(alpha: .7),
@@ -508,12 +527,12 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                                 Icon(
                                   Icons.description_outlined,
                                   size: 64,
-                                  color: AppColors.darkGrey..withValues(alpha: .3),
+                                  color: AppColors.darkGrey.withValues(alpha: .3),
                                 ),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'Aucun devis disponible',
-                                  style: TextStyle(
+                                Text(
+                                  tr.noQuoteAvailable,
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.darkGrey,
@@ -523,7 +542,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 32),
                                   child: Text(
-                                    'Créez un nouveau devis en appuyant sur le bouton +',
+                                    tr.createNewQuote,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 14,
@@ -580,15 +599,16 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                                           borderRadius: BorderRadius.circular(16),
                                           child: Padding(
                                             padding: const EdgeInsets.all(16),
-                                      child: _buildDevisItem(devis),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
+                                            child: _buildDevisItem(devis),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
                             }
-                          }),
+                          ),
                   ),
                 ],
               ),
@@ -601,7 +621,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
             MaterialPageRoute(builder: (context) => const CreateDevisScreen()),
           ).then((result) {
             if (result == true) {
-              _loadDevis();
+              _loadDevis(context);
             }
           });
         },

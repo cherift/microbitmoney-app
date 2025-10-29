@@ -375,9 +375,9 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _sendAmountController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
                     decoration: InputDecoration(
                       hintText: 'Entrez le montant à envoyer',
@@ -485,9 +485,9 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _receiveAmountController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
                     decoration: InputDecoration(
                       hintText: 'Entrez le montant à recevoir',

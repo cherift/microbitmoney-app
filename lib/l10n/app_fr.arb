@@ -110,5 +110,46 @@
         "type": "String"
       }
     }
+  },
+  "quotesList": "Liste des Devis",
+  "quoteNumber": "Devis #{id}",
+  "@quoteNumber": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "amountToSend": "Montant à envoyer",
+  "amountToReceive": "Montant à recevoir",
+  "notDefined": "Non défini",
+  "fees": "Frais",
+  "recipientCountry": "Pays de réception",
+  "operator": "Opérateur",
+  "noQuoteAvailable": "Aucun devis disponible",
+  "createNewQuote": "Créez un nouveau devis en appuyant sur le bouton +",
+  "quotesCount": "{count} Devis",
+  "@quotesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lastUpdate": "Dernière mise à jour: {time}",
+  "@lastUpdate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "loadQuotesError": "Impossible de charger les devis: {error}",
+  "@loadQuotesError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

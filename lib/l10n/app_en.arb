@@ -107,5 +107,46 @@
         "type": "String"
       }
     }
+  },
+  "quotesList": "Quotes List",
+  "quoteNumber": "Quote #{id}",
+  "@quoteNumber": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "amountToSend": "Amount to Send",
+  "amountToReceive": "Amount to Receive",
+  "notDefined": "Not defined",
+  "fees": "Fees",
+  "recipientCountry": "Recipient Country",
+  "operator": "Operator",
+  "noQuoteAvailable": "No quotes available",
+  "createNewQuote": "Create a new quote by pressing the + button",
+  "quotesCount": "{count} Quotes",
+  "@quotesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lastUpdate": "Last update: {time}",
+  "@lastUpdate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "loadQuotesError": "Unable to load quotes: {error}",
+  "@loadQuotesError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

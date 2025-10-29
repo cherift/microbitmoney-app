@@ -242,4 +242,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String loadPdvsError(String error) {
     return 'Unable to load stores: $error';
   }
+
+  @override
+  String get quotesList => 'Quotes List';
+
+  @override
+  String quoteNumber(String id) {
+    return 'Quote #$id';
+  }
+
+  @override
+  String get amountToSend => 'Amount to Send';
+
+  @override
+  String get amountToReceive => 'Amount to Receive';
+
+  @override
+  String get notDefined => 'Not defined';
+
+  @override
+  String get fees => 'Fees';
+
+  @override
+  String get recipientCountry => 'Recipient Country';
+
+  @override
+  String get operator => 'Operator';
+
+  @override
+  String get noQuoteAvailable => 'No quotes available';
+
+  @override
+  String get createNewQuote => 'Create a new quote by pressing the + button';
+
+  @override
+  String quotesCount(int count) {
+    return '$count Quotes';
+  }
+
+  @override
+  String loadQuotesError(String error) {
+    return 'Unable to load quotes: $error';
+  }
 }

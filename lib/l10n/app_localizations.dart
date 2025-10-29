@@ -553,6 +553,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load stores: {error}'**
   String loadPdvsError(String error);
+
+  /// No description provided for @quotesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotes List'**
+  String get quotesList;
+
+  /// No description provided for @quoteNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote #{id}'**
+  String quoteNumber(String id);
+
+  /// No description provided for @amountToSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount to Send'**
+  String get amountToSend;
+
+  /// No description provided for @amountToReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount to Receive'**
+  String get amountToReceive;
+
+  /// No description provided for @notDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'Not defined'**
+  String get notDefined;
+
+  /// No description provided for @fees.
+  ///
+  /// In en, this message translates to:
+  /// **'Fees'**
+  String get fees;
+
+  /// No description provided for @recipientCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient Country'**
+  String get recipientCountry;
+
+  /// No description provided for @operator.
+  ///
+  /// In en, this message translates to:
+  /// **'Operator'**
+  String get operator;
+
+  /// No description provided for @noQuoteAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No quotes available'**
+  String get noQuoteAvailable;
+
+  /// No description provided for @createNewQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new quote by pressing the + button'**
+  String get createNewQuote;
+
+  /// No description provided for @quotesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Quotes'**
+  String quotesCount(int count);
+
+  /// No description provided for @loadQuotesError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load quotes: {error}'**
+  String loadQuotesError(String error);
 }
 
 class _AppLocalizationsDelegate
