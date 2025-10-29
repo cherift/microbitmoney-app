@@ -32,6 +32,8 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
     try {
       final stats = await _transactionService.getTransactionStats();
 
+      if (!mounted) return;
+
       final locale = Localizations.localeOf(context).languageCode;
       final formatter = NumberFormat('#,###', locale);
 
@@ -42,6 +44,8 @@ class _StatCardsWidgetState extends State<StatCardsWidget> {
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         isLoading = false;
       });

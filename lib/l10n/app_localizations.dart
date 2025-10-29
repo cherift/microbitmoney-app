@@ -457,6 +457,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recent activity'**
   String get noRecentActivity;
+
+  /// No description provided for @ourPdvs.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Points of Sale'**
+  String get ourPdvs;
+
+  /// No description provided for @searchPdv.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a store'**
+  String get searchPdv;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @openPdvs.
+  ///
+  /// In en, this message translates to:
+  /// **'Open stores only'**
+  String get openPdvs;
+
+  /// No description provided for @pdvsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} store{plural} found'**
+  String pdvsFound(int count, String plural);
+
+  /// No description provided for @lastUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Last update: {time}'**
+  String lastUpdate(String time);
+
+  /// No description provided for @noPdvFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No stores found'**
+  String get noPdvFound;
+
+  /// No description provided for @tryModifySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Try modifying your search criteria'**
+  String get tryModifySearch;
+
+  /// No description provided for @noAddressSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'No address specified'**
+  String get noAddressSpecified;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get hours;
+
+  /// No description provided for @weekend.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend'**
+  String get weekend;
+
+  /// No description provided for @open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get open;
+
+  /// No description provided for @closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get closed;
+
+  /// No description provided for @notSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get notSpecified;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @loadPdvsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load stores: {error}'**
+  String loadPdvsError(String error);
 }
 
 class _AppLocalizationsDelegate

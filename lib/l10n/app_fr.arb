@@ -65,5 +65,50 @@
   "ourPdv": "Nos PDV",
   "quote": "Devis",
   "recentActivities": "Activités récentes",
-  "noRecentActivity": "Aucune activité récente"
+  "noRecentActivity": "Aucune activité récente",
+  "ourPdvs": "Nos Points de Vente",
+  "searchPdv": "Rechercher un PDV",
+  "filters": "Filtres",
+  "openPdvs": "PDV ouverts",
+  "pdvsFound": "{count} PDV{plural} trouvé{plural}",
+  "@pdvsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      },
+      "plural": {
+        "type": "String",
+        "example": "s"
+      }
+    }
+  },
+  "lastUpdate": "Dernière mise à jour: {time}",
+  "@lastUpdate": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "12:30"
+      }
+    }
+  },
+  "noPdvFound": "Aucun PDV trouvé",
+  "tryModifySearch": "Essayez de modifier vos critères de recherche",
+  "noAddressSpecified": "Adresse non spécifiée",
+  "hours": "Heures",
+  "weekend": "Weekend",
+  "open": "Ouvert",
+  "closed": "Fermé",
+  "address": "Adresse",
+  "phone": "Téléphone",
+  "notSpecified": "Non spécifiée",
+  "close": "Fermer",
+  "loadPdvsError": "Impossible de charger les PDVs: {error}",
+  "@loadPdvsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

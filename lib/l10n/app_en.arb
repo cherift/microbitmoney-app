@@ -65,5 +65,47 @@
   "ourPdv": "Our Stores",
   "quote": "Quotes",
   "recentActivities": "Recent Activities",
-  "noRecentActivity": "No recent activity"
+  "noRecentActivity": "No recent activity",
+  "ourPdvs": "Our Points of Sale",
+  "searchPdv": "Search for a store",
+  "filters": "Filters",
+  "openPdvs": "Open stores only",
+  "pdvsFound": "{count} store{plural} found",
+  "@pdvsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "lastUpdate": "Last update: {time}",
+  "@lastUpdate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "noPdvFound": "No stores found",
+  "tryModifySearch": "Try modifying your search criteria",
+  "noAddressSpecified": "No address specified",
+  "hours": "Hours",
+  "weekend": "Weekend",
+  "open": "Open",
+  "closed": "Closed",
+  "address": "Address",
+  "phone": "Phone",
+  "notSpecified": "Not specified",
+  "close": "Close",
+  "loadPdvsError": "Unable to load stores: {error}",
+  "@loadPdvsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

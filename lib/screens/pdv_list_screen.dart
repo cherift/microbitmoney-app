@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/pdv_model.dart';
 import 'package:bit_money/services/pdv_service.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,8 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
     try {
       final pdvs = await _pdvService.getPdvs();
 
+      if (!mounted) return;
+
       setState(() {
         _pdvs = pdvs;
         _applyFilters();
@@ -60,15 +63,17 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
       });
       _animationController.forward();
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _isLoading = false;
       });
-      _showErrorMessage('Impossible de charger les PDVs: $e');
+      _showErrorMessage(AppLocalizations.of(context)!.loadPdvsError(e.toString()));
     }
   }
 
   void _applyFilters() {
-    List<PDV> filtered = List.from(_pdvs);
+    List<PDV> filtered = _pdvs.where((pdv) => pdv.name.isNotEmpty).toList();
 
     if (_showOnlyOpen) {
       filtered = filtered.where((pdv) => pdv.isOpen()).toList();
@@ -76,8 +81,8 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
 
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((pdv) =>
-        pdv.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        pdv.address.toLowerCase().contains(_searchQuery.toLowerCase())
+        (pdv.name.isNotEmpty && pdv.name.toLowerCase().contains(_searchQuery.toLowerCase())) ||
+        (pdv.address.isNotEmpty && pdv.address.toLowerCase().contains(_searchQuery.toLowerCase()))
       ).toList();
     }
 
@@ -99,6 +104,8 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
   }
 
   void _showPdvDetails(PDV pdv) {
+    final tr = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -150,15 +157,15 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                   children: [
                     _buildInfoCard(
                       icon: Icons.schedule,
-                      title: 'Heures',
+                      title: tr.hours,
                       content: '${pdv.openingTime} - ${pdv.closingTime}',
                       iconColor: AppColors.primary,
                     ),
                     const SizedBox(width: 12),
                     _buildInfoCard(
                       icon: Icons.weekend,
-                      title: 'Weekend',
-                      content: pdv.openWeekend ? 'Ouvert' : 'Fermé',
+                      title: tr.weekend,
+                      content: pdv.openWeekend ? tr.open : tr.closed,
                       iconColor: pdv.openWeekend ? Colors.green : Colors.red,
                     ),
                   ],
@@ -168,13 +175,13 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
 
               _buildDetailSection(
                 icon: Icons.location_on,
-                title: 'Adresse',
-                content: pdv.address.isEmpty ? 'Non spécifiée' : pdv.address,
+                title: tr.address,
+                content: pdv.address.isEmpty ? tr.notSpecified : pdv.address,
               ),
 
               _buildDetailSection(
                 icon: Icons.phone,
-                title: 'Téléphone',
+                title: tr.phone,
                 content: pdv.phone,
               ),
 
@@ -193,9 +200,9 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Fermer',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  child: Text(
+                    tr.close,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
@@ -298,12 +305,15 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+    final currentTime = "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          'Nos Points de Vente',
-          style: TextStyle(
+        title: Text(
+          tr.ourPdvs,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: AppColors.text,
@@ -362,11 +372,11 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                           ),
                           child: TextField(
                             controller: _searchController,
-                            decoration: const InputDecoration(
-                              hintText: 'Rechercher un PDV',
-                              prefixIcon: Icon(Icons.search, color: AppColors.darkGrey),
+                            decoration: InputDecoration(
+                              hintText: tr.searchPdv,
+                              prefixIcon: const Icon(Icons.search, color: AppColors.darkGrey),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(vertical: 12),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12),
                             ),
                             onChanged: (value) {
                               setState(() {
@@ -382,18 +392,18 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                'Filtres',
-                                style: TextStyle(
+                              Text(
+                                tr.filters,
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
                               ),
                               Row(
                                 children: [
-                                  const Text(
-                                    'PDV ouverts',
-                                    style: TextStyle(
+                                  Text(
+                                    tr.openPdvs,
+                                    style: const TextStyle(
                                       fontSize: 14,
                                       color: AppColors.text,
                                     ),
@@ -424,14 +434,14 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${_filteredPdvs.length} PDV${_filteredPdvs.length > 1 ? 's' : ''} trouvé${_filteredPdvs.length > 1 ? 's' : ''}',
+                          tr.pdvsFound(_filteredPdvs.length, _filteredPdvs.length > 1 ? 's' : ''),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.darkGrey,
                           ),
                         ),
                         Text(
-                          'Dernière mise à jour: ${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+                          tr.lastUpdate(currentTime),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.darkGrey.withValues(alpha: .7),
@@ -453,9 +463,9 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                                   color: AppColors.darkGrey.withValues(alpha: .3),
                                 ),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'Aucun PDV trouvé',
-                                  style: TextStyle(
+                                Text(
+                                  tr.noPdvFound,
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.darkGrey,
@@ -463,7 +473,7 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Essayez de modifier vos critères de recherche',
+                                  tr.tryModifySearch,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: AppColors.darkGrey.withValues(alpha: .7),
@@ -499,7 +509,7 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                                             ),
                                             child: Center(
                                               child: Text(
-                                                pdv.name.substring(0, 1).toUpperCase(),
+                                                pdv.name.isNotEmpty ? pdv.name.substring(0, 1).toUpperCase() : "?",
                                                 style: const TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -524,7 +534,7 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                                                 const SizedBox(height: 4),
                                                 Text(
                                                   pdv.address.isEmpty
-                                                      ? 'Adresse non spécifiée'
+                                                      ? tr.noAddressSpecified
                                                       : pdv.address,
                                                   style: TextStyle(
                                                     fontSize: 14,
@@ -561,7 +571,7 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  pdv.isOpen() ? 'Ouvert' : 'Fermé',
+                                                  pdv.isOpen() ? tr.open : tr.closed,
                                                   style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.bold,

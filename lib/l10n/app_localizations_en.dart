@@ -188,4 +188,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRecentActivity => 'No recent activity';
+
+  @override
+  String get ourPdvs => 'Our Points of Sale';
+
+  @override
+  String get searchPdv => 'Search for a store';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get openPdvs => 'Open stores only';
+
+  @override
+  String pdvsFound(int count, String plural) {
+    return '$count store$plural found';
+  }
+
+  @override
+  String lastUpdate(String time) {
+    return 'Last update: $time';
+  }
+
+  @override
+  String get noPdvFound => 'No stores found';
+
+  @override
+  String get tryModifySearch => 'Try modifying your search criteria';
+
+  @override
+  String get noAddressSpecified => 'No address specified';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get weekend => 'Weekend';
+
+  @override
+  String get open => 'Open';
+
+  @override
+  String get closed => 'Closed';
+
+  @override
+  String get notSpecified => 'Not specified';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String loadPdvsError(String error) {
+    return 'Unable to load stores: $error';
+  }
 }

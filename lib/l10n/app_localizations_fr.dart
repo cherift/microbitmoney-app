@@ -190,4 +190,58 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noRecentActivity => 'Aucune activité récente';
+
+  @override
+  String get ourPdvs => 'Nos Points de Vente';
+
+  @override
+  String get searchPdv => 'Rechercher un PDV';
+
+  @override
+  String get filters => 'Filtres';
+
+  @override
+  String get openPdvs => 'PDV ouverts';
+
+  @override
+  String pdvsFound(int count, String plural) {
+    return '$count PDV$plural trouvé$plural';
+  }
+
+  @override
+  String lastUpdate(String time) {
+    return 'Dernière mise à jour: $time';
+  }
+
+  @override
+  String get noPdvFound => 'Aucun PDV trouvé';
+
+  @override
+  String get tryModifySearch => 'Essayez de modifier vos critères de recherche';
+
+  @override
+  String get noAddressSpecified => 'Adresse non spécifiée';
+
+  @override
+  String get hours => 'Heures';
+
+  @override
+  String get weekend => 'Weekend';
+
+  @override
+  String get open => 'Ouvert';
+
+  @override
+  String get closed => 'Fermé';
+
+  @override
+  String get notSpecified => 'Non spécifiée';
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String loadPdvsError(String error) {
+    return 'Impossible de charger les PDVs: $error';
+  }
 }

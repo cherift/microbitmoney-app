@@ -16,7 +16,6 @@ class QuickActionsWidget extends StatefulWidget {
 }
 
 class _QuickActionsWidgetState extends State<QuickActionsWidget> {
-  List<Map<String, dynamic>>? _actions;
   bool _isAdmin = false;
   bool _isLoading = true;
   final AuthService _authService = AuthService();
