@@ -151,5 +151,48 @@
         "type": "String"
       }
     }
-  }
+  },
+  "newQuote": "Nouveau devis",
+  "recipientCountry": "Pays de réception",
+  "searchCountry": "Rechercher un pays",
+  "amountToSend": "Montant à envoyer",
+  "enterAmountToSend": "Entrez le montant à envoyer",
+  "or": "OU",
+  "amountToReceive": "Montant à recevoir",
+  "enterAmountToReceive": "Entrez le montant à recevoir",
+  "requestQuote": "Demander un devis",
+  "error": "Erreur",
+  "ok": "OK",
+  "selectOperator": "Veuillez sélectionner un opérateur",
+  "selectRecipientCountry": "Veuillez sélectionner un pays de réception",
+  "enterAmount": "Veuillez renseigner un des montants",
+  "enterOnlyOneAmount": "Veuillez renseigner un seul montant (à envoyer OU à recevoir)",
+  "minimumAmount": "Le montant minimum est de {amount} GNF",
+  "@minimumAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "maximumAmount": "Le montant maximum est de {amount} GNF",
+  "@maximumAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteRequestSuccess": "Demande de devis envoyée avec succès",
+  "quoteCreationError": "Erreur lors de la création du devis: {error}",
+  "@quoteCreationError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "operatorsLoadError": "Impossible de charger les opérateurs",
+  "enterValidAmount": "Veuillez entrer un montant valide",
+  "amountGreaterThanZero": "Le montant doit être supérieur à 0"
 }

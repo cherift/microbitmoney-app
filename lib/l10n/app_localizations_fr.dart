@@ -287,4 +287,69 @@ class AppLocalizationsFr extends AppLocalizations {
   String loadQuotesError(String error) {
     return 'Impossible de charger les devis: $error';
   }
+
+  @override
+  String get newQuote => 'Nouveau devis';
+
+  @override
+  String get searchCountry => 'Rechercher un pays';
+
+  @override
+  String get enterAmountToSend => 'Entrez le montant à envoyer';
+
+  @override
+  String get or => 'OU';
+
+  @override
+  String get enterAmountToReceive => 'Entrez le montant à recevoir';
+
+  @override
+  String get requestQuote => 'Demander un devis';
+
+  @override
+  String get error => 'Erreur';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get selectOperator => 'Veuillez sélectionner un opérateur';
+
+  @override
+  String get selectRecipientCountry =>
+      'Veuillez sélectionner un pays de réception';
+
+  @override
+  String get enterAmount => 'Veuillez renseigner un des montants';
+
+  @override
+  String get enterOnlyOneAmount =>
+      'Veuillez renseigner un seul montant (à envoyer OU à recevoir)';
+
+  @override
+  String minimumAmount(String amount) {
+    return 'Le montant minimum est de $amount GNF';
+  }
+
+  @override
+  String maximumAmount(String amount) {
+    return 'Le montant maximum est de $amount GNF';
+  }
+
+  @override
+  String get quoteRequestSuccess => 'Demande de devis envoyée avec succès';
+
+  @override
+  String quoteCreationError(String error) {
+    return 'Erreur lors de la création du devis: $error';
+  }
+
+  @override
+  String get operatorsLoadError => 'Impossible de charger les opérateurs';
+
+  @override
+  String get enterValidAmount => 'Veuillez entrer un montant valide';
+
+  @override
+  String get amountGreaterThanZero => 'Le montant doit être supérieur à 0';
 }

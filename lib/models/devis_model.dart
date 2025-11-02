@@ -124,7 +124,7 @@ class ReponseDevis {
   final int amountToReceive;
   final String currency;
   final String receiveCurrency;
-  final int fees;
+  final num fees;
   final String createdAt;
 
   ReponseDevis({

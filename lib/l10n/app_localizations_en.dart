@@ -284,4 +284,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String loadQuotesError(String error) {
     return 'Unable to load quotes: $error';
   }
+
+  @override
+  String get newQuote => 'New Quote';
+
+  @override
+  String get searchCountry => 'Search country';
+
+  @override
+  String get enterAmountToSend => 'Enter amount to send';
+
+  @override
+  String get or => 'OR';
+
+  @override
+  String get enterAmountToReceive => 'Enter amount to receive';
+
+  @override
+  String get requestQuote => 'Request Quote';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get selectOperator => 'Please select an operator';
+
+  @override
+  String get selectRecipientCountry => 'Please select a recipient country';
+
+  @override
+  String get enterAmount => 'Please enter an amount';
+
+  @override
+  String get enterOnlyOneAmount =>
+      'Please enter only one amount (either send OR receive)';
+
+  @override
+  String minimumAmount(String amount) {
+    return 'The minimum amount is $amount GNF';
+  }
+
+  @override
+  String maximumAmount(String amount) {
+    return 'The maximum amount is $amount GNF';
+  }
+
+  @override
+  String get quoteRequestSuccess => 'Quote request sent successfully';
+
+  @override
+  String quoteCreationError(String error) {
+    return 'Error creating quote: $error';
+  }
+
+  @override
+  String get operatorsLoadError => 'Unable to load operators';
+
+  @override
+  String get enterValidAmount => 'Please enter a valid amount';
+
+  @override
+  String get amountGreaterThanZero => 'Amount must be greater than 0';
 }

@@ -148,5 +148,48 @@
         "type": "String"
       }
     }
-  }
+  },
+  "newQuote": "New Quote",
+  "recipientCountry": "Recipient Country",
+  "searchCountry": "Search country",
+  "amountToSend": "Amount to Send",
+  "enterAmountToSend": "Enter amount to send",
+  "or": "OR",
+  "amountToReceive": "Amount to Receive",
+  "enterAmountToReceive": "Enter amount to receive",
+  "requestQuote": "Request Quote",
+  "error": "Error",
+  "ok": "OK",
+  "selectOperator": "Please select an operator",
+  "selectRecipientCountry": "Please select a recipient country",
+  "enterAmount": "Please enter an amount",
+  "enterOnlyOneAmount": "Please enter only one amount (either send OR receive)",
+  "minimumAmount": "The minimum amount is {amount} GNF",
+  "@minimumAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "maximumAmount": "The maximum amount is {amount} GNF",
+  "@maximumAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteRequestSuccess": "Quote request sent successfully",
+  "quoteCreationError": "Error creating quote: {error}",
+  "@quoteCreationError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "operatorsLoadError": "Unable to load operators",
+  "enterValidAmount": "Please enter a valid amount",
+  "amountGreaterThanZero": "Amount must be greater than 0"
 }

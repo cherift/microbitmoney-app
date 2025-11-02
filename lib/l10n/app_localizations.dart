@@ -625,6 +625,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load quotes: {error}'**
   String loadQuotesError(String error);
+
+  /// No description provided for @newQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'New Quote'**
+  String get newQuote;
+
+  /// No description provided for @searchCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country'**
+  String get searchCountry;
+
+  /// No description provided for @enterAmountToSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount to send'**
+  String get enterAmountToSend;
+
+  /// No description provided for @or.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get or;
+
+  /// No description provided for @enterAmountToReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount to receive'**
+  String get enterAmountToReceive;
+
+  /// No description provided for @requestQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Quote'**
+  String get requestQuote;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @selectOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an operator'**
+  String get selectOperator;
+
+  /// No description provided for @selectRecipientCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a recipient country'**
+  String get selectRecipientCountry;
+
+  /// No description provided for @enterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount'**
+  String get enterAmount;
+
+  /// No description provided for @enterOnlyOneAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter only one amount (either send OR receive)'**
+  String get enterOnlyOneAmount;
+
+  /// No description provided for @minimumAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'The minimum amount is {amount} GNF'**
+  String minimumAmount(String amount);
+
+  /// No description provided for @maximumAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'The maximum amount is {amount} GNF'**
+  String maximumAmount(String amount);
+
+  /// No description provided for @quoteRequestSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote request sent successfully'**
+  String get quoteRequestSuccess;
+
+  /// No description provided for @quoteCreationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating quote: {error}'**
+  String quoteCreationError(String error);
+
+  /// No description provided for @operatorsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load operators'**
+  String get operatorsLoadError;
+
+  /// No description provided for @enterValidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get enterValidAmount;
+
+  /// No description provided for @amountGreaterThanZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than 0'**
+  String get amountGreaterThanZero;
 }
 
 class _AppLocalizationsDelegate

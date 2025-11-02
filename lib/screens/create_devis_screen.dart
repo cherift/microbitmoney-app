@@ -1,5 +1,6 @@
 import 'package:bit_money/components/operator_grid.dart';
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/services/devis_service.dart';
 import 'package:bit_money/services/operator_service.dart';
@@ -25,7 +26,8 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
   final _formKey = GlobalKey<FormState>();
   final _sendAmountController = TextEditingController();
   final _receiveAmountController = TextEditingController();
-  final _selectedCountryController = TextEditingController(text: 'Guinée');
+  final _selectedCountryController = TextEditingController();
+  bool _initialLoadDone = false;
 
   final List<String> _currencies = ['GNF', 'USD'];
   String _selectedCurrency = 'GNF';
@@ -35,10 +37,18 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
   @override
   void initState() {
     super.initState();
-    _loadOperators();
     _initDefaultCountry();
     _sendAmountController.addListener(_onSendAmountChanged);
     _receiveAmountController.addListener(_onReceiveAmountChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialLoadDone) {
+      _loadOperators(context);
+      _initialLoadDone = true;
+    }
   }
 
   void _initDefaultCountry() {
@@ -49,9 +59,11 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
         orElse: () => countries.first,
       );
 
+      final countryName = CountryLocalizations.of(context)!.countryName(countryCode: guinea.countryCode) ?? guinea.name;
+
       setState(() {
         _selectedCountry = guinea;
-        _selectedCountryController.text = guinea.name;
+        _selectedCountryController.text = countryName;
         _recipientCurrency = CountryPickerUtils.getCountryByIsoCode(guinea.countryCode).currencyCode ?? 'GNF';
       });
     } catch (e) {
@@ -86,45 +98,60 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
     }
   }
 
-  Future<void> _loadOperators() async {
+  Future<void> _loadOperators(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
 
     try {
       final operators = await _operatorService.getOperators();
+
+      if (!mounted) return;
+
       setState(() {
         _operators = operators;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _isLoading = false;
       });
-      _showErrorDialog("Impossible de charger les opérateurs");
+
+      final tr = AppLocalizations.of(context)!;
+      _showErrorDialog(tr.operatorsLoadError);
     }
   }
 
   Future<void> _submitDevis() async {
+    final tr = AppLocalizations.of(context)!;
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     if (_selectedOperator == null) {
-      _showErrorSnackBar("Veuillez sélectionner un opérateur");
+      _showErrorSnackBar(tr.selectOperator);
       return;
     }
 
     bool isSendAmountFilled = _sendAmountController.text.isNotEmpty;
     bool isReceiveAmountFilled = _receiveAmountController.text.isNotEmpty;
+    bool isCountrySelected = _selectedCountryController.text.isNotEmpty;
+
+    if (!isCountrySelected) {
+      _showErrorSnackBar(tr.selectRecipientCountry);
+      return;
+    }
 
     if (!isSendAmountFilled && !isReceiveAmountFilled) {
-      _showErrorSnackBar("Veuillez renseigner un des montants");
+      _showErrorSnackBar(tr.enterAmount);
       return;
     }
 
     if (isSendAmountFilled && isReceiveAmountFilled) {
-      _showErrorSnackBar("Veuillez renseigner un seul montant (à envoyer OU à recevoir)");
+      _showErrorSnackBar(tr.enterOnlyOneAmount);
       return;
     }
 
@@ -134,16 +161,14 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
 
     if (sendAmount != null && _selectedOperator != null) {
       double checkAmount = sendAmount;
-      if (_selectedCurrency == 'USD') {
-        checkAmount = sendAmount * 9000;
-      }
 
       if (checkAmount < _selectedOperator!.minAmount) {
-        _showErrorSnackBar('Le montant minimum est de ${_selectedOperator!.minAmount} GNF');
+        _showErrorSnackBar(tr.minimumAmount(_selectedOperator!.minAmount.toString()));
         return;
       }
+
       if (checkAmount > _selectedOperator!.maxAmount) {
-        _showErrorSnackBar('Le montant maximum est de ${_selectedOperator!.maxAmount} GNF');
+        _showErrorSnackBar(tr.maximumAmount(_selectedOperator!.maxAmount.toString()));
         return;
       }
     }
@@ -176,8 +201,8 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Demande de devis envoyée avec succès'),
+          SnackBar(
+            content: Text(tr.quoteRequestSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -187,12 +212,14 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
       setState(() {
         _isProcessing = false;
       });
-      _showErrorDialog('Erreur lors de la création du devis: ${e.toString()}');
+      _showErrorDialog(tr.quoteCreationError(e.toString()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -200,9 +227,9 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Nouveau devis',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.newQuote,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: AppColors.white,
@@ -248,15 +275,16 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
 
   void _showErrorDialog(String message) {
     if (mounted) {
+      final tr = AppLocalizations.of(context)!;
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
+          title: Text(tr.error),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(tr.ok),
             ),
           ],
         ),
@@ -276,11 +304,13 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
   }
 
   Widget _buildCountrySelector() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Pays de réception',
+          tr.recipientCountry,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -295,7 +325,7 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
               countryListTheme: CountryListThemeData(
                 borderRadius: BorderRadius.circular(8),
                 inputDecoration: InputDecoration(
-                  hintText: 'Rechercher un pays',
+                  hintText: tr.searchCountry,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -309,9 +339,11 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                 ),
               ),
               onSelect: (Country country) {
+                final countryName = CountryLocalizations.of(context)!.countryName(countryCode: country.countryCode) ?? country.name;
+
                 setState(() {
                   _selectedCountry = country;
-                  _selectedCountryController.text = country.name;
+                  _selectedCountryController.text = countryName;
                   _recipientCurrency = CountryPickerUtils.getCountryByIsoCode(country.countryCode).currencyCode ?? 'GNF';
                 });
               },
@@ -350,14 +382,16 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
   }
 
   Widget buildDevisForm() {
+    final tr = AppLocalizations.of(context)!;
+
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Montant à envoyer',
-            style: TextStyle(
+          Text(
+            tr.amountToSend,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.darkGrey,
@@ -375,12 +409,12 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _sendAmountController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
                     decoration: InputDecoration(
-                      hintText: 'Entrez le montant à envoyer',
+                      hintText: tr.enterAmountToSend,
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -395,11 +429,11 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
 
                       final amount = int.tryParse(value);
                       if (amount == null) {
-                        return 'Veuillez entrer un montant valide';
+                        return tr.enterValidAmount;
                       }
 
                       if (amount <= 0) {
-                        return 'Le montant doit être supérieur à 0';
+                        return tr.amountGreaterThanZero;
                       }
 
                       return null;
@@ -455,9 +489,9 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Text(
-                'OU',
-                style: TextStyle(
+              child: Text(
+                tr.or,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: AppColors.darkGrey,
                 ),
@@ -465,9 +499,9 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
             ),
           ),
 
-          const Text(
-            'Montant à recevoir',
-            style: TextStyle(
+          Text(
+            tr.amountToReceive,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.darkGrey,
@@ -485,12 +519,12 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _receiveAmountController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
                     decoration: InputDecoration(
-                      hintText: 'Entrez le montant à recevoir',
+                      hintText: tr.enterAmountToReceive,
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -505,11 +539,11 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
 
                       final amount = int.tryParse(value);
                       if (amount == null) {
-                        return 'Veuillez entrer un montant valide';
+                        return tr.enterValidAmount;
                       }
 
                       if (amount <= 0) {
-                        return 'Le montant doit être supérieur à 0';
+                        return tr.amountGreaterThanZero;
                       }
 
                       return null;
@@ -561,9 +595,9 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                         strokeWidth: 2,
                       ),
                     )
-                  : const Text(
-                      'Demander un devis',
-                      style: TextStyle(
+                  : Text(
+                      tr.requestQuote,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: AppColors.white,

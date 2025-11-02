@@ -6,6 +6,7 @@ import 'package:bit_money/screens/login_screen.dart';
 import 'package:bit_money/services/auth/auth_service.dart';
 import 'package:bit_money/services/client/api_client.dart';
 import 'package:bit_money/services/localization_service.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -77,6 +78,7 @@ class _MyAppState extends State<MyApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        CountryLocalizations.delegate
       ],
       supportedLocales: LocalizationService.supportedLocales.values.toList(),
       theme: ThemeData(
