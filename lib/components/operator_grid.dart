@@ -1,6 +1,5 @@
-
-
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/operator_model.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +8,7 @@ class OperatorGrid extends StatelessWidget {
   final Operator? selectedOperator;
   final Function(Operator) onOperatorSelected;
   final Color activeColor;
-  final String title;
+  final String? title;
   final bool showTitle;
 
   const OperatorGrid({
@@ -18,20 +17,21 @@ class OperatorGrid extends StatelessWidget {
     required this.onOperatorSelected,
     this.selectedOperator,
     this.activeColor = AppColors.secondary,
-    this.title = 'Sélectionnez un opérateur',
+    this.title,
     this.showTitle = true,
   });
 
   @override
   Widget build(BuildContext context) {
     List<Operator> activeOperators = operators.where((operator) => operator.isActive).toList();
+    final String displayTitle = title ?? AppLocalizations.of(context)!.operatorChoice;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showTitle) ...[
           Text(
-            title,
+            displayTitle,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

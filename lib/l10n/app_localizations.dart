@@ -680,6 +680,12 @@ abstract class AppLocalizations {
   /// **'Please select an operator'**
   String get selectOperator;
 
+  /// No description provided for @operatorChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an operator'**
+  String get operatorChoice;
+
   /// No description provided for @selectRecipientCountry.
   ///
   /// In en, this message translates to:

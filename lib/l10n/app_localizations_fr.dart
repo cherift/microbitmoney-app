@@ -316,6 +316,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectOperator => 'Veuillez sélectionner un opérateur';
 
   @override
+  String get operatorChoice => 'Sélectionnez un opérateur';
+
+  @override
   String get selectRecipientCountry =>
       'Veuillez sélectionner un pays de réception';
 

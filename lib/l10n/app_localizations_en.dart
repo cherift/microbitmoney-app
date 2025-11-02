@@ -313,6 +313,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectOperator => 'Please select an operator';
 
   @override
+  String get operatorChoice => 'Select an operator';
+
+  @override
   String get selectRecipientCountry => 'Please select a recipient country';
 
   @override

@@ -161,6 +161,7 @@
   "error": "Error",
   "ok": "OK",
   "selectOperator": "Please select an operator",
+  "operatorChoice": "Select an operator",
   "selectRecipientCountry": "Please select a recipient country",
   "enterAmount": "Please enter an amount",
   "enterOnlyOneAmount": "Please enter only one amount (either send OR receive)",
