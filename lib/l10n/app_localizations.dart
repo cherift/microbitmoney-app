@@ -152,12 +152,6 @@ abstract class AppLocalizations {
   /// **'Account Type'**
   String get accountType;
 
-  /// No description provided for @commission.
-  ///
-  /// In en, this message translates to:
-  /// **'Commission'**
-  String get commission;
-
   /// No description provided for @password.
   ///
   /// In en, this message translates to:
@@ -229,6 +223,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'POS Name'**
   String get pdvName;
+
+  /// No description provided for @commission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get commission;
 
   /// No description provided for @address.
   ///
@@ -745,6 +745,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount must be greater than 0'**
   String get amountGreaterThanZero;
+
+  /// No description provided for @newPdv.
+  ///
+  /// In en, this message translates to:
+  /// **'New Store Location'**
+  String get newPdv;
+
+  /// No description provided for @userInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'User Information'**
+  String get userInformation;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'email@example.com'**
+  String get emailHint;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+224 000000000'**
+  String get phoneHint;
+
+  /// No description provided for @firstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstNameHint;
+
+  /// No description provided for @lastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastNameHint;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'••••••••'**
+  String get passwordHint;
+
+  /// No description provided for @pdvInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Information'**
+  String get pdvInformation;
+
+  /// No description provided for @pdvNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Store name'**
+  String get pdvNameHint;
+
+  /// No description provided for @commissionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0'**
+  String get commissionHint;
+
+  /// No description provided for @addressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Full address'**
+  String get addressHint;
+
+  /// No description provided for @openingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening Time'**
+  String get openingTime;
+
+  /// No description provided for @closingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing Time'**
+  String get closingTime;
+
+  /// No description provided for @openWeekend.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on weekends'**
+  String get openWeekend;
+
+  /// No description provided for @createPdv.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Store'**
+  String get createPdv;
+
+  /// No description provided for @enrollmentConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrollment Confirmation'**
+  String get enrollmentConfirmation;
+
+  /// No description provided for @pdvCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'The new store \'{name}\' has been successfully created.'**
+  String pdvCreatedSuccess(String name);
+
+  /// No description provided for @backToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get backToHome;
+
+  /// No description provided for @enterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an email'**
+  String get enterEmail;
+
+  /// No description provided for @enterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get enterValidEmail;
+
+  /// No description provided for @enterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a phone number'**
+  String get enterPhoneNumber;
+
+  /// No description provided for @enterPdvName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a store name'**
+  String get enterPdvName;
+
+  /// No description provided for @enterPercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a percentage'**
+  String get enterPercentage;
+
+  /// No description provided for @commissionRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission must be between 0 and 100'**
+  String get commissionRange;
+
+  /// No description provided for @enterValidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get enterValidNumber;
+
+  /// No description provided for @enterAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an address'**
+  String get enterAddress;
+
+  /// No description provided for @transactionList.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions List'**
+  String get transactionList;
+
+  /// No description provided for @totalTransactionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Transaction Amount'**
+  String get totalTransactionAmount;
+
+  /// No description provided for @noTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions'**
+  String get noTransactions;
+
+  /// No description provided for @viewReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'View Receipt'**
+  String get viewReceipt;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @transactionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get transactionDetails;
+
+  /// No description provided for @transactionReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Receipt'**
+  String get transactionReceipt;
+
+  /// No description provided for @receivedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Date'**
+  String get receivedDate;
+
+  /// No description provided for @transactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Date'**
+  String get transactionDate;
+
+  /// No description provided for @transactionNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Number'**
+  String get transactionNumber;
+
+  /// No description provided for @referenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference Number'**
+  String get referenceNumber;
+
+  /// No description provided for @transferReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer Reason'**
+  String get transferReason;
+
+  /// No description provided for @familyAssistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Assistance'**
+  String get familyAssistance;
+
+  /// No description provided for @beneficiary.
+  ///
+  /// In en, this message translates to:
+  /// **'Beneficiary'**
+  String get beneficiary;
+
+  /// No description provided for @sender.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender'**
+  String get sender;
+
+  /// No description provided for @transferDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer Details'**
+  String get transferDetails;
+
+  /// No description provided for @amountSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Sent'**
+  String get amountSent;
+
+  /// No description provided for @totalAmountIncludesTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount (incl. tax)'**
+  String get totalAmountIncludesTax;
 }
 
 class _AppLocalizationsDelegate

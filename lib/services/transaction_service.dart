@@ -8,12 +8,14 @@ class TransactionStats {
   final double monthlyCommissionTotal;
   final double totalAmount;
   final String currencySymbol;
+  final Map<String, double> currencyTotals;
 
   TransactionStats({
     required this.weeklyTransactionCount,
     required this.monthlyCommissionTotal,
     required this.currencySymbol,
     required this.totalAmount,
+    required this.currencyTotals,
   });
 
   factory TransactionStats.empty() {
@@ -22,6 +24,7 @@ class TransactionStats {
       monthlyCommissionTotal: 0,
       totalAmount: 0,
       currencySymbol: 'GNF',
+      currencyTotals: {},
     );
   }
 }
@@ -185,15 +188,15 @@ class TransactionService {
     final weeklyTransactions = completedTransactions.where((t) =>
       t.createdAt.isAfter(weekStartDay) ||
       (t.createdAt.year == weekStartDay.year &&
-       t.createdAt.month == weekStartDay.month &&
-       t.createdAt.day == weekStartDay.day)
+      t.createdAt.month == weekStartDay.month &&
+      t.createdAt.day == weekStartDay.day)
     ).toList();
 
     final monthlyTransactions = completedTransactions.where((t) =>
       t.createdAt.isAfter(monthStart) ||
       (t.createdAt.year == monthStart.year &&
-       t.createdAt.month == monthStart.month &&
-       t.createdAt.day == monthStart.day)
+      t.createdAt.month == monthStart.month &&
+      t.createdAt.day == monthStart.day)
     ).toList();
 
     final weeklyTransactionCount = weeklyTransactions.length;
@@ -206,11 +209,22 @@ class TransactionService {
       0, (sum, transaction) => sum + transaction.amount
     );
 
+    Map<String, double> currencyTotals = {};
+
+    for (var transaction in completedTransactions) {
+      String currency = transaction.currency;
+      if (!currencyTotals.containsKey(currency)) {
+        currencyTotals[currency] = 0;
+      }
+      currencyTotals[currency] = currencyTotals[currency]! + transaction.amount;
+    }
+
     return TransactionStats(
       weeklyTransactionCount: weeklyTransactionCount,
       monthlyCommissionTotal: monthlyCommissionTotal,
       totalAmount: totalAmount,
       currencySymbol: 'GNF',
+      currencyTotals: currencyTotals,
     );
   }
 

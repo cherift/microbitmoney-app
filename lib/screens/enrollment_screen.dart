@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/services/users_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,14 +126,16 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
   }
 
   void _showSuccessDialog(String nomPDV) {
+    final tr = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            'Confirmation d\'enrôllement',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: Text(
+            tr.enrollmentConfirmation,
+            style: const TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           content: Column(
@@ -145,7 +148,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Le nouveau PDV \'$nomPDV\' a été créé avec succès.',
+                tr.pdvCreatedSuccess(nomPDV),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -160,9 +163,9 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                 onPressed: () {
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
-                child: const Text(
-                  'Retour à l\'accueil',
-                  style: TextStyle(
+                child: Text(
+                  tr.backToHome,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   )
@@ -180,15 +183,17 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
 
   void _showErrorDialog(String message) {
     if (mounted) {
+      final tr = AppLocalizations.of(context)!;
+
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
+          title: Text(tr.error),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(tr.ok),
             ),
           ],
         ),
@@ -242,6 +247,8 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -250,7 +257,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
           statusBarIconBrightness: Brightness.light,
         ),
         title: Text(
-          'Nouveau Point de Vente',
+          tr.newPdv,
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -262,8 +269,15 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
       ),
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(tr.loading)
+                ],
               ),
             )
           : SafeArea(
@@ -309,11 +323,13 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
   }
 
   Widget _buildUserInfoSection() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Informations utilisateur',
+          tr.userInformation,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -323,15 +339,15 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _emailController,
-          label: 'Email',
-          hint: 'email@example.com',
+          label: tr.email,
+          hint: tr.emailHint,
           icon: Icons.email_outlined,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un email';
+              return tr.enterEmail;
             }
             if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-              return 'Veuillez entrer un email valide';
+              return tr.enterValidEmail;
             }
             return null;
           },
@@ -339,13 +355,13 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _phoneController,
-          label: 'Téléphone',
-          hint: '+224 000000000',
+          label: tr.phone,
+          hint: tr.phoneHint,
           icon: Icons.phone_outlined,
           keyboardType: TextInputType.phone,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un numéro de téléphone';
+              return tr.enterPhoneNumber;
             }
             return null;
           },
@@ -353,12 +369,12 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _firstNameController,
-          label: 'Prénom',
-          hint: 'Prénom',
+          label: tr.firstName,
+          hint: tr.firstNameHint,
           icon: Icons.person_outline,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un prénom';
+              return tr.enterAFirstName;
             }
             return null;
           },
@@ -366,12 +382,12 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _lastNameController,
-          label: 'Nom',
-          hint: 'Nom',
+          label: tr.lastName,
+          hint: tr.lastNameHint,
           icon: Icons.person_outline,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un nom';
+              return tr.enterALastName;
             }
             return null;
           },
@@ -379,8 +395,8 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _passwordController,
-          label: 'Mot de passe',
-          hint: '••••••••',
+          label: tr.password,
+          hint: tr.passwordHint,
           icon: Icons.lock_outline,
           isPassword: !_isPasswordVisible,
           suffixIcon: IconButton(
@@ -395,17 +411,17 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un mot de passe';
+              return tr.enterYourPasswordError;
             }
             if (value.length < 6) {
-              return 'Le mot de passe doit contenir au moins 6 caractères';
+              return tr.passwordRegex;
             }
             return null;
           },
         ),
         SizedBox(height: 16),
         _buildDropdownField(
-          label: 'Type de compte',
+          label: tr.accountType,
           value: _selectedAccountType,
           items: _accountTypes,
           icon: Icons.account_circle_outlined,
@@ -420,11 +436,13 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
   }
 
   Widget _buildPdvInfoSection() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Informations du PDV',
+          tr.pdvInformation,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -434,12 +452,12 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _pdvNameController,
-          label: 'Nom du PDV',
-          hint: 'Nom du point de vente',
+          label: tr.pdvName,
+          hint: tr.pdvNameHint,
           icon: Icons.store_outlined,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un nom de PDV';
+              return tr.enterPdvName;
             }
             return null;
           },
@@ -447,21 +465,21 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _commissionController,
-          label: 'Commission (%)',
-          hint: '0',
+          label: tr.commission,
+          hint: tr.commissionHint,
           icon: Icons.percent,
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer un pourcentage';
+              return tr.enterPercentage;
             }
             try {
               int commission = int.parse(value);
               if (commission < 0 || commission > 100) {
-                return 'La commission doit être entre 0 et 100';
+                return tr.commissionRange;
               }
             } catch (e) {
-              return 'Veuillez entrer un nombre valide';
+              return tr.enterValidNumber;
             }
             return null;
           },
@@ -469,12 +487,12 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         SizedBox(height: 16),
         _buildTextField(
           controller: _addressController,
-          label: 'Adresse',
-          hint: 'Adresse complète',
+          label: tr.address,
+          hint: tr.addressHint,
           icon: Icons.location_on_outlined,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Veuillez entrer une adresse';
+              return tr.enterAddress;
             }
             return null;
           },
@@ -484,7 +502,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
           children: [
             Expanded(
               child: _buildTimePickerField(
-                label: 'Heure d\'ouverture',
+                label: tr.openingTime,
                 value: _formatTimeOfDay(_openingTime),
                 icon: Icons.access_time,
                 onTap: _selectOpeningTime,
@@ -493,7 +511,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
             SizedBox(width: 16),
             Expanded(
               child: _buildTimePickerField(
-                label: 'Heure de fermeture',
+                label: tr.closingTime,
                 value: _formatTimeOfDay(_closingTime),
                 icon: Icons.access_time,
                 onTap: _selectClosingTime,
@@ -503,7 +521,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
         ),
         SizedBox(height: 16),
         _buildCheckboxField(
-          label: 'Ouvert le weekend',
+          label: tr.openWeekend,
           value: _openWeekend,
           onChanged: (value) {
             setState(() {
@@ -517,6 +535,8 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
 
   // Boutons d'action
   Widget _buildActionButtons() {
+    final tr = AppLocalizations.of(context)!;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -526,7 +546,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
           child: Text(
-            'Annuler',
+            tr.cancel,
             style: TextStyle(
               color: AppColors.darkGrey,
               fontWeight: FontWeight.w600,
@@ -544,7 +564,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
             ),
           ),
           child: Text(
-            'Créer le PDV',
+            tr.createPdv,
             style: TextStyle(
               color: AppColors.white,
               fontWeight: FontWeight.w600,

@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,12 +15,13 @@ class TransactionReceiptScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Détails de transaction"),
+        title: Text(tr.transactionDetails),
         backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: AppColors.secondary,
@@ -53,9 +55,9 @@ class TransactionReceiptScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Fermer',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    tr.close,
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -67,7 +69,9 @@ class TransactionReceiptScreen extends StatelessWidget {
   }
 
   Widget _buildReceiptCard(BuildContext context, double screenWidth) {
-    final amountFormatter = NumberFormat('#,###', 'fr_FR');
+    final tr = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
+    final amountFormatter = NumberFormat('#,###', locale);
     final double amountSent = transaction.amount;
     final double totalAmount = transaction.totalAmount;
 
@@ -81,10 +85,10 @@ class TransactionReceiptScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
-                'Reçu de transaction',
-                style: TextStyle(
+                tr.transactionReceipt,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -105,35 +109,40 @@ class TransactionReceiptScreen extends StatelessWidget {
               ),
             ),
 
-            _buildDetailRow('Date de réception', _formatDate(transaction.completedAt ?? DateTime.now())),
+            _buildDetailRow(tr.receivedDate, _formatDate(transaction.completedAt ?? DateTime.now())),
 
             const Divider(height: 32),
 
-            _buildDetailRow('Date de la transaction', _formatDate(transaction.createdAt)),
+            _buildDetailRow(tr.transactionDate, _formatDate(transaction.createdAt)),
             const SizedBox(height: 12),
-            _buildDetailRowWithWrap('Numéro de transaction', _truncateWithEllipsis(transaction.referenceId, 18), screenWidth),
+            _buildDetailRowWithWrap(tr.transactionNumber, _truncateWithEllipsis(transaction.referenceId, 18), screenWidth),
 
             if (transaction.finalTransactionNumber != null && transaction.finalTransactionNumber!.isNotEmpty) ...[
               const SizedBox(height: 12),
-              _buildDetailRowWithWrap('Numéro de référence ${transaction.operator!.code}', _truncateWithEllipsis(transaction.finalTransactionNumber!, 18), screenWidth, isBold: true),
+              _buildDetailRowWithWrap(
+                '${tr.referenceNumber} ${transaction.operator!.code}',
+                _truncateWithEllipsis(transaction.finalTransactionNumber!, 18),
+                screenWidth,
+                isBold: true
+              ),
             ],
             const SizedBox(height: 24),
-            const Text(
-              'Motif de transfert',
-              style: TextStyle(
+            Text(
+              tr.transferReason,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              transaction.reason ?? 'Assistance famille',
+              transaction.reason ?? tr.familyAssistance,
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Bénéficaire',
-              style: TextStyle(
+            Text(
+              tr.beneficiary,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -149,9 +158,9 @@ class TransactionReceiptScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Expéditeur',
-              style: TextStyle(
+            Text(
+              tr.sender,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -167,19 +176,19 @@ class TransactionReceiptScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Détails du transfert',
-              style: TextStyle(
+            Text(
+              tr.transferDetails,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            _buildDetailRow('montant envoyé', '${amountFormatter.format(amountSent)} ${transaction.currency}'),
+            _buildDetailRow(tr.amountSent, '${amountFormatter.format(amountSent)} ${transaction.currency}'),
             const SizedBox(height: 8),
-            _buildDetailRow('Opérateur', transaction.operator!.name),
+            _buildDetailRow(tr.operator, transaction.operator!.name),
             const SizedBox(height: 8),
-            _buildDetailRow('Mntant total TTC', '${amountFormatter.format(totalAmount)} ${transaction.currency}',
+            _buildDetailRow(tr.totalAmountIncludesTax, '${amountFormatter.format(totalAmount)} ${transaction.currency}',
               isBold: true),
           ],
         ),

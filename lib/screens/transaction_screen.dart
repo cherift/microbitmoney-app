@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/transaction_model.dart';
 import 'package:bit_money/screens/transaction_receipt_screen.dart';
 import 'package:bit_money/services/transaction_service.dart';
@@ -16,31 +17,41 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
   final TransactionService _transactionService = TransactionService();
-  final NumberFormat _amountFormatter = NumberFormat('#,###', 'fr');
-  final DateFormat _dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
+  late NumberFormat _amountFormatter;
+  late DateFormat _dateFormatter;
   final ScrollController _scrollController = ScrollController();
 
   List<Transaction> _transactions = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
-  double _totalAmount = 0;
-  String _currency = 'GNF';
-
+  Map<String, double> _currencyTotals = {};
   int _currentPage = 1;
   final int _itemsPerPage = 10;
   bool _hasMoreData = true;
 
-  final Map<String, _StatusInfo> _statusCache = {
-    'PENDING': _StatusInfo(Colors.orange, 'En attente'),
-    'COMPLETED': _StatusInfo(Colors.green, 'Terminé'),
-    'CANCELLED': _StatusInfo(Colors.red, 'Annulé'),
-  };
+  late Map<String, _StatusInfo> _statusCache;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
     _loadInitialData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final locale = Localizations.localeOf(context).languageCode;
+    _amountFormatter = NumberFormat('#,###', locale);
+    _dateFormatter = DateFormat('dd/MM/yyyy', locale);
+
+    final tr = AppLocalizations.of(context)!;
+    _statusCache = {
+      'PENDING': _StatusInfo(Colors.orange, tr.statusPending),
+      'COMPLETED': _StatusInfo(Colors.green, tr.statusCompleted),
+      'CANCELLED': _StatusInfo(Colors.red, tr.statusCancelled),
+    };
   }
 
   @override
@@ -75,7 +86,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       setState(() {
         _transactions = paginatedResponse.items;
         _hasMoreData = paginatedResponse.pagination.hasNext;
-        _currency = _transactions.isNotEmpty ? _transactions.first.currency : 'GNF';
         _isLoading = false;
       });
 
@@ -96,7 +106,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
       if (mounted) {
         setState(() {
-          _totalAmount = statsResponse.totalAmount;
+          _currencyTotals = statsResponse.currencyTotals;
         });
       }
     } catch (e) {
@@ -121,7 +131,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       setState(() {
         _transactions = paginatedResponse.items;
         _hasMoreData = paginatedResponse.pagination.hasNext;
-        _currency = _transactions.isNotEmpty ? _transactions.first.currency : 'GNF';
         _isLoading = false;
       });
 
@@ -170,6 +179,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -190,9 +201,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           children: [
                             _buildTotalAmountCard(),
                             const SizedBox(height: 24),
-                            const Text(
-                              'Liste des envois',
-                              style: TextStyle(
+                            Text(
+                              tr.transactionList,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black87,
@@ -213,60 +224,75 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Widget _buildTotalAmountCard() {
-    final formattedAmount = _amountFormatter.format(_totalAmount);
+    final tr = AppLocalizations.of(context)!;
+
+    String formatCurrencyAmount(String currency, double amount) {
+      if (currency == 'GNF' && amount >= 1000000) {
+        final inMillions = amount / 1000000;
+        return '${_amountFormatter.format(inMillions)} M';
+      }
+      return _amountFormatter.format(amount);
+    }
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.secondary,
-            AppColors.secondary.withValues(alpha: .8),
-          ],
-        ),
+        color: AppColors.secondary,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: .3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Montant total des envois',
-            style: TextStyle(
-              fontSize: 16,
+          Text(
+            tr.totalTransactionAmount,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
               color: AppColors.white,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
+
           Row(
-            children: [
-              Text(
-                _currency,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
+            children: _currencyTotals.entries.map((entry) {
+              final currency = entry.key;
+              final amount = entry.value;
+              final formattedAmount = formatCurrencyAmount(currency, amount);
+
+              return Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      currency,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      formattedAmount,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                formattedAmount,
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
-                ),
-              ),
-            ],
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -274,6 +300,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Widget _buildTransactionsList() {
+    final tr = AppLocalizations.of(context)!;
+
     if (_transactions.isEmpty) {
       return Center(
         child: Column(
@@ -286,7 +314,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun envoi',
+              tr.noTransactions,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -305,9 +333,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       cacheExtent: 200,
       itemBuilder: (context, index) {
         if (index == _transactions.length) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
           );
@@ -320,6 +348,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Widget _buildTransactionCard(Transaction transaction) {
+    final tr = AppLocalizations.of(context)!;
     final formattedAmount = _amountFormatter.format(transaction.amount);
     final formattedDate = _dateFormatter.format(transaction.createdAt);
 
@@ -354,7 +383,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${transaction.operator?.name ?? 'Opérateur'} - $formattedAmount $_currency',
+                        '${transaction.operator?.name ?? tr.operator} - $formattedAmount ${transaction.currency}',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[700],
@@ -362,7 +391,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${transaction.pdv?.name ?? 'PDV'} - $formattedDate',
+                        '${transaction.pdv?.name ?? tr.pdv} - $formattedDate',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
@@ -401,7 +430,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     );
                   },
                   icon: const Icon(Icons.receipt_outlined, size: 18),
-                  label: const Text('Voir le reçu'),
+                  label: Text(tr.viewReceipt),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.secondary,
                     side: BorderSide(color: AppColors.secondary),

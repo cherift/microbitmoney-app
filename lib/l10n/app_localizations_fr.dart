@@ -36,9 +36,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accountType => 'Type de compte';
 
   @override
-  String get commission => 'Commission';
-
-  @override
   String get password => 'Mot de passe';
 
   @override
@@ -76,6 +73,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pdvName => 'Nom du PDV';
 
   @override
+  String get commission => 'Commission';
+
+  @override
   String get address => 'Adresse';
 
   @override
@@ -103,10 +103,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get newPassword => 'Nouveau mot de passe';
 
   @override
-  String get enterAFirstName => 'Veuillez entrer un prénom';
+  String get enterAFirstName => 'Veuillez entrer votre prénom';
 
   @override
-  String get enterALastName => 'Veuillez entrer un prénom';
+  String get enterALastName => 'Veuillez entrer votre nom';
 
   @override
   String get passwordRegex =>
@@ -355,4 +355,144 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get amountGreaterThanZero => 'Le montant doit être supérieur à 0';
+
+  @override
+  String get newPdv => 'Nouveau Point de Vente';
+
+  @override
+  String get userInformation => 'Informations utilisateur';
+
+  @override
+  String get emailHint => 'email@example.com';
+
+  @override
+  String get phoneHint => '+224 000000000';
+
+  @override
+  String get firstNameHint => 'Prénom';
+
+  @override
+  String get lastNameHint => 'Nom';
+
+  @override
+  String get passwordHint => '••••••••';
+
+  @override
+  String get pdvInformation => 'Informations du PDV';
+
+  @override
+  String get pdvNameHint => 'Nom du point de vente';
+
+  @override
+  String get commissionHint => '0';
+
+  @override
+  String get addressHint => 'Adresse complète';
+
+  @override
+  String get openingTime => 'Heure d\'ouverture';
+
+  @override
+  String get closingTime => 'Heure de fermeture';
+
+  @override
+  String get openWeekend => 'Ouvert le weekend';
+
+  @override
+  String get createPdv => 'Créer le PDV';
+
+  @override
+  String get enrollmentConfirmation => 'Confirmation d\'enrôlement';
+
+  @override
+  String pdvCreatedSuccess(String name) {
+    return 'Le nouveau PDV \'$name\' a été créé avec succès.';
+  }
+
+  @override
+  String get backToHome => 'Retour à l\'accueil';
+
+  @override
+  String get enterEmail => 'Veuillez entrer un email';
+
+  @override
+  String get enterValidEmail => 'Veuillez entrer un email valide';
+
+  @override
+  String get enterPhoneNumber => 'Veuillez entrer un numéro de téléphone';
+
+  @override
+  String get enterPdvName => 'Veuillez entrer un nom de PDV';
+
+  @override
+  String get enterPercentage => 'Veuillez entrer un pourcentage';
+
+  @override
+  String get commissionRange => 'La commission doit être entre 0 et 100';
+
+  @override
+  String get enterValidNumber => 'Veuillez entrer un nombre valide';
+
+  @override
+  String get enterAddress => 'Veuillez entrer une adresse';
+
+  @override
+  String get transactionList => 'Liste des envois';
+
+  @override
+  String get totalTransactionAmount => 'Montant total des envois';
+
+  @override
+  String get noTransactions => 'Aucun envoi';
+
+  @override
+  String get viewReceipt => 'Voir le reçu';
+
+  @override
+  String get statusPending => 'En attente';
+
+  @override
+  String get statusCompleted => 'Terminé';
+
+  @override
+  String get statusCancelled => 'Annulé';
+
+  @override
+  String get transactionDetails => 'Détails de transaction';
+
+  @override
+  String get transactionReceipt => 'Reçu de transaction';
+
+  @override
+  String get receivedDate => 'Date de réception';
+
+  @override
+  String get transactionDate => 'Date de la transaction';
+
+  @override
+  String get transactionNumber => 'Numéro de transaction';
+
+  @override
+  String get referenceNumber => 'Numéro de référence';
+
+  @override
+  String get transferReason => 'Motif de transfert';
+
+  @override
+  String get familyAssistance => 'Assistance famille';
+
+  @override
+  String get beneficiary => 'Bénéficiaire';
+
+  @override
+  String get sender => 'Expéditeur';
+
+  @override
+  String get transferDetails => 'Détails du transfert';
+
+  @override
+  String get amountSent => 'Montant envoyé';
+
+  @override
+  String get totalAmountIncludesTax => 'Montant total TTC';
 }

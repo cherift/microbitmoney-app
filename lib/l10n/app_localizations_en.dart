@@ -36,9 +36,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountType => 'Account Type';
 
   @override
-  String get commission => 'Commission';
-
-  @override
   String get password => 'Password';
 
   @override
@@ -73,6 +70,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdvName => 'POS Name';
+
+  @override
+  String get commission => 'Commission';
 
   @override
   String get address => 'Address';
@@ -351,4 +351,144 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get amountGreaterThanZero => 'Amount must be greater than 0';
+
+  @override
+  String get newPdv => 'New Store Location';
+
+  @override
+  String get userInformation => 'User Information';
+
+  @override
+  String get emailHint => 'email@example.com';
+
+  @override
+  String get phoneHint => '+224 000000000';
+
+  @override
+  String get firstNameHint => 'First Name';
+
+  @override
+  String get lastNameHint => 'Last Name';
+
+  @override
+  String get passwordHint => '••••••••';
+
+  @override
+  String get pdvInformation => 'Store Information';
+
+  @override
+  String get pdvNameHint => 'Store name';
+
+  @override
+  String get commissionHint => '0';
+
+  @override
+  String get addressHint => 'Full address';
+
+  @override
+  String get openingTime => 'Opening Time';
+
+  @override
+  String get closingTime => 'Closing Time';
+
+  @override
+  String get openWeekend => 'Open on weekends';
+
+  @override
+  String get createPdv => 'Create Store';
+
+  @override
+  String get enrollmentConfirmation => 'Enrollment Confirmation';
+
+  @override
+  String pdvCreatedSuccess(String name) {
+    return 'The new store \'$name\' has been successfully created.';
+  }
+
+  @override
+  String get backToHome => 'Back to Home';
+
+  @override
+  String get enterEmail => 'Please enter an email';
+
+  @override
+  String get enterValidEmail => 'Please enter a valid email';
+
+  @override
+  String get enterPhoneNumber => 'Please enter a phone number';
+
+  @override
+  String get enterPdvName => 'Please enter a store name';
+
+  @override
+  String get enterPercentage => 'Please enter a percentage';
+
+  @override
+  String get commissionRange => 'Commission must be between 0 and 100';
+
+  @override
+  String get enterValidNumber => 'Please enter a valid number';
+
+  @override
+  String get enterAddress => 'Please enter an address';
+
+  @override
+  String get transactionList => 'Transactions List';
+
+  @override
+  String get totalTransactionAmount => 'Total Transaction Amount';
+
+  @override
+  String get noTransactions => 'No transactions';
+
+  @override
+  String get viewReceipt => 'View Receipt';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusCompleted => 'Completed';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get transactionDetails => 'Transaction Details';
+
+  @override
+  String get transactionReceipt => 'Transaction Receipt';
+
+  @override
+  String get receivedDate => 'Received Date';
+
+  @override
+  String get transactionDate => 'Transaction Date';
+
+  @override
+  String get transactionNumber => 'Transaction Number';
+
+  @override
+  String get referenceNumber => 'Reference Number';
+
+  @override
+  String get transferReason => 'Transfer Reason';
+
+  @override
+  String get familyAssistance => 'Family Assistance';
+
+  @override
+  String get beneficiary => 'Beneficiary';
+
+  @override
+  String get sender => 'Sender';
+
+  @override
+  String get transferDetails => 'Transfer Details';
+
+  @override
+  String get amountSent => 'Amount Sent';
+
+  @override
+  String get totalAmountIncludesTax => 'Total Amount (incl. tax)';
 }
