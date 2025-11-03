@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/reception_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,12 +15,13 @@ class ReceptionReceiptScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Détails de réception"),
+        title: Text(tr.receptionDetails),
         backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: AppColors.secondary,
@@ -53,9 +55,9 @@ class ReceptionReceiptScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Fermer',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    tr.close,
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -67,7 +69,9 @@ class ReceptionReceiptScreen extends StatelessWidget {
   }
 
   Widget _buildReceiptCard(BuildContext context, double screenWidth) {
-    final amountFormatter = NumberFormat('#,###', 'fr_FR');
+    final tr = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
+    final amountFormatter = NumberFormat('#,###', locale);
     final double amountReceived = reception.amount ?? 0;
     final String currency = reception.currency ?? 'GNF';
     final String truncatedRef = _truncateWithEllipsis(reception.referenceId, 18);
@@ -82,10 +86,10 @@ class ReceptionReceiptScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
-                'Reçu de réception',
-                style: TextStyle(
+                tr.receptionReceipt,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -106,18 +110,18 @@ class ReceptionReceiptScreen extends StatelessWidget {
               ),
             ),
 
-            _buildDetailRow('Date de réception', _formatDate(reception.completedAt ?? DateTime.now())),
+            _buildDetailRow(tr.receivedDate, _formatDate(reception.completedAt ?? DateTime.now())),
 
             const Divider(height: 32),
 
-            _buildDetailRow('Date de la transaction', _formatDate(reception.createdAt)),
+            _buildDetailRow(tr.transactionDate, _formatDate(reception.createdAt)),
             const SizedBox(height: 12),
-            _buildDetailRowWithWrap('Numéro de transaction', truncatedRef, screenWidth, isBold: true),
+            _buildDetailRowWithWrap(tr.transactionNumber, truncatedRef, screenWidth, isBold: true),
             if (reception.reason != null) ...[
               const SizedBox(height: 24),
-              const Text(
-                'Motif du transfert',
-                style: TextStyle(
+              Text(
+                tr.transferReason,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -129,9 +133,9 @@ class ReceptionReceiptScreen extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 24),
-            const Text(
-              'Bénéficiaire',
-              style: TextStyle(
+            Text(
+              tr.beneficiary,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -149,9 +153,9 @@ class ReceptionReceiptScreen extends StatelessWidget {
 
             if (reception.senderFullName != 'N/A') ...[
               const SizedBox(height: 24),
-              const Text(
-                'Expéditeur',
-                style: TextStyle(
+              Text(
+                tr.sender,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -170,22 +174,22 @@ class ReceptionReceiptScreen extends StatelessWidget {
               ],
             ],
             const SizedBox(height: 24),
-            const Text(
-              'Détails du transfert',
-              style: TextStyle(
+            Text(
+              tr.transferDetails,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
 
-            _buildDetailRow('Montant reçu', '${amountFormatter.format(amountReceived)} $currency'),
+            _buildDetailRow(tr.amountReceived, '${amountFormatter.format(amountReceived)} $currency'),
             const SizedBox(height: 8),
-            _buildDetailRow('Opérateur', reception.operator.name),
+            _buildDetailRow(tr.operator, reception.operator.name),
             const SizedBox(height: 8),
-            _buildDetailRow('PDV', reception.pdv?.name ?? 'N/A'),
+            _buildDetailRow(tr.pdv, reception.pdv?.name ?? 'N/A'),
             const SizedBox(height: 8),
-            _buildDetailRow('Montant total', '${amountFormatter.format(amountReceived)} $currency',
+            _buildDetailRow(tr.totalAmount, '${amountFormatter.format(amountReceived)} $currency',
               isBold: true),
           ],
         ),

@@ -506,5 +506,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noReceptions => 'Aucune réception';
 
   @override
+  String get receptionDetails => 'Détails de réception';
+
+  @override
+  String get receptionReceipt => 'Reçu de réception';
+
+  @override
+  String get amountReceived => 'Montant reçu';
+
+  @override
+  String get totalAmount => 'Montant total';
+
+  @override
   String get viewReceptionDetails => 'Voir les détails';
 }

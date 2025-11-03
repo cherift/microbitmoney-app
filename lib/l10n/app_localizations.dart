@@ -959,7 +959,7 @@ abstract class AppLocalizations {
   /// No description provided for @receivedDate.
   ///
   /// In en, this message translates to:
-  /// **'Received Date'**
+  /// **'Reception Date'**
   String get receivedDate;
 
   /// No description provided for @transactionDate.
@@ -1039,6 +1039,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No received transfers'**
   String get noReceptions;
+
+  /// No description provided for @receptionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception Details'**
+  String get receptionDetails;
+
+  /// No description provided for @receptionReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception Receipt'**
+  String get receptionReceipt;
+
+  /// No description provided for @amountReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Received'**
+  String get amountReceived;
+
+  /// No description provided for @totalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get totalAmount;
 
   /// No description provided for @viewReceptionDetails.
   ///

@@ -460,7 +460,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionReceipt => 'Transaction Receipt';
 
   @override
-  String get receivedDate => 'Received Date';
+  String get receivedDate => 'Reception Date';
 
   @override
   String get transactionDate => 'Transaction Date';
@@ -500,6 +500,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noReceptions => 'No received transfers';
+
+  @override
+  String get receptionDetails => 'Reception Details';
+
+  @override
+  String get receptionReceipt => 'Reception Receipt';
+
+  @override
+  String get amountReceived => 'Amount Received';
+
+  @override
+  String get totalAmount => 'Total Amount';
 
   @override
   String get viewReceptionDetails => 'View details';

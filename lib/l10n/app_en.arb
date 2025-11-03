@@ -247,5 +247,11 @@
   "totalAmountIncludesTax": "Total Amount (incl. tax)",
   "receptionList": "Received Transfers",
   "totalReceptionAmount": "Total Received Amount",
-  "noReceptions": "No received transfers"
+  "noReceptions": "No received transfers",
+  "receptionDetails": "Reception Details",
+  "receptionReceipt": "Reception Receipt",
+  "receivedDate": "Reception Date",
+  "amountReceived": "Amount Received",
+  "totalAmount": "Total Amount",
+  "viewReceptionDetails": "View details"
 }

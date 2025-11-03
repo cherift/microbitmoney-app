@@ -250,5 +250,11 @@
   "totalAmountIncludesTax": "Montant total TTC",
   "receptionList": "Liste des réceptions",
   "totalReceptionAmount": "Montant total des réceptions",
-  "noReceptions": "Aucune réception"
+  "noReceptions": "Aucune réception",
+  "receptionDetails": "Détails de réception",
+  "receptionReceipt": "Reçu de réception",
+  "receivedDate": "Date de réception",
+  "amountReceived": "Montant reçu",
+  "totalAmount": "Montant total",
+  "viewReceptionDetails": "Voir les détails"
 }
