@@ -433,13 +433,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterAddress => 'Please enter an address';
 
   @override
-  String get transactionList => 'Transactions List';
+  String get transactionList => 'Transfers List';
 
   @override
-  String get totalTransactionAmount => 'Total Transaction Amount';
+  String get totalTransactionAmount => 'Total Transfers Amount';
 
   @override
-  String get noTransactions => 'No transactions';
+  String get noTransactions => 'No Transfers';
 
   @override
   String get viewReceipt => 'View Receipt';
@@ -491,4 +491,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalAmountIncludesTax => 'Total Amount (incl. tax)';
+
+  @override
+  String get receptionList => 'Received Transfers';
+
+  @override
+  String get totalReceptionAmount => 'Total Received Amount';
+
+  @override
+  String get noReceptions => 'No received transfers';
+
+  @override
+  String get viewReceptionDetails => 'View details';
 }

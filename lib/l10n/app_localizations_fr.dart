@@ -495,4 +495,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get totalAmountIncludesTax => 'Montant total TTC';
+
+  @override
+  String get receptionList => 'Liste des réceptions';
+
+  @override
+  String get totalReceptionAmount => 'Montant total des réceptions';
+
+  @override
+  String get noReceptions => 'Aucune réception';
+
+  @override
+  String get viewReceptionDetails => 'Voir les détails';
 }

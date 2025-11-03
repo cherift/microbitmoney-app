@@ -247,5 +247,8 @@
   "sender": "Expéditeur",
   "transferDetails": "Détails du transfert",
   "amountSent": "Montant envoyé",
-  "totalAmountIncludesTax": "Montant total TTC"
+  "totalAmountIncludesTax": "Montant total TTC",
+  "receptionList": "Liste des réceptions",
+  "totalReceptionAmount": "Montant total des réceptions",
+  "noReceptions": "Aucune réception"
 }

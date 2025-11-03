@@ -905,19 +905,19 @@ abstract class AppLocalizations {
   /// No description provided for @transactionList.
   ///
   /// In en, this message translates to:
-  /// **'Transactions List'**
+  /// **'Transfers List'**
   String get transactionList;
 
   /// No description provided for @totalTransactionAmount.
   ///
   /// In en, this message translates to:
-  /// **'Total Transaction Amount'**
+  /// **'Total Transfers Amount'**
   String get totalTransactionAmount;
 
   /// No description provided for @noTransactions.
   ///
   /// In en, this message translates to:
-  /// **'No transactions'**
+  /// **'No Transfers'**
   String get noTransactions;
 
   /// No description provided for @viewReceipt.
@@ -1021,6 +1021,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Amount (incl. tax)'**
   String get totalAmountIncludesTax;
+
+  /// No description provided for @receptionList.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Transfers'**
+  String get receptionList;
+
+  /// No description provided for @totalReceptionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Received Amount'**
+  String get totalReceptionAmount;
+
+  /// No description provided for @noReceptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No received transfers'**
+  String get noReceptions;
+
+  /// No description provided for @viewReceptionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get viewReceptionDetails;
 }
 
 class _AppLocalizationsDelegate

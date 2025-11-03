@@ -8,12 +8,14 @@ class ReceptionStats {
   final double monthlyAmountTotal;
   final double totalAmount;
   final String currencySymbol;
+  final Map<String, double> currencyTotals;
 
   ReceptionStats({
     required this.weeklyReceptionCount,
     required this.monthlyAmountTotal,
     required this.totalAmount,
     required this.currencySymbol,
+    required this.currencyTotals,
   });
 
   factory ReceptionStats.empty() {
@@ -22,6 +24,7 @@ class ReceptionStats {
       monthlyAmountTotal: 0,
       totalAmount: 0,
       currencySymbol: 'GNF',
+      currencyTotals: {},
     );
   }
 }
@@ -214,11 +217,21 @@ class ReceptionService {
 
         if (response.statusCode == 200) {
           final data = response.data;
+
+          Map<String, double> currencyTotals = {};
+          if (data['currencyTotals'] != null) {
+            final apiCurrencyTotals = data['currencyTotals'] as Map<String, dynamic>;
+            apiCurrencyTotals.forEach((key, value) {
+              currencyTotals[key] = (value ?? 0).toDouble();
+            });
+          }
+
           final stats = ReceptionStats(
             weeklyReceptionCount: data['weeklyReceptionCount'] ?? 0,
             monthlyAmountTotal: (data['monthlyAmountTotal'] ?? 0).toDouble(),
             totalAmount: (data['totalAmount'] ?? 0).toDouble(),
             currencySymbol: data['currencySymbol'] ?? 'GNF',
+            currencyTotals: currencyTotals,
           );
 
           _cachedStats = stats;
@@ -276,11 +289,24 @@ class ReceptionService {
           ? completedReceptions.first.currency!
           : 'GNF';
 
+      Map<String, double> currencyTotals = {};
+
+      for (var reception in completedReceptions) {
+        if (reception.amount != null) {
+          String currency = reception.currency ?? 'GNF';
+          if (!currencyTotals.containsKey(currency)) {
+            currencyTotals[currency] = 0;
+          }
+          currencyTotals[currency] = currencyTotals[currency]! + reception.amount!;
+        }
+      }
+
       final stats = ReceptionStats(
         weeklyReceptionCount: weeklyReceptionCount,
         monthlyAmountTotal: monthlyAmountTotal,
         totalAmount: totalAmount,
         currencySymbol: currencySymbol,
+        currencyTotals: currencyTotals,
       );
 
       _cachedStats = stats;

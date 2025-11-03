@@ -1,3 +1,4 @@
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/constants/app_colors.dart';
 import 'package:bit_money/models/reception_model.dart';
 import 'package:bit_money/screens/reception_receipt_sreen.dart';
@@ -13,30 +14,19 @@ class ReceptionsScreen extends StatefulWidget {
 }
 
 class _ReceptionsScreenState extends State<ReceptionsScreen> {
-  // Initialisation optimisée des services et formateurs
   final ReceptionService _receptionService = ReceptionService();
-  final NumberFormat _amountFormatter = NumberFormat('#,###', 'fr');
-  final DateFormat _dateFormatter = DateFormat('dd/MM/yyyy', 'fr');
+  late NumberFormat _amountFormatter;
+  late DateFormat _dateFormatter;
   final ScrollController _scrollController = ScrollController();
 
-  // États de données
   List<Reception> _receptions = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
-  double _totalAmount = 0;
-  String _currency = 'GNF';
+  Map<String, double> _currencyTotals = {};
 
-  // États de pagination
   int _currentPage = 1;
   final int _itemsPerPage = 10;
   bool _hasMoreData = true;
-
-  // Cache pour les états de réception
-  final Map<String, _StatusInfo> _statusCache = {
-    'PENDING': _StatusInfo(Colors.orange, 'En attente'),
-    'COMPLETED': _StatusInfo(Colors.green, 'Terminé'),
-    'CANCELLED': _StatusInfo(Colors.red, 'Annulé'),
-  };
 
   @override
   void initState() {
@@ -46,13 +36,36 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final locale = Localizations.localeOf(context).languageCode;
+    _amountFormatter = NumberFormat('#,###', locale);
+    _dateFormatter = DateFormat('dd/MM/yyyy', locale);
+  }
+
+  @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
   }
 
-  // Écoute de défilement pour le chargement paresseux
+  _StatusInfo _getStatusInfo(String status) {
+    final tr = AppLocalizations.of(context)!;
+
+    switch (status) {
+      case 'PENDING':
+        return _StatusInfo(Colors.orange, tr.statusPending);
+      case 'COMPLETED':
+        return _StatusInfo(Colors.green, tr.statusCompleted);
+      case 'CANCELLED':
+        return _StatusInfo(Colors.red, tr.statusCancelled);
+      default:
+        return _StatusInfo(Colors.grey, status);
+    }
+  }
+
   void _scrollListener() {
     if (!_scrollController.hasClients) return;
 
@@ -64,12 +77,10 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
     }
   }
 
-  // Chargement initial séparé
   Future<void> _loadInitialData() async {
     if (!mounted) return;
 
     try {
-      // Simuler la pagination pour les réceptions (à implémenter côté API)
       final receptions = await _receptionService.getReceptionsPaginated(
         page: _currentPage,
         limit: _itemsPerPage,
@@ -80,12 +91,9 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
       setState(() {
         _receptions = receptions.items;
         _hasMoreData = receptions.pagination.hasNext;
-        _currency = (_receptions.isNotEmpty && _receptions.first.currency != null)
-          ? _receptions.first.currency! : 'GNF';
         _isLoading = false;
       });
 
-      // Charger les statistiques séparément
       _loadStats();
     } catch (e) {
       debugPrint('Erreur lors du chargement des réceptions: $e');
@@ -97,25 +105,44 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
     }
   }
 
-  // Chargement des statistiques
   Future<void> _loadStats() async {
     try {
-      // Calculer le montant total (à remplacer par un appel d'API dédié)
-      double total = 0;
-      for (var reception in _receptions) {
-        if (reception.amount != null) {
-          total += reception.amount!;
-        }
-      }
+      final stats = await _receptionService.getReceptionStats(forceRefresh: false);
 
       if (mounted) {
         setState(() {
-          _totalAmount = total;
+          _currencyTotals = stats.currencyTotals;
+
+          if (_currencyTotals.isEmpty) {
+            _calculateCurrencyTotals();
+          }
         });
       }
     } catch (e) {
       debugPrint('Erreur lors du chargement des statistiques: $e');
+      if (mounted) {
+        setState(() {
+          _calculateCurrencyTotals();
+        });
+      }
     }
+  }
+
+  void _calculateCurrencyTotals() {
+    Map<String, double> totals = {};
+
+    for (var reception in _receptions) {
+      if (reception.status == 'COMPLETED' && reception.amount != null) {
+        String currency = reception.currency ?? 'GNF';
+        totals[currency] = (totals[currency] ?? 0) + reception.amount!;
+      }
+    }
+
+    if (totals.isEmpty) {
+      totals['GNF'] = 0;
+    }
+
+    _currencyTotals = totals;
   }
 
   Future<void> _loadReceptions() async {
@@ -135,12 +162,9 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
       setState(() {
         _receptions = receptions.items;
         _hasMoreData = receptions.pagination.hasNext;
-        _currency = (_receptions.isNotEmpty && _receptions.first.currency != null)
-          ? _receptions.first.currency! : 'GNF';
         _isLoading = false;
       });
 
-      // Charger les statistiques séparément
       _loadStats();
     } catch (e) {
       debugPrint('Erreur lors du chargement des réceptions: $e');
@@ -186,6 +210,8 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -206,9 +232,9 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
                           children: [
                             _buildTotalAmountCard(),
                             const SizedBox(height: 24),
-                            const Text(
-                              'Liste des réceptions',
-                              style: TextStyle(
+                            Text(
+                              tr.receptionList,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black87,
@@ -229,60 +255,75 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
   }
 
   Widget _buildTotalAmountCard() {
-    final formattedAmount = _amountFormatter.format(_totalAmount);
+    final tr = AppLocalizations.of(context)!;
+
+    String formatCurrencyAmount(String currency, double amount) {
+      if (currency == 'GNF' && amount >= 1000000 && _currencyTotals.length > 1) {
+        final inMillions = amount / 1000000;
+        return '${_amountFormatter.format(inMillions)} M';
+      }
+      return _amountFormatter.format(amount);
+    }
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.accent,
-            AppColors.accent.withValues(alpha: .8),
-          ],
-        ),
+        color: AppColors.accent,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: .3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Montant total des réceptions',
-            style: TextStyle(
-              fontSize: 16,
+          Text(
+            tr.totalReceptionAmount,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
               color: AppColors.white,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
+
           Row(
-            children: [
-              Text(
-                _currency,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
+            children: _currencyTotals.entries.map((entry) {
+              final currency = entry.key;
+              final amount = entry.value;
+              final formattedAmount = formatCurrencyAmount(currency, amount);
+
+              return Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      currency,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      formattedAmount,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                formattedAmount,
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
-                ),
-              ),
-            ],
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -290,6 +331,8 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
   }
 
   Widget _buildReceptionsList() {
+    final tr = AppLocalizations.of(context)!;
+
     if (_receptions.isEmpty) {
       return Center(
         child: Column(
@@ -302,7 +345,7 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucune réception',
+              tr.noReceptions,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -318,13 +361,12 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
       controller: _scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       itemCount: _receptions.length + (_hasMoreData ? 1 : 0),
-      cacheExtent: 200, // Préchargement des éléments
+      cacheExtent: 200,
       itemBuilder: (context, index) {
-        // Si on est au dernier élément et qu'il y a plus de données, afficher un loader
         if (index == _receptions.length) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
           );
@@ -337,15 +379,15 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
   }
 
   Widget _buildReceptionCard(Reception reception) {
+    final tr = AppLocalizations.of(context)!;
+
     final formattedAmount = reception.amount != null
         ? _amountFormatter.format(reception.amount)
         : 'N/A';
 
     final formattedDate = _dateFormatter.format(reception.createdAt);
 
-    // Utilisation du cache de statut
-    final statusInfo = _statusCache[reception.status] ??
-        _StatusInfo(Colors.grey, 'Inconnu');
+    final statusInfo = _getStatusInfo(reception.status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -383,7 +425,7 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${reception.pdv?.name ?? 'PDV'} - $formattedDate',
+                        '${reception.pdv?.name ?? tr.pdv} - $formattedDate',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
@@ -422,7 +464,7 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
                     );
                   },
                   icon: const Icon(Icons.receipt_outlined, size: 18),
-                  label: const Text('Voir les détails'),
+                  label: Text(tr.viewReceipt),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.accent,
                     side: BorderSide(color: AppColors.accent),
@@ -440,7 +482,6 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
   }
 }
 
-// Classe utilitaire pour stocker les infos de statut
 class _StatusInfo {
   final Color color;
   final String text;

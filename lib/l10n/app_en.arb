@@ -225,9 +225,9 @@
   "commissionRange": "Commission must be between 0 and 100",
   "enterValidNumber": "Please enter a valid number",
   "enterAddress": "Please enter an address",
-  "transactionList": "Transactions List",
-  "totalTransactionAmount": "Total Transaction Amount",
-  "noTransactions": "No transactions",
+  "transactionList": "Transfers List",
+  "totalTransactionAmount": "Total Transfers Amount",
+  "noTransactions": "No Transfers",
   "viewReceipt": "View Receipt",
   "statusPending": "Pending",
   "statusCompleted": "Completed",
@@ -244,5 +244,8 @@
   "sender": "Sender",
   "transferDetails": "Transfer Details",
   "amountSent": "Amount Sent",
-  "totalAmountIncludesTax": "Total Amount (incl. tax)"
+  "totalAmountIncludesTax": "Total Amount (incl. tax)",
+  "receptionList": "Received Transfers",
+  "totalReceptionAmount": "Total Received Amount",
+  "noReceptions": "No received transfers"
 }
