@@ -116,6 +116,9 @@
       }
     }
   },
+  "amount": "Amount",
+  "amountHint": "Enter the amount",
+  "enterAmount": "Please enter an amount",
   "amountToSend": "Amount to Send",
   "amountToReceive": "Amount to Receive",
   "notDefined": "Not defined",
@@ -253,5 +256,56 @@
   "receivedDate": "Reception Date",
   "amountReceived": "Amount Received",
   "totalAmount": "Total Amount",
-  "viewReceptionDetails": "View details"
+  "viewReceptionDetails": "View details",
+  "nextStep": "Continue",
+  "sendTransfer": "Send Transfer",
+  "senderInformation": "Sender Information",
+  "idType": "ID Type",
+  "idNumber": "ID Number",
+  "expiryDate": "Expiry Date",
+  "birthDate": "Birth Date",
+  "birthPlace": "Place of Birth",
+  "country": "Country",
+  "nationality": "Nationality",
+  "searchCountry": "Search for a country",
+  "searchNationality": "Search for a nationality",
+  "selectBirthDate": "Please select a birth date",
+  "selectExpiryDate": "Please select an expiry date",
+  "fieldRequired": "This field is required",
+  "senderInfoError": "Error sending information",
+  "passport": "Passport",
+  "identityCard": "Identity Card",
+  "drivingLicense": "Driving License",
+  "other": "Other",
+  "recipientInformation": "Recipient Information",
+  "recipientInfoError": "Error when sending recipient information",
+  "billPayment": "Bill payment",
+  "familyAssistance": "Family assistance",
+  "purchase": "Purchase",
+  "confirmationError": "An error occurred during confirmation",
+  "errorOccurredWithDetails": "An error occurred: {details}",
+  "@errorOccurredWithDetails": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transferConfirmation": "Transfer confirmation",
+  "transferProcessingMessage": "The transfer request is being processed.",
+  "referenceLabel": "Reference: {id}",
+  "@referenceLabel": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptAvailabilityMessage": "You can find the receipt in the transaction history at any time.",
+  "confirmationTitle": "Confirmation",
+  "verifyInformationSubtitle": "(Verify your information)",
+  "incompleteSenderInfo": "Incomplete sender information",
+  "incompleteRecipientInfo": "Incomplete recipient information",
+  "back": "Back",
+  "confirm": "Confirm"
 }

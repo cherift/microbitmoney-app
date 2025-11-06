@@ -1,5 +1,6 @@
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/screens/send/recipient_information_form.dart';
 import 'package:bit_money/services/transfer_service.dart';
@@ -27,12 +28,12 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   final _idTypeController = TextEditingController(text: 'PASSPORT');
   final _idNumberController = TextEditingController();
   final _nationalityController = TextEditingController(text: 'GN');
-  final _nationalityNameController = TextEditingController(text: 'Guinée');
+  final _nationalityNameController = TextEditingController();
   final _birthDateController = TextEditingController();
   final _idExpirationDateController = TextEditingController();
   final _birthPlaceController = TextEditingController();
-  final _selectedCountryController = TextEditingController(text: 'Guinée');
-  final _reasonController = TextEditingController(text: 'Assistance famille');
+  final _selectedCountryController = TextEditingController();
+  final _reasonController = TextEditingController(text: 'FAMILY');
 
   DateTime? _selectedBirthDate;
   DateTime? _selectedIdExpirationDate;
@@ -48,44 +49,38 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
     'AUTRE'
   ];
 
-  final Map<String, String> _idTypeLabels = {
-    'PASSPORT': 'Passeport',
-    'CARTE_IDENTITE': 'Carte d\'identité',
-    'PERMIS': 'Permis de conduire',
-    'AUTRE': 'Autre'
-  };
-
   final List<String> _reasons = [
-    'Assistance famille',
-    'Paiement factures',
-    'Achat',
-    'Autre'
+    'FAMILY',
+    'BILL',
+    'PURCHASE',
+    'OTHER'
   ];
+
+  Map<String, String> _idTypeLabels = {};
+  Map<String, String> _reasonLabels = {};
 
   @override
   void initState() {
     super.initState();
-    _initDefaultCountry();
   }
 
-  void _initDefaultCountry() {
-    try {
-      final List<Country> countries = CountryService().getAll();
-      final Country guinea = countries.firstWhere(
-        (country) => country.countryCode == 'GN',
-        orElse: () => countries.first,
-      );
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-      setState(() {
-        _selectedCountry = guinea;
-        _selectedNationality = guinea;
-        _selectedCountryController.text = guinea.name;
-        _nationalityNameController.text = guinea.name;
-        _nationalityController.text = guinea.countryCode;
-      });
-    } catch (e) {
-      debugPrint('Erreur lors de l\'initialisation du pays: $e');
-    }
+    _idTypeLabels = {
+      'PASSPORT': AppLocalizations.of(context)!.passport,
+      'CARTE_IDENTITE': AppLocalizations.of(context)!.identityCard,
+      'PERMIS': AppLocalizations.of(context)!.drivingLicense,
+      'AUTRE': AppLocalizations.of(context)!.other
+    };
+
+    _reasonLabels = {
+      'FAMILY': AppLocalizations.of(context)!.familyAssistance,
+      'BILL': AppLocalizations.of(context)!.billPayment,
+      'PURCHASE': AppLocalizations.of(context)!.purchase,
+      'OTHER': AppLocalizations.of(context)!.other
+    };
   }
 
   @override
@@ -146,16 +141,18 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   void _showErrorDialog(String message) {
+    final tr = AppLocalizations.of(context)!;
+
     if (mounted) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
+          title: Text(tr.error),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(tr.ok),
             ),
           ],
         ),
@@ -192,17 +189,19 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Future<void> _continueToConfirmation() async {
+    final tr = AppLocalizations.of(context)!;
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     if (_selectedBirthDate == null) {
-      _showErrorSnackBar('Veuillez sélectionner une date de naissance');
+      _showErrorSnackBar(tr.selectBirthDate);
       return;
     }
 
     if (_selectedIdExpirationDate == null) {
-      _showErrorSnackBar('Veuillez sélectionner une date d\'expiration');
+      _showErrorSnackBar(tr.selectExpiryDate);
       return;
     }
 
@@ -220,14 +219,14 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
       widget.transferData.senderBirthDate = _selectedBirthDate;
       widget.transferData.senderBirthPlace = _birthPlaceController.text;
       widget.transferData.senderCountry = _selectedCountryController.text;
-      widget.transferData.reason = _reasonController.text;
+      widget.transferData.reason = _reasonLabels[_reasonController.text];
     });
 
     try {
       final response = await _transferService.submitSenderInfo(widget.transferData.toSenderJson());
 
       if (response is Map<String, dynamic> && response.containsKey('success') && !response['success']) {
-        _showErrorSnackBar(response['message'] ?? 'Une erreur est survenue');
+        _showErrorSnackBar(response['message'] ?? tr.errorOccured);
         setState(() {
           _isProcessing = false;
         });
@@ -252,12 +251,14 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
       setState(() {
         _isProcessing = false;
       });
-      _showErrorDialog('Erreur lors de l\'envoi des informations: ${e.toString()}');
+      _showErrorDialog('${tr.senderInfoError}: ${e.toString()}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -265,9 +266,9 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Infos de l\'expéditeur',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.senderInformation,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -303,16 +304,18 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Widget _buildSenderForm() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTextField('Nom', _lastNameController, validator: _requiredValidator),
+        _buildTextField(tr.lastName, _lastNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Prénom', _firstNameController, validator: _requiredValidator),
+        _buildTextField(tr.firstName, _firstNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Adresse', _addressController, validator: _requiredValidator),
+        _buildTextField(tr.address, _addressController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Téléphone', _phoneController,
+        _buildTextField(tr.phone, _phoneController,
           keyboardType: TextInputType.phone,
           validator: _requiredValidator
         ),
@@ -326,28 +329,28 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _buildTextField('Numéro ID', _idNumberController,
+              child: _buildTextField(tr.idNumber, _idNumberController,
                 validator: _requiredValidator
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        _buildTextField('Date d\'expiration', _idExpirationDateController,
+        _buildTextField(tr.expiryDate, _idExpirationDateController,
           readOnly: true,
           onTap: () => _selectExpirationDate(context),
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-        _buildTextField('Date de naissance', _birthDateController,
+        _buildTextField(tr.birthDate, _birthDateController,
           readOnly: true,
           onTap: () => _selectBirthDate(context),
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
-        _buildTextField('Lieu de naissance', _birthPlaceController,
+        _buildTextField(tr.birthPlace, _birthPlaceController,
           validator: _requiredValidator
         ),
         const SizedBox(height: 16),
@@ -359,11 +362,13 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Widget _buildNationalitySelector() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Nationalité',
+          tr.nationality,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -378,7 +383,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
               countryListTheme: CountryListThemeData(
                 borderRadius: BorderRadius.circular(8),
                 inputDecoration: InputDecoration(
-                  hintText: 'Rechercher une nationalité',
+                  hintText: tr.searchNationality,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -433,11 +438,13 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Widget _buildCountrySelector() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Pays',
+          tr.country,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -452,7 +459,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
               countryListTheme: CountryListThemeData(
                 borderRadius: BorderRadius.circular(8),
                 inputDecoration: InputDecoration(
-                  hintText: 'Rechercher un pays',
+                  hintText: tr.searchCountry,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -506,11 +513,13 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Widget _buildIdTypeDropdown() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Type de pièce',
+          tr.idType,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -555,11 +564,13 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Widget _reasonDropdown() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Motif du transfert',
+          tr.transferReason,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -583,7 +594,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
             items: _reasons.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(_reasonLabels[value] ?? value),
               );
             }).toList(),
             onChanged: (String? newValue) {
@@ -657,6 +668,8 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   Widget _buildButtonBar() {
+    final tr = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -669,11 +682,11 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text(
-                'Annuler',
-                style: TextStyle(
+              child: Text(
+                tr.cancel,
+                style: const TextStyle(
                   color: AppColors.darkGrey,
                   fontWeight: FontWeight.bold,
                 ),
@@ -690,7 +703,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 elevation: 0,
               ),
               child: _isProcessing
@@ -702,9 +715,9 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
                         strokeWidth: 2,
                       ),
                     )
-                  : const Text(
-                      'Continuer',
-                      style: TextStyle(
+                  : Text(
+                      tr.nextStep,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -717,8 +730,10 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
   }
 
   String? _requiredValidator(String? value) {
+    final tr = AppLocalizations.of(context)!;
+
     if (value == null || value.isEmpty) {
-      return 'Ce champ est obligatoire';
+      return tr.fieldRequired;
     }
     return null;
   }

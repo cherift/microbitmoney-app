@@ -566,6 +566,24 @@ abstract class AppLocalizations {
   /// **'Quote #{id}'**
   String quoteNumber(String id);
 
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @amountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the amount'**
+  String get amountHint;
+
+  /// No description provided for @enterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount'**
+  String get enterAmount;
+
   /// No description provided for @amountToSend.
   ///
   /// In en, this message translates to:
@@ -635,7 +653,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchCountry.
   ///
   /// In en, this message translates to:
-  /// **'Search country'**
+  /// **'Search for a country'**
   String get searchCountry;
 
   /// No description provided for @enterAmountToSend.
@@ -691,12 +709,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a recipient country'**
   String get selectRecipientCountry;
-
-  /// No description provided for @enterAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter an amount'**
-  String get enterAmount;
 
   /// No description provided for @enterOnlyOneAmount.
   ///
@@ -989,7 +1001,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyAssistance.
   ///
   /// In en, this message translates to:
-  /// **'Family Assistance'**
+  /// **'Family assistance'**
   String get familyAssistance;
 
   /// No description provided for @beneficiary.
@@ -1069,6 +1081,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View details'**
   String get viewReceptionDetails;
+
+  /// No description provided for @nextStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get nextStep;
+
+  /// No description provided for @sendTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Transfer'**
+  String get sendTransfer;
+
+  /// No description provided for @senderInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender Information'**
+  String get senderInformation;
+
+  /// No description provided for @idType.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Type'**
+  String get idType;
+
+  /// No description provided for @idNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Number'**
+  String get idNumber;
+
+  /// No description provided for @expiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry Date'**
+  String get expiryDate;
+
+  /// No description provided for @birthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth Date'**
+  String get birthDate;
+
+  /// No description provided for @birthPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Place of Birth'**
+  String get birthPlace;
+
+  /// No description provided for @country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// No description provided for @nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get nationality;
+
+  /// No description provided for @searchNationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a nationality'**
+  String get searchNationality;
+
+  /// No description provided for @selectBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a birth date'**
+  String get selectBirthDate;
+
+  /// No description provided for @selectExpiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an expiry date'**
+  String get selectExpiryDate;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
+
+  /// No description provided for @senderInfoError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error sending information'**
+  String get senderInfoError;
+
+  /// No description provided for @passport.
+  ///
+  /// In en, this message translates to:
+  /// **'Passport'**
+  String get passport;
+
+  /// No description provided for @identityCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity Card'**
+  String get identityCard;
+
+  /// No description provided for @drivingLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Driving License'**
+  String get drivingLicense;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @recipientInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient Information'**
+  String get recipientInformation;
+
+  /// No description provided for @recipientInfoError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error when sending recipient information'**
+  String get recipientInfoError;
+
+  /// No description provided for @billPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill payment'**
+  String get billPayment;
+
+  /// No description provided for @purchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get purchase;
+
+  /// No description provided for @confirmationError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred during confirmation'**
+  String get confirmationError;
+
+  /// No description provided for @errorOccurredWithDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred: {details}'**
+  String errorOccurredWithDetails(String details);
+
+  /// No description provided for @transferConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer confirmation'**
+  String get transferConfirmation;
+
+  /// No description provided for @transferProcessingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The transfer request is being processed.'**
+  String get transferProcessingMessage;
+
+  /// No description provided for @referenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference: {id}'**
+  String referenceLabel(String id);
+
+  /// No description provided for @receiptAvailabilityMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can find the receipt in the transaction history at any time.'**
+  String get receiptAvailabilityMessage;
+
+  /// No description provided for @confirmationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation'**
+  String get confirmationTitle;
+
+  /// No description provided for @verifyInformationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'(Verify your information)'**
+  String get verifyInformationSubtitle;
+
+  /// No description provided for @incompleteSenderInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete sender information'**
+  String get incompleteSenderInfo;
+
+  /// No description provided for @incompleteRecipientInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete recipient information'**
+  String get incompleteRecipientInfo;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
 }
 
 class _AppLocalizationsDelegate

@@ -6,6 +6,7 @@ import 'package:bit_money/services/transfer_service.dart';
 import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 
 class RecipientInformationForm extends StatefulWidget {
   final TransferData transferData;
@@ -21,7 +22,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
 
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _selectedCountryController = TextEditingController(text: 'Guinée');
+  final _selectedCountryController = TextEditingController();
 
   Country? _selectedCountry;
   bool _isProcessing = false;
@@ -29,24 +30,6 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
   @override
   void initState() {
     super.initState();
-    _initDefaultCountry();
-  }
-
-  void _initDefaultCountry() {
-    try {
-      final List<Country> countries = CountryService().getAll();
-      final Country guinea = countries.firstWhere(
-        (country) => country.countryCode == 'GN',
-        orElse: () => countries.first,
-      );
-
-      setState(() {
-        _selectedCountry = guinea;
-        _selectedCountryController.text = guinea.name;
-      });
-    } catch (e) {
-      debugPrint('Erreur lors de l\'initialisation du pays: $e');
-    }
   }
 
   @override
@@ -70,15 +53,16 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
 
   void _showErrorDialog(String message) {
     if (mounted) {
+      final tr = AppLocalizations.of(context)!;
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
+          title: Text(tr.error),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(tr.ok),
             ),
           ],
         ),
@@ -102,8 +86,10 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
     try {
       final response = await _transferService.submitRecipientInfo(widget.transferData.toRecipientJson());
 
+      if (!mounted) return;
+
       if (response is Map<String, dynamic> && response.containsKey('success') && !response['success']) {
-        _showErrorSnackBar(response['message'] ?? 'Une erreur est survenue');
+        _showErrorSnackBar(response['message'] ?? AppLocalizations.of(context)!.errorOccured);
         setState(() {
           _isProcessing = false;
         });
@@ -128,12 +114,13 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
       setState(() {
         _isProcessing = false;
       });
-      _showErrorDialog('Erreur lors de l\'envoi des informations: ${e.toString()}');
+      _showErrorDialog('${AppLocalizations.of(context)!.senderInfoError}: ${e.toString()}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -141,9 +128,9 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Infos du bénéficiaire',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.recipientInformation,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -179,12 +166,13 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
   }
 
   Widget _buildRecipientForm() {
+    final tr = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTextField('Nom', _lastNameController, validator: _requiredValidator),
+        _buildTextField(tr.lastName, _lastNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Prénom', _firstNameController, validator: _requiredValidator),
+        _buildTextField(tr.firstName, _firstNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
         _buildCountrySelector(),
       ],
@@ -192,11 +180,12 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
   }
 
   Widget _buildCountrySelector() {
+    final tr = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Pays',
+          tr.country,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -211,7 +200,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
               countryListTheme: CountryListThemeData(
                 borderRadius: BorderRadius.circular(8),
                 inputDecoration: InputDecoration(
-                  hintText: 'Rechercher un pays',
+                  hintText: tr.searchCountry,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -318,6 +307,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
   }
 
   Widget _buildButtonBar() {
+    final tr = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -330,11 +320,11 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text(
-                'Annuler',
-                style: TextStyle(
+              child: Text(
+                tr.cancel,
+                style: const TextStyle(
                   color: AppColors.darkGrey,
                   fontWeight: FontWeight.bold,
                 ),
@@ -351,7 +341,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 elevation: 0,
               ),
               child: _isProcessing
@@ -363,9 +353,9 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
                         strokeWidth: 2,
                       ),
                     )
-                  : const Text(
-                      'Continuer',
-                      style: TextStyle(
+                  : Text(
+                      tr.nextStep,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -379,7 +369,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
 
   String? _requiredValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Ce champ est obligatoire';
+      return AppLocalizations.of(context)!.fieldRequired;
     }
     return null;
   }

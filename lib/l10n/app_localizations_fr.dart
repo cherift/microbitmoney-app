@@ -254,6 +254,15 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get amount => 'Montant';
+
+  @override
+  String get amountHint => 'Entrez le montant';
+
+  @override
+  String get enterAmount => 'Veuillez renseigner un des montants';
+
+  @override
   String get amountToSend => 'Montant à envoyer';
 
   @override
@@ -321,9 +330,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get selectRecipientCountry =>
       'Veuillez sélectionner un pays de réception';
-
-  @override
-  String get enterAmount => 'Veuillez renseigner un des montants';
 
   @override
   String get enterOnlyOneAmount =>
@@ -519,4 +525,119 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get viewReceptionDetails => 'Voir les détails';
+
+  @override
+  String get nextStep => 'Continuer';
+
+  @override
+  String get sendTransfer => 'Envoyer un transfert';
+
+  @override
+  String get senderInformation => 'Infos de l\'expéditeur';
+
+  @override
+  String get idType => 'Type de pièce';
+
+  @override
+  String get idNumber => 'Numéro ID';
+
+  @override
+  String get expiryDate => 'Date d\'expiration';
+
+  @override
+  String get birthDate => 'Date de naissance';
+
+  @override
+  String get birthPlace => 'Lieu de naissance';
+
+  @override
+  String get country => 'Pays';
+
+  @override
+  String get nationality => 'Nationalité';
+
+  @override
+  String get searchNationality => 'Rechercher une nationalité';
+
+  @override
+  String get selectBirthDate => 'Veuillez sélectionner une date de naissance';
+
+  @override
+  String get selectExpiryDate => 'Veuillez sélectionner une date d\'expiration';
+
+  @override
+  String get fieldRequired => 'Ce champ est obligatoire';
+
+  @override
+  String get senderInfoError => 'Erreur lors de l\'envoi des informations';
+
+  @override
+  String get passport => 'Passeport';
+
+  @override
+  String get identityCard => 'Carte d\'identité';
+
+  @override
+  String get drivingLicense => 'Permis de conduire';
+
+  @override
+  String get other => 'Autre';
+
+  @override
+  String get recipientInformation => 'Infos du bénéficiaire';
+
+  @override
+  String get recipientInfoError =>
+      'Erreur lors de l\'envoi des informations du bénéficiaire';
+
+  @override
+  String get billPayment => 'Paiement factures';
+
+  @override
+  String get purchase => 'Achat';
+
+  @override
+  String get confirmationError =>
+      'Une erreur est survenue lors de la confirmation';
+
+  @override
+  String errorOccurredWithDetails(String details) {
+    return 'Une erreur est survenue: $details';
+  }
+
+  @override
+  String get transferConfirmation => 'Confirmation de transfert';
+
+  @override
+  String get transferProcessingMessage =>
+      'La demande de transfert est en cours de traitement.';
+
+  @override
+  String referenceLabel(String id) {
+    return 'Référence: $id';
+  }
+
+  @override
+  String get receiptAvailabilityMessage =>
+      'Vous pouvez à tout moment retrouver le reçu dans l\'historique des transactions.';
+
+  @override
+  String get confirmationTitle => 'Confirmation';
+
+  @override
+  String get verifyInformationSubtitle => '(Vérifier vos informations)';
+
+  @override
+  String get incompleteSenderInfo =>
+      'Informations de l\'expéditeur incomplètes';
+
+  @override
+  String get incompleteRecipientInfo =>
+      'Informations du bénéficiaire incomplètes';
+
+  @override
+  String get back => 'Retour';
+
+  @override
+  String get confirm => 'Confirmer';
 }

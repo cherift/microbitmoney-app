@@ -119,6 +119,9 @@
       }
     }
   },
+  "amount": "Montant",
+  "amountHint": "Entrez le montant",
+  "enterAmount": "Veuillez entrer un montant",
   "amountToSend": "Montant à envoyer",
   "amountToReceive": "Montant à recevoir",
   "notDefined": "Non défini",
@@ -256,5 +259,56 @@
   "receivedDate": "Date de réception",
   "amountReceived": "Montant reçu",
   "totalAmount": "Montant total",
-  "viewReceptionDetails": "Voir les détails"
+  "viewReceptionDetails": "Voir les détails",
+  "nextStep": "Continuer",
+  "sendTransfer": "Envoyer un transfert",
+  "senderInformation": "Infos de l'expéditeur",
+  "idType": "Type de pièce",
+  "idNumber": "Numéro ID",
+  "expiryDate": "Date d'expiration",
+  "birthDate": "Date de naissance",
+  "birthPlace": "Lieu de naissance",
+  "country": "Pays",
+  "nationality": "Nationalité",
+  "searchCountry": "Rechercher un pays",
+  "searchNationality": "Rechercher une nationalité",
+  "selectBirthDate": "Veuillez sélectionner une date de naissance",
+  "selectExpiryDate": "Veuillez sélectionner une date d'expiration",
+  "fieldRequired": "Ce champ est obligatoire",
+  "senderInfoError": "Erreur lors de l'envoi des informations",
+  "passport": "Passeport",
+  "identityCard": "Carte d'identité",
+  "drivingLicense": "Permis de conduire",
+  "other": "Autre",
+  "recipientInformation": "Infos du bénéficiaire",
+  "recipientInfoError": "Erreur lors de l'envoi des informations du bénéficiaire",
+  "billPayment": "Paiement factures",
+  "familyAssistance": "Assistance famille",
+  "purchase": "Achat",
+  "confirmationError": "Une erreur est survenue lors de la confirmation",
+  "errorOccurredWithDetails": "Une erreur est survenue: {details}",
+  "@errorOccurredWithDetails": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "transferConfirmation": "Confirmation de transfert",
+  "transferProcessingMessage": "La demande de transfert est en cours de traitement.",
+  "referenceLabel": "Référence: {id}",
+  "@referenceLabel": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptAvailabilityMessage": "Vous pouvez à tout moment retrouver le reçu dans l'historique des transactions.",
+  "confirmationTitle": "Confirmation",
+  "verifyInformationSubtitle": "(Vérifier vos informations)",
+  "incompleteSenderInfo": "Informations de l'expéditeur incomplètes",
+  "incompleteRecipientInfo": "Informations du bénéficiaire incomplètes",
+  "back": "Retour",
+  "confirm": "Confirmer"
 }

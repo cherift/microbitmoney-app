@@ -46,7 +46,7 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialLoadDone) {
-      _loadOperators(context);
+      _loadOperators();
       _initialLoadDone = true;
     }
   }
@@ -98,7 +98,7 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
     }
   }
 
-  Future<void> _loadOperators(BuildContext context) async {
+  Future<void> _loadOperators() async {
     setState(() {
       _isLoading = true;
     });

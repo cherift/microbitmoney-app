@@ -1,5 +1,6 @@
 import 'package:bit_money/components/operator_grid.dart';
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/models/transfer_data.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
@@ -54,7 +55,9 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
     try {
       await _apiService.requestAuthorization();
     } catch (e) {
-      _showErrorDialog('Erreur d\'initialisation: $e');
+      if (!mounted) return;
+      final tr = AppLocalizations.of(context)!;
+      _showErrorDialog('${tr.errorOccured}: $e');
     }
   }
 
@@ -70,15 +73,19 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+      final tr = AppLocalizations.of(context)!;
       setState(() {
         _isLoading = false;
       });
-      _showErrorDialog("Impossible de charger les opérateurs");
+      _showErrorDialog(tr.operatorsLoadError);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -86,9 +93,9 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Envoyer un transfert',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.sendTransfer,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: AppColors.white,
@@ -139,16 +146,18 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
   }
 
   void _showErrorDialog(String message) {
+    final tr = AppLocalizations.of(context)!;
+
     if (mounted) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
+          title: Text(tr.error),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(tr.ok),
             ),
           ],
         ),
@@ -168,12 +177,14 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
   }
 
   Future<void> _verifyAmount() async {
+    final tr = AppLocalizations.of(context)!;
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     if (_selectedOperator == null) {
-      _showErrorSnackBar("Veuillez sélectionner un opérateur");
+      _showErrorSnackBar(tr.selectOperator);
       return;
     }
 
@@ -185,11 +196,11 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
       }
 
       if (checkAmount < _selectedOperator!.minAmount) {
-        _showErrorSnackBar('Le montant minimum est de ${_selectedOperator!.minAmount} GNF');
+        _showErrorSnackBar(tr.minimumAmount(_selectedOperator!.minAmount.toString()));
         return;
       }
       if (checkAmount > _selectedOperator!.maxAmount) {
-        _showErrorSnackBar('Le montant maximum est de ${_selectedOperator!.maxAmount} GNF');
+        _showErrorSnackBar(tr.maximumAmount(_selectedOperator!.maxAmount.toString()));
         return;
       }
     }
@@ -206,7 +217,7 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
       final response = await _apiService.submitAmount(_amountData.toAmountJson());
 
       if (response is Map<String, dynamic> && response.containsKey('success') && !response['success']) {
-        _showErrorSnackBar(response['message'] ?? 'Une erreur est survenue');
+        _showErrorSnackBar(response['message'] ?? tr.errorOccured);
         setState(() {
           _isProcessing = false;
         });
@@ -231,19 +242,21 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
       setState(() {
         _isProcessing = false;
       });
-      _showErrorDialog('Erreur lors de la vérification du montant: ${e.toString()}');
+      _showErrorDialog('${tr.errorOccured}: ${e.toString()}');
     }
   }
 
   Widget buildAmountForm() {
+    final tr = AppLocalizations.of(context)!;
+
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Montant',
-            style: TextStyle(
+          Text(
+            tr.amount,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.darkGrey,
@@ -261,12 +274,12 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
                 Expanded(
                   child: TextFormField(
                     controller: _amountController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                     ],
                     decoration: InputDecoration(
-                      hintText: 'Entrez le montant',
+                      hintText: tr.amountHint,
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -276,16 +289,16 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Veuillez entrer un montant';
+                        return tr.enterAmount;
                       }
 
-                      final amount = int.tryParse(value);
+                      final amount = double.tryParse(value);
                       if (amount == null) {
-                        return 'Veuillez entrer un montant valide';
+                        return tr.enterValidAmount;
                       }
 
                       if (amount <= 0) {
-                        return 'Le montant doit être supérieur à 0';
+                        return tr.amountGreaterThanZero;
                       }
 
                       return null;
@@ -357,9 +370,9 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
                         strokeWidth: 2,
                       ),
                     )
-                  : const Text(
-                      'Continuer',
-                      style: TextStyle(
+                  : Text(
+                      tr.nextStep,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: AppColors.white,

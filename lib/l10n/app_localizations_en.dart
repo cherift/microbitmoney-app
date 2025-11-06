@@ -252,6 +252,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get amount => 'Amount';
+
+  @override
+  String get amountHint => 'Enter the amount';
+
+  @override
+  String get enterAmount => 'Please enter an amount';
+
+  @override
   String get amountToSend => 'Amount to Send';
 
   @override
@@ -289,7 +298,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newQuote => 'New Quote';
 
   @override
-  String get searchCountry => 'Search country';
+  String get searchCountry => 'Search for a country';
 
   @override
   String get enterAmountToSend => 'Enter amount to send';
@@ -317,9 +326,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectRecipientCountry => 'Please select a recipient country';
-
-  @override
-  String get enterAmount => 'Please enter an amount';
 
   @override
   String get enterOnlyOneAmount =>
@@ -475,7 +481,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transferReason => 'Transfer Reason';
 
   @override
-  String get familyAssistance => 'Family Assistance';
+  String get familyAssistance => 'Family assistance';
 
   @override
   String get beneficiary => 'Beneficiary';
@@ -515,4 +521,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewReceptionDetails => 'View details';
+
+  @override
+  String get nextStep => 'Continue';
+
+  @override
+  String get sendTransfer => 'Send Transfer';
+
+  @override
+  String get senderInformation => 'Sender Information';
+
+  @override
+  String get idType => 'ID Type';
+
+  @override
+  String get idNumber => 'ID Number';
+
+  @override
+  String get expiryDate => 'Expiry Date';
+
+  @override
+  String get birthDate => 'Birth Date';
+
+  @override
+  String get birthPlace => 'Place of Birth';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get nationality => 'Nationality';
+
+  @override
+  String get searchNationality => 'Search for a nationality';
+
+  @override
+  String get selectBirthDate => 'Please select a birth date';
+
+  @override
+  String get selectExpiryDate => 'Please select an expiry date';
+
+  @override
+  String get fieldRequired => 'This field is required';
+
+  @override
+  String get senderInfoError => 'Error sending information';
+
+  @override
+  String get passport => 'Passport';
+
+  @override
+  String get identityCard => 'Identity Card';
+
+  @override
+  String get drivingLicense => 'Driving License';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get recipientInformation => 'Recipient Information';
+
+  @override
+  String get recipientInfoError => 'Error when sending recipient information';
+
+  @override
+  String get billPayment => 'Bill payment';
+
+  @override
+  String get purchase => 'Purchase';
+
+  @override
+  String get confirmationError => 'An error occurred during confirmation';
+
+  @override
+  String errorOccurredWithDetails(String details) {
+    return 'An error occurred: $details';
+  }
+
+  @override
+  String get transferConfirmation => 'Transfer confirmation';
+
+  @override
+  String get transferProcessingMessage =>
+      'The transfer request is being processed.';
+
+  @override
+  String referenceLabel(String id) {
+    return 'Reference: $id';
+  }
+
+  @override
+  String get receiptAvailabilityMessage =>
+      'You can find the receipt in the transaction history at any time.';
+
+  @override
+  String get confirmationTitle => 'Confirmation';
+
+  @override
+  String get verifyInformationSubtitle => '(Verify your information)';
+
+  @override
+  String get incompleteSenderInfo => 'Incomplete sender information';
+
+  @override
+  String get incompleteRecipientInfo => 'Incomplete recipient information';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get confirm => 'Confirm';
 }

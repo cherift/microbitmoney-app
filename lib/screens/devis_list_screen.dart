@@ -43,7 +43,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialLoadDone) {
-      _loadDevis(context);
+      _loadDevis();
       _initialLoadDone = true;
     }
   }
@@ -54,7 +54,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
     super.dispose();
   }
 
-  Future<void> _loadDevis(BuildContext context) async {
+  Future<void> _loadDevis() async {
     setState(() {
       _isLoading = true;
     });
@@ -477,7 +477,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.primary),
-            onPressed: () => _loadDevis(context),
+            onPressed: () => _loadDevis(),
           ),
         ],
       ),
@@ -491,7 +491,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
         : FadeTransition(
             opacity: _fadeAnimation,
             child: RefreshIndicator(
-              onRefresh: () => _loadDevis(context),
+              onRefresh: () => _loadDevis(),
               color: AppColors.primary,
               child: Column(
                 children: [
@@ -621,7 +621,7 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
             MaterialPageRoute(builder: (context) => const CreateDevisScreen()),
           ).then((result) {
             if (result == true) {
-              _loadDevis(context);
+              _loadDevis();
             }
           });
         },
