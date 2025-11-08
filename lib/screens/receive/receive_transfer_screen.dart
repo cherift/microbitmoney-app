@@ -7,6 +7,7 @@ import 'package:bit_money/screens/receive/reception_reference_screen.dart';
 import 'package:bit_money/services/transaction_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 
 class ReceiveTransferOperatorScreen extends StatefulWidget {
   const ReceiveTransferOperatorScreen({super.key});
@@ -54,7 +55,7 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
         setState(() {
           _isLoading = false;
         });
-        _showErrorSnackBar("Impossible de charger les opérateurs");
+        _showErrorSnackBar(AppLocalizations.of(context)!.operatorsLoadError);
       }
     }
   }
@@ -75,9 +76,10 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
       if (_selectedOperator!.code == 'MBM') {
         final response = await _transactionService.getTransactionStatus(_referenceController.text);
 
+        if (!mounted) return;
 
         if (response['error'] != false) {
-          _showErrorSnackBar(response['error'] ?? "Une erreur s'est produite");
+          _showErrorSnackBar(response['error'] ?? AppLocalizations.of(context)!.errorOccured);
           return;
         }
       }
@@ -94,12 +96,13 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
         );
       }
     } else if (_selectedOperator == null) {
-      _showErrorSnackBar("Veuillez sélectionner un opérateur");
+      _showErrorSnackBar(AppLocalizations.of(context)!.selectOperator);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -107,9 +110,9 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Recevoir un transfert',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.receiveTransfer,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: AppColors.white,
@@ -156,16 +159,16 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
     );
   }
 
-
   Widget _buildReferenceForm() {
+    final tr = AppLocalizations.of(context)!;
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Numéro de référence',
-            style: TextStyle(
+          Text(
+            tr.referenceNumber,
+            style: const TextStyle(
               fontSize: 16,
               color: AppColors.darkGrey,
             ),
@@ -174,7 +177,7 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
           TextFormField(
             controller: _referenceController,
             decoration: InputDecoration(
-              hintText: 'Entrez un code de transfert',
+              hintText: tr.enterTransferCode,
               hintStyle: TextStyle(color: Colors.grey.shade400),
               filled: true,
               fillColor: Colors.white,
@@ -198,7 +201,7 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Veuillez entrer un numéro de référence';
+                return tr.enterReferenceNumber;
               }
               return null;
             },
@@ -220,9 +223,9 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Vérifier',
-                style: TextStyle(
+              child: Text(
+                tr.verify,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.white,

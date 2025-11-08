@@ -1291,6 +1291,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirm;
+
+  /// No description provided for @receiveTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive a transfer'**
+  String get receiveTransfer;
+
+  /// No description provided for @enterTransferCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a transfer code'**
+  String get enterTransferCode;
+
+  /// No description provided for @enterReferenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a reference number'**
+  String get enterReferenceNumber;
+
+  /// No description provided for @verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// No description provided for @residenceCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence'**
+  String get residenceCountry;
+
+  /// No description provided for @futureExpiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'The expiry date must be in the future'**
+  String get futureExpiryDate;
+
+  /// No description provided for @receptionCreationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating the reception'**
+  String get receptionCreationError;
+
+  /// No description provided for @receptionConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception confirmation'**
+  String get receptionConfirmation;
+
+  /// No description provided for @receptionProcessingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The reception request is being processed.'**
+  String get receptionProcessingMessage;
+
+  /// No description provided for @receiptInReceptionHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'You can find the receipt in the reception history at any time.'**
+  String get receiptInReceptionHistory;
 }
 
 class _AppLocalizationsDelegate

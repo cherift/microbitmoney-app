@@ -632,4 +632,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm => 'Confirm';
+
+  @override
+  String get receiveTransfer => 'Receive a transfer';
+
+  @override
+  String get enterTransferCode => 'Enter a transfer code';
+
+  @override
+  String get enterReferenceNumber => 'Please enter a reference number';
+
+  @override
+  String get verify => 'Verify';
+
+  @override
+  String get residenceCountry => 'Country of residence';
+
+  @override
+  String get futureExpiryDate => 'The expiry date must be in the future';
+
+  @override
+  String get receptionCreationError => 'Error creating the reception';
+
+  @override
+  String get receptionConfirmation => 'Reception confirmation';
+
+  @override
+  String get receptionProcessingMessage =>
+      'The reception request is being processed.';
+
+  @override
+  String get receiptInReceptionHistory =>
+      'You can find the receipt in the reception history at any time.';
 }

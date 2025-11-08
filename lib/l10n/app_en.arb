@@ -307,5 +307,15 @@
   "incompleteSenderInfo": "Incomplete sender information",
   "incompleteRecipientInfo": "Incomplete recipient information",
   "back": "Back",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "receiveTransfer": "Receive a transfer",
+  "enterTransferCode": "Enter a transfer code",
+  "enterReferenceNumber": "Please enter a reference number",
+  "verify": "Verify",
+  "residenceCountry": "Country of residence",
+  "futureExpiryDate": "The expiry date must be in the future",
+  "receptionCreationError": "Error creating the reception",
+  "receptionConfirmation": "Reception confirmation",
+  "receptionProcessingMessage": "The reception request is being processed.",
+  "receiptInReceptionHistory": "You can find the receipt in the reception history at any time."
 }

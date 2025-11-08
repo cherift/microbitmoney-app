@@ -1,4 +1,7 @@
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:translator/translator.dart';
 
 class ActivityItem {
   final String id;
@@ -23,13 +26,15 @@ class ActivityItem {
     this.status,
   });
 
-  factory ActivityItem.fromNotification(Map<String, dynamic> json) {
-    // Déterminer l'icône et la couleur basées sur le type et le statut
+  static Future<ActivityItem> fromNotificationAsync(Map<String, dynamic> json, BuildContext context) async {
     IconData icon;
     Color color;
 
+    final translator = GoogleTranslator();
+
     final type = json['type'] as String;
     final status = json['status'] as String?;
+    final localeName = AppLocalizations.of(context)!.localeName;
 
     switch (type) {
       case 'TRANSACTION':
@@ -61,14 +66,37 @@ class ActivityItem {
         color = Colors.blue;
     }
 
-    // Calculer le temps relatif
     final createdAt = DateTime.parse(json['createdAt']);
-    final relativeTime = _getRelativeTime(createdAt);
+    final relativeTime = _getRelativeTime(createdAt, localeName);
+
+    String title = json['title'];
+    String message = json['message'];
+
+    if (localeName != 'fr') {
+      try {
+        final titleTranslation = await translator.translate(
+          title,
+          from: 'fr',
+          to: localeName
+        );
+
+        final messageTranslation = await translator.translate(
+          message,
+          from: 'fr',
+          to: localeName
+        );
+
+        title = titleTranslation.text;
+        message = messageTranslation.text;
+      } catch (e) {
+        debugPrint('Erreur de traduction: $e');
+      }
+    }
 
     return ActivityItem(
       id: json['id'],
-      title: json['title'],
-      message: json['message'],
+      title: title,
+      message: message,
       time: relativeTime,
       icon: icon,
       iconColor: color,
@@ -78,21 +106,13 @@ class ActivityItem {
     );
   }
 
-  // Calculer le temps relatif (il y a X minutes, heures, etc.)
-  static String _getRelativeTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inSeconds < 60) {
-      return 'À l\'instant';
-    } else if (difference.inMinutes < 60) {
-      return 'Il y a ${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''}';
-    } else if (difference.inHours < 24) {
-      return 'Il y a ${difference.inHours} heure${difference.inHours > 1 ? 's' : ''}';
-    } else if (difference.inDays < 30) {
-      return 'Il y a ${difference.inDays} jour${difference.inDays > 1 ? 's' : ''}';
-    } else {
-      return dateTime.toString().substring(0, 10); // Format YYYY-MM-DD
+  static String _getRelativeTime(DateTime dateTime, localeName) {
+    if (localeName == 'fr') {
+      timeago.setLocaleMessages(localeName, timeago.FrMessages());
+    } else if (localeName == 'en') {
+      timeago.setLocaleMessages(localeName, timeago.EnMessages());
     }
+
+    return timeago.format(dateTime, locale: localeName);
   }
 }

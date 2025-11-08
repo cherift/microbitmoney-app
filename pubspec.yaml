@@ -43,6 +43,8 @@ dependencies:
   country_currency_pickers: ^2.0.0
   flutter_launcher_icons: ^0.14.3
   http: ^1.4.0
+  timeago: ^3.7.1
+  translator: ^1.0.4+1
 
 dev_dependencies:
   flutter_test:

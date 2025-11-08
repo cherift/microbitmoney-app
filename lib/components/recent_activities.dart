@@ -29,7 +29,7 @@ class _RecentActivitiesWidgetState extends State<RecentActivitiesWidget> {
       });
     }
 
-    final activities = await _activityService.fetchRecentActivities();
+    final activities = await _activityService.fetchRecentActivities(context);
 
     if (mounted) {
       setState(() {

@@ -1,4 +1,5 @@
 import 'package:bit_money/constants/app_colors.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/services/reception_service.dart';
@@ -46,18 +47,21 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     try {
       final response = await _receptionService.createReception(widget.recipientData);
 
+      if (!mounted) return;
+      final tr = AppLocalizations.of(context)!;
+
       if (response != null) {
-        if (!mounted) return;
-        if (response['error'] !=null ) {
+        if (response['error'] != null) {
           _showErrorMessage(response['error']);
           return;
         }
         _showSuccessDialog(widget.recipientData['referenceId']);
       } else {
-        _showErrorMessage('Erreur lors de la création de la réception');
+        _showErrorMessage(tr.receptionCreationError);
       }
     } catch (e) {
-      _showErrorMessage('Une erreur est survenue: ${e.toString()}');
+      final tr = AppLocalizations.of(context)!;
+      _showErrorMessage(tr.errorOccurredWithDetails(e.toString()));
     } finally {
       if (mounted) {
         setState(() {
@@ -68,14 +72,16 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
   }
 
   void _showSuccessDialog(String transactionId) {
+    final tr = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            'Confirmation de réception',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: Text(
+            tr.receptionConfirmation,
+            style: const TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           content: Column(
@@ -87,23 +93,23 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
                 size: 60,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'La demande de réception est en cours de traitement.',
+              Text(
+                tr.receptionProcessingMessage,
                 textAlign: TextAlign.center,
               ),
               if (transactionId.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
-                  'Référence: $transactionId',
+                  tr.referenceLabel(transactionId),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
               ],
               const SizedBox(height: 8),
-              const Text(
-                'Vous pouvez à tout moment retrouver le reçu dans l\'historique des réceptions.',
+              Text(
+                tr.receiptInReceptionHistory,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: AppColors.darkGrey),
+                style: const TextStyle(fontSize: 12, color: AppColors.darkGrey),
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -117,9 +123,9 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
                 onPressed: () {
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
-                child: const Text(
-                  'Retour à l\'accueil',
-                  style: TextStyle(
+                child: Text(
+                  tr.backToHome,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   )
@@ -146,6 +152,8 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -153,9 +161,9 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Recevoir un transfert',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.receiveTransfer,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: AppColors.white,
@@ -188,7 +196,8 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
   }
 
   Widget _buildConfirmationCard() {
-    // Formatter pour la date
+    final tr = AppLocalizations.of(context)!;
+
     final birthdayFormatter = DateFormat('dd/MM/yyyy');
     DateTime birthDate = DateTime.parse(widget.recipientData['recipientBirthDate']);
 
@@ -199,7 +208,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: .05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -208,62 +217,62 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Center(
+          Center(
             child: Text(
-              'Confirmation',
-              style: TextStyle(
+              tr.confirmationTitle,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.text,
               ),
             ),
           ),
-          const Center(
+          Center(
             child: Text(
-              '(Vérifier vos informations)',
-              style: TextStyle(
+              tr.verifyInformationSubtitle,
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.darkGrey,
               ),
             ),
           ),
           const SizedBox(height: 24),
-          _buildDetailRow('Date de la transaction', _today),
+          _buildDetailRow(tr.transactionDate, _today),
           const SizedBox(height: 12),
-          _buildDetailRow('Numéro de référence', _transactionNumber),
+          _buildDetailRow(tr.referenceNumber, _transactionNumber),
           const SizedBox(height: 12),
-          _buildDetailRow('Motif', widget.recipientData['reason'],),
+          _buildDetailRow(tr.transferReason, widget.recipientData['reason'],),
           const SizedBox(height: 24),
-          const Text(
-            'Informations du bénéficiaire',
-            style: TextStyle(
+          Text(
+            tr.recipientInformation,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.text,
             ),
           ),
           const SizedBox(height: 12),
-          _buildDetailRow('Nom', widget.recipientData['recipientLastName']),
+          _buildDetailRow(tr.lastName, widget.recipientData['recipientLastName']),
           const SizedBox(height: 8),
-          _buildDetailRow('Prénom', widget.recipientData['recipientFirstName']),
+          _buildDetailRow(tr.firstName, widget.recipientData['recipientFirstName']),
           const SizedBox(height: 8),
-          _buildDetailRow('Téléphone', widget.recipientData['recipientPhone']),
+          _buildDetailRow(tr.phone, widget.recipientData['recipientPhone']),
           const SizedBox(height: 8),
-          _buildDetailRow('Adresse', widget.recipientData['recipientAddress']),
+          _buildDetailRow(tr.address, widget.recipientData['recipientAddress']),
           const SizedBox(height: 8),
-          _buildDetailRow('Type de pièce', widget.recipientData['recipientIdType']),
+          _buildDetailRow(tr.idType, widget.recipientData['recipientIdType']),
           const SizedBox(height: 8),
-          _buildDetailRow('Numéro ID', widget.recipientData['recipientIdNumber']),
+          _buildDetailRow(tr.idNumber, widget.recipientData['recipientIdNumber']),
           const SizedBox(height: 8),
-          _buildDetailRow('Nationalité', widget.recipientData['recipientNationality']),
+          _buildDetailRow(tr.nationality, widget.recipientData['recipientNationality']),
           const SizedBox(height: 8),
-          _buildDetailRow('Date de naissance', birthdayFormatter.format(birthDate)),
+          _buildDetailRow(tr.birthDate, birthdayFormatter.format(birthDate)),
           const SizedBox(height: 8),
-          _buildDetailRow('Lieu de naissance', widget.recipientData['recipientBirthPlace']),
+          _buildDetailRow(tr.birthPlace, widget.recipientData['recipientBirthPlace']),
           const SizedBox(height: 8),
-          _buildDetailRow('Pays', widget.recipientData['recipientCountry']),
+          _buildDetailRow(tr.country, widget.recipientData['recipientCountry']),
           const SizedBox(height: 16),
-          _buildDetailRow('Opérateur', widget.operator.name),
+          _buildDetailRow(tr.operator, widget.operator.name),
         ],
       ),
     );
@@ -299,6 +308,8 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
   }
 
   Widget _buildButtonBar() {
+    final tr = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -311,11 +322,11 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text(
-                'Retour',
-                style: TextStyle(
+              child: Text(
+                tr.back,
+                style: const TextStyle(
                   color: AppColors.darkGrey,
                   fontWeight: FontWeight.bold,
                 ),
@@ -331,7 +342,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 elevation: 0,
               ),
               child: _isSubmitting
@@ -343,9 +354,9 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
                       strokeWidth: 2,
                     ),
                   )
-                : const Text(
-                    'Confirmer',
-                    style: TextStyle(
+                : Text(
+                    tr.confirm,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

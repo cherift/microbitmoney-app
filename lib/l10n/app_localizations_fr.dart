@@ -640,4 +640,38 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get confirm => 'Confirmer';
+
+  @override
+  String get receiveTransfer => 'Recevoir un transfert';
+
+  @override
+  String get enterTransferCode => 'Entrez un code de transfert';
+
+  @override
+  String get enterReferenceNumber => 'Veuillez entrer un numéro de référence';
+
+  @override
+  String get verify => 'Vérifier';
+
+  @override
+  String get residenceCountry => 'Pays de résidence';
+
+  @override
+  String get futureExpiryDate =>
+      'La date d\'expiration doit être dans le futur';
+
+  @override
+  String get receptionCreationError =>
+      'Erreur lors de la création de la réception';
+
+  @override
+  String get receptionConfirmation => 'Confirmation de réception';
+
+  @override
+  String get receptionProcessingMessage =>
+      'La demande de réception est en cours de traitement.';
+
+  @override
+  String get receiptInReceptionHistory =>
+      'Vous pouvez à tout moment retrouver le reçu dans l\'historique des réceptions.';
 }

@@ -13,13 +13,10 @@ class ActivityService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  // Activités en cache
   List<ActivityItem> _recentActivities = [];
   List<ActivityItem> get recentActivities => _recentActivities;
 
-
-  // Récupérer les activités récentes (les 10 dernières notifications)
-  Future<List<ActivityItem>> fetchRecentActivities() async {
+  Future<List<ActivityItem>> fetchRecentActivities(BuildContext context) async {
     if (_isLoading) return _recentActivities;
 
     try {
@@ -31,9 +28,9 @@ class ActivityService {
         final data = response.data;
         final List<dynamic> notificationsJson = data['notifications'] as List;
 
-        _recentActivities = notificationsJson
-            .map((json) => ActivityItem.fromNotification(json))
-            .toList();
+        _recentActivities = await Future.wait(
+          notificationsJson.map((json) => ActivityItem.fromNotificationAsync(json, context))
+        );
       }
 
       return _recentActivities;

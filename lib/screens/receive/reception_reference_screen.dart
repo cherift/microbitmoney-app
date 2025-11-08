@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:bit_money/l10n/app_localizations.dart';
 
 class ReceptionReferenceScreen extends StatefulWidget {
   final Operator operator;
@@ -34,11 +35,11 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   final _idNumberController = TextEditingController();
   final _idExpirationDateController = TextEditingController();
   final _nationalityController = TextEditingController(text: 'GN');
-  final _nationalityNameController = TextEditingController(text: 'Guinea');
+  final _nationalityNameController = TextEditingController();
   final _birthDateController = TextEditingController();
   final _birthPlaceController = TextEditingController();
-  final _selectedCountryController = TextEditingController(text: 'Guinea');
-  final _reasonController = TextEditingController(text: 'Assistance famille');
+  final _selectedCountryController = TextEditingController();
+  final _reasonController = TextEditingController(text: 'FAMILY');
 
   Country? _selectedCountry;
   Country? _selectedNationality;
@@ -52,44 +53,36 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     'AUTRE'
   ];
 
-  final Map<String, String> _idTypeLabels = {
-    'PASSPORT': 'Passeport',
-    'CARTE_IDENTITE': 'Carte d\'identité',
-    'PERMIS': 'Permis de conduire',
-    'AUTRE': 'Autre'
-  };
-
   final List<String> _reasons = [
-    'Assistance famille',
-    'Paiement factures',
-    'Achat',
-    'Autre'
+    'FAMILY',
+    'BILL',
+    'PURCHASE',
+    'OTHER'
   ];
+
+  Map<String, String> get _idTypeLabels {
+    final tr = AppLocalizations.of(context)!;
+    return {
+      'PASSPORT': tr.passport,
+      'CARTE_IDENTITE': tr.identityCard,
+      'PERMIS': tr.drivingLicense,
+      'AUTRE': tr.other
+    };
+  }
+
+  Map<String, String> get _reasonLabels {
+    final tr = AppLocalizations.of(context)!;
+    return {
+      'FAMILY': tr.familyAssistance,
+      'BILL': tr.billPayment,
+      'PURCHASE': tr.purchase,
+      'OTHER': tr.other
+    };
+  }
 
   @override
   void initState() {
     super.initState();
-    _initDefaultCountry();
-  }
-
-  void _initDefaultCountry() {
-    try {
-      final List<Country> countries = CountryService().getAll();
-      final Country guinea = countries.firstWhere(
-        (country) => country.countryCode == 'GN',
-        orElse: () => countries.first,
-      );
-
-      setState(() {
-        _selectedCountry = guinea;
-        _selectedNationality = guinea;
-        _selectedCountryController.text = guinea.name;
-        _nationalityNameController.text = guinea.name;
-        _nationalityController.text = guinea.countryCode;
-      });
-    } catch (e) {
-      debugPrint('Erreur lors de l\'initialisation du pays: $e');
-    }
   }
 
   @override
@@ -182,7 +175,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         "recipientCountry": _selectedCountryController.text,
         "operatorId": widget.operator.id,
         "referenceId": widget.referenceId,
-        "reason": _reasonController.text,
+        "reason": _reasonLabels[_reasonController.text],
       };
 
       Navigator.push(
@@ -200,6 +193,8 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -207,9 +202,9 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
           statusBarColor: AppColors.secondary,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'Infos du bénéficiaire',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          tr.recipientInformation,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -245,11 +240,13 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   }
 
   Widget _reasonDropdown() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Motif du transfert',
+          tr.transferReason,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -273,7 +270,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
             items: _reasons.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(_reasonLabels[value] ?? value),
               );
             }).toList(),
             onChanged: (String? newValue) {
@@ -294,16 +291,18 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   }
 
   Widget _buildRecipientForm() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTextField('Nom', _lastNameController, validator: _requiredValidator),
+        _buildTextField(tr.lastName, _lastNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Prénom', _firstNameController, validator: _requiredValidator),
+        _buildTextField(tr.firstName, _firstNameController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Adresse', _addressController, validator: _requiredValidator),
+        _buildTextField(tr.address, _addressController, validator: _requiredValidator),
         const SizedBox(height: 16),
-        _buildTextField('Téléphone', _phoneController,
+        _buildTextField(tr.phone, _phoneController,
           keyboardType: TextInputType.phone,
           validator: _requiredValidator
         ),
@@ -317,7 +316,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: _buildTextField('Numéro ID', _idNumberController,
+              child: _buildTextField(tr.idNumber, _idNumberController,
                 validator: _requiredValidator
               ),
             ),
@@ -325,7 +324,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
 
         const SizedBox(height: 16),
-        _buildTextField('Date d\'expiration', _idExpirationDateController,
+        _buildTextField(tr.expiryDate, _idExpirationDateController,
           readOnly: true,
           onTap: () => _selectExpirationDate(context),
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
@@ -333,7 +332,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
 
         const SizedBox(height: 16),
-        _buildTextField('Date de naissance', _birthDateController,
+        _buildTextField(tr.birthDate, _birthDateController,
           readOnly: true,
           onTap: () => _selectDate(context),
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
@@ -341,7 +340,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
 
         const SizedBox(height: 16),
-        _buildTextField('Lieu de naissance', _birthPlaceController,
+        _buildTextField(tr.birthPlace, _birthPlaceController,
           validator: _requiredValidator
         ),
 
@@ -354,11 +353,13 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   }
 
   Widget _buildNationalitySelector() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Nationalité',
+          tr.nationality,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -374,7 +375,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
               countryListTheme: CountryListThemeData(
                 borderRadius: BorderRadius.circular(8),
                 inputDecoration: InputDecoration(
-                  hintText: 'Rechercher une nationalité',
+                  hintText: tr.searchNationality,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -429,11 +430,13 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   }
 
   Widget _buildCountrySelector() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Pays de résidence',
+          tr.residenceCountry,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -449,7 +452,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
               countryListTheme: CountryListThemeData(
                 borderRadius: BorderRadius.circular(8),
                 inputDecoration: InputDecoration(
-                  hintText: 'Rechercher un pays',
+                  hintText: tr.searchCountry,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -503,11 +506,13 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   }
 
   Widget _buildIdTypeDropdown() {
+    final tr = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Type de pièce',
+          tr.idType,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[700],
@@ -605,6 +610,8 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   }
 
   Widget _buildButtonBar() {
+    final tr = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -617,11 +624,11 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text(
-                'Annuler',
-                style: TextStyle(
+              child: Text(
+                tr.cancel,
+                style: const TextStyle(
                   color: AppColors.darkGrey,
                   fontWeight: FontWeight.bold,
                 ),
@@ -637,12 +644,12 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 23),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 elevation: 0,
               ),
-              child: const Text(
-                'Continuer',
-                style: TextStyle(
+              child: Text(
+                tr.nextStep,
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -657,18 +664,20 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   // Validateurs
   String? _requiredValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Ce champ est obligatoire';
+      return AppLocalizations.of(context)!.fieldRequired;
     }
     return null;
   }
 
   String? _expirationValidator(String? value) {
+    final tr = AppLocalizations.of(context)!;
+
     if (value == null || value.isEmpty) {
-      return 'Ce champ est obligatoire';
+      return tr.fieldRequired;
     }
     final expirationDate = DateFormat('dd/MM/yyyy').parse(value, true);
     if (expirationDate.isBefore(DateTime.now())) {
-      return 'La date d\'expiration doit être dans le futur';
+      return tr.futureExpiryDate;
     }
     return null;
   }
