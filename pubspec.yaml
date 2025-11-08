@@ -45,6 +45,8 @@ dependencies:
   http: ^1.4.0
   timeago: ^3.7.1
   translator: ^1.0.4+1
+  pdf: ^3.10.1
+  printing: ^5.10.3
 
 dev_dependencies:
   flutter_test:

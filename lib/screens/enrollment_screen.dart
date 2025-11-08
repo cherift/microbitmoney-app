@@ -281,6 +281,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
               ),
             )
           : SafeArea(
+              bottom: true,
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(

@@ -674,4 +674,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get receiptInReceptionHistory =>
       'Vous pouvez à tout moment retrouver le reçu dans l\'historique des réceptions.';
+
+  @override
+  String get print => 'Imprimer';
 }

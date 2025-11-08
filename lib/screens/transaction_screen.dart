@@ -191,7 +191,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   color: Colors.transparent,
                 ),
                 child: SafeArea(
-                  bottom: false,
+                  bottom: true,
                   child: Column(
                     children: [
                       Padding(

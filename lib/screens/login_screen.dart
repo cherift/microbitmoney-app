@@ -71,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
+        bottom: true,
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(

@@ -174,6 +174,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
         ),
       ),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
             TransferStepper(

@@ -141,6 +141,7 @@ class _RecipientInformationFormState extends State<RecipientInformationForm> {
         ),
       ),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
             TransferStepper(

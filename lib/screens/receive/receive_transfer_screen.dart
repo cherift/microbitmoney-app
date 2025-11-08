@@ -125,6 +125,7 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
           : SafeArea(
+            bottom: true,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

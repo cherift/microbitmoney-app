@@ -33,26 +33,29 @@ class GeneralScreenState extends State<GeneralScreen> {
         ),
         child: _navItems[_selectedIndex]['page'],
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
-        color: AppColors.secondary,
-        buttonBackgroundColor: AppColors.primary,
-        animationDuration: const Duration(milliseconds: 300),
-        animationCurve: Curves.easeInOut,
-        height: 60,
-        index: _selectedIndex,
-        items: _navItems.map((item) {
-          return Icon(
-            item['icon'],
-            size: 30,
-            color: AppColors.white
-          );
-        }).toList(),
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        child: CurvedNavigationBar(
+          backgroundColor: Colors.transparent,
+          color: AppColors.secondary,
+          buttonBackgroundColor: AppColors.primary,
+          animationDuration: const Duration(milliseconds: 300),
+          animationCurve: Curves.easeInOut,
+          height: 60,
+          index: _selectedIndex,
+          items: _navItems.map((item) {
+            return Icon(
+              item['icon'],
+              size: 30,
+              color: AppColors.white
+            );
+          }).toList(),
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
       ),
     );
   }

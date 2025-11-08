@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: SafeArea(
-        bottom: false,
+        bottom: true,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: LayoutBuilder(

@@ -29,6 +29,7 @@ class TransactionReceiptScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
             Expanded(

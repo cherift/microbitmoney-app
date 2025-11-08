@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
           color: AppColors.background,
         ),
         child: SafeArea(
-          bottom: false,
+          bottom: true,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),

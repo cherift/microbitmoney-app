@@ -1351,6 +1351,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can find the receipt in the reception history at any time.'**
   String get receiptInReceptionHistory;
+
+  /// No description provided for @print.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get print;
 }
 
 class _AppLocalizationsDelegate

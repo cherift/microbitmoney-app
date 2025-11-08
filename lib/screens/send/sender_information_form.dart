@@ -279,6 +279,7 @@ class _SenderInformationFormState extends State<SenderInformationForm> {
         ),
       ),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
             TransferStepper(

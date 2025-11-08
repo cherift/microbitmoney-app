@@ -215,6 +215,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
       ),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
             TransferStepper(

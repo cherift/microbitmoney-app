@@ -317,5 +317,6 @@
   "receptionCreationError": "Error creating the reception",
   "receptionConfirmation": "Reception confirmation",
   "receptionProcessingMessage": "The reception request is being processed.",
-  "receiptInReceptionHistory": "You can find the receipt in the reception history at any time."
+  "receiptInReceptionHistory": "You can find the receipt in the reception history at any time.",
+  "print": "Print"
 }

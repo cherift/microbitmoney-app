@@ -184,6 +184,7 @@ class SendConfirmationScreenState extends State<SendConfirmationScreen> {
         ),
       ),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
             TransferStepper(

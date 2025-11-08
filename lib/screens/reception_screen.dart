@@ -222,7 +222,7 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
                   color: Colors.transparent,
                 ),
                 child: SafeArea(
-                  bottom: false,
+                  bottom: true,
                   child: Column(
                     children: [
                       Padding(
