@@ -99,7 +99,7 @@ class ReceptionReceiptScreen extends StatelessWidget {
   Widget _buildReceiptCard(BuildContext context, double screenWidth) {
     final tr = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
-    final amountFormatter = NumberFormat('#,###', locale);
+    final amountFormatter = NumberFormat('#,##0.##', locale);
     final double amountReceived = reception.amount ?? 0;
     final String currency = reception.currency ?? 'GNF';
     final String truncatedRef = _truncateWithEllipsis(reception.referenceId, 18);

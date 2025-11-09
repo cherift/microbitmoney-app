@@ -40,7 +40,7 @@ class _ReceptionsScreenState extends State<ReceptionsScreen> {
     super.didChangeDependencies();
 
     final locale = Localizations.localeOf(context).languageCode;
-    _amountFormatter = NumberFormat('#,###', locale);
+    _amountFormatter = NumberFormat('#,##0.##', locale);
     _dateFormatter = DateFormat('dd/MM/yyyy', locale);
   }
 

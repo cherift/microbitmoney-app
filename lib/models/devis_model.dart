@@ -2,8 +2,8 @@ class Devis {
   final int id;
   final String userId;
   final String operatorId;
-  final int? amountToSend;
-  final int? amountToReceive;
+  final num? amountToSend;
+  final num? amountToReceive;
   final String currency;
   final String recipientCurrency;
   final String recipientCountry;
@@ -54,7 +54,7 @@ class User {
   final String lastName;
   final String role;
   final String accountType;
-  final int commission;
+  final num commission;
 
   User({
     required this.id,
@@ -88,7 +88,7 @@ class Operateur {
   final bool isActive;
   final int minAmount;
   final int maxAmount;
-  final int fees;
+  final num fees;
 
   Operateur({
     required this.id,
@@ -120,8 +120,8 @@ class Operateur {
 class ReponseDevis {
   final int id;
   final int demandeDevisId;
-  final int amountToSend;
-  final int amountToReceive;
+  final num amountToSend;
+  final num amountToReceive;
   final String currency;
   final String receiveCurrency;
   final num fees;

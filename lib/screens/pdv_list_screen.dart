@@ -206,6 +206,8 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                   ),
                 ),
               ),
+
+              const SizedBox(height: 32),
             ],
           ),
         );

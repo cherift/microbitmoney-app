@@ -428,7 +428,7 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                         return null;
                       }
 
-                      final amount = int.tryParse(value);
+                      final amount = double.tryParse(value);
                       if (amount == null) {
                         return tr.enterValidAmount;
                       }
@@ -538,7 +538,7 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
                         return null;
                       }
 
-                      final amount = int.tryParse(value);
+                      final amount = double.tryParse(value);
                       if (amount == null) {
                         return tr.enterValidAmount;
                       }

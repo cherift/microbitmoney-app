@@ -100,7 +100,7 @@ class TransactionReceiptScreen extends StatelessWidget {
   Widget _buildReceiptCard(BuildContext context, double screenWidth) {
     final tr = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
-    final amountFormatter = NumberFormat('#,###', locale);
+    final amountFormatter = NumberFormat('#,##0.##', locale);
     final double amountSent = transaction.amount;
     final double totalAmount = transaction.totalAmount;
 
