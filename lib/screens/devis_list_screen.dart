@@ -236,6 +236,8 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
                   title: tr.operator,
                   content: devis.operateur.name,
                 ),
+
+                const SizedBox(height: 36),
               ],
             ),
           ),
