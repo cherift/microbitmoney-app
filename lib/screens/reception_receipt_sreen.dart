@@ -68,8 +68,8 @@ class ReceptionReceiptScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
                   if (reception.status == "COMPLETED") ... [
+                    const SizedBox(width: 12),
                     Expanded(
                       child: SizedBox(
                         height: 50,
