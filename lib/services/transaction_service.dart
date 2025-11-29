@@ -287,16 +287,75 @@ class TransactionService {
     ).toList();
   }
 
-  Future<dynamic> getTransactionStatus(String referenceId) async {
+  Future<Map<String, dynamic>> verifyTransaction(String operatorCode, String referenceId) async {
+    try {
+      switch (operatorCode) {
+        case 'MBM':
+          return await _verifyMBMTransaction(referenceId);
+        case 'RIA':
+          return await _verifyRIATransaction(referenceId);
+        default:
+          return {'success': true};
+      }
+    } catch (e) {
+      debugPrint('Erreur lors de la vérification ($operatorCode): $e');
+      return {
+        'success': false,
+        'error': 'Erreur lors de la vérification du transfert'
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> _verifyMBMTransaction(String referenceId) async {
     final response = await _apiClient.get(
       '/transactions/$referenceId/status',
       useCache: false,
     );
 
-    if (response.statusCode! > 201) {
-      final data = response.data;
-      return data;
+    final data = response.data;
+
+    if (data['error'] != null) {
+      return {
+        'success': false,
+        'error': data['error']
+      };
     }
-    return {'error': false};
+
+    if (data['operatorCode'] != 'MBM') {
+      return {
+        'success': false,
+        'error': 'Ceci n\'est pas un transfert Microbit'
+      };
+    }
+
+    if (data['transaction'] == null) {
+      return {
+        'success': false,
+        'error': 'Transaction introuvable'
+      };
+    }
+
+    return {
+      'success': true,
+      'data': {
+        'transferDetails': data['transaction'],
+      }
+    };
+  }
+
+  Future<Map<String, dynamic>> _verifyRIATransaction(String referenceId) async {
+    dynamic response = await _apiClient.post(
+      '/ria/verify',
+      data: {
+        'pin': referenceId,
+        'amount': 0
+      }
+    ).timeout(const Duration(seconds: 15));
+
+    if (response.data != null) {
+      return Map<String, dynamic>.from(response.data);
+    }
+
+    return response;
   }
 }

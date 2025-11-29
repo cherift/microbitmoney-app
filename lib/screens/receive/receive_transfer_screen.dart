@@ -19,8 +19,11 @@ class ReceiveTransferOperatorScreen extends StatefulWidget {
 class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorScreen> {
   final OperatorService _operatorService = OperatorService();
   final TransactionService _transactionService = TransactionService();
+  Map<String, dynamic>? _transferDetails;
+
   List<Operator> _operators = [];
   bool _isLoading = true;
+  bool _isVerifying = false;
   Operator? _selectedOperator;
   final _formKey = GlobalKey<FormState>();
   final _referenceController = TextEditingController();
@@ -73,27 +76,47 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
 
   void _verifyReference() async {
     if (_formKey.currentState!.validate() && _selectedOperator != null) {
-      if (_selectedOperator!.code == 'MBM') {
-        final response = await _transactionService.getTransactionStatus(_referenceController.text);
+      setState(() {
+        _isVerifying = true;
+      });
+
+      try {
+        final response = await _transactionService.verifyTransaction(
+          _selectedOperator!.code,
+          _referenceController.text,
+        );
 
         if (!mounted) return;
 
-        if (response['error'] != false) {
+        if (response['success'] == false) {
           _showErrorSnackBar(response['error'] ?? AppLocalizations.of(context)!.errorOccured);
           return;
         }
-      }
 
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReceptionReferenceScreen(
-              operator: _selectedOperator!,
-              referenceId: _referenceController.text,
+        _transferDetails = response['data']?['transferDetails'];
+
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReceptionReferenceScreen(
+                operator: _selectedOperator!,
+                referenceId: _referenceController.text,
+                transferDetails: _transferDetails,
+              ),
             ),
-          ),
-        );
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          _showErrorSnackBar(AppLocalizations.of(context)!.errorOccured);
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isVerifying = false;
+          });
+        }
       }
     } else if (_selectedOperator == null) {
       _showErrorSnackBar(AppLocalizations.of(context)!.selectOperator);
@@ -224,14 +247,23 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
                 ),
                 elevation: 0,
               ),
-              child: Text(
-                tr.verify,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
-                ),
-              ),
+              child: _isVerifying
+                ? const SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      color: AppColors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  )
+                : Text(
+                    tr.verify,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
+                  ),
             ),
           ),
         ],

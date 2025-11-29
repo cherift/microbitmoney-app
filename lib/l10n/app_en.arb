@@ -318,5 +318,8 @@
   "receptionConfirmation": "Reception confirmation",
   "receptionProcessingMessage": "The reception request is being processed.",
   "receiptInReceptionHistory": "You can find the receipt in the reception history at any time.",
-  "print": "Print"
+  "print": "Print",
+  "receptionPending": "Pending validation",
+  "receptionSuccessMessage": "Your reception has been successfully validated.",
+  "receptionPendingMessage": "Your reception is being validated. You will receive a notification once it's validated."
 }

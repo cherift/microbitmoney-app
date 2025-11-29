@@ -3,6 +3,7 @@ import 'package:bit_money/l10n/app_localizations.dart';
 import 'package:bit_money/models/operator_model.dart';
 import 'package:bit_money/components/transfer_stepper.dart';
 import 'package:bit_money/services/reception_service.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +46,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     });
 
     try {
-      final response = await _receptionService.createReception(widget.recipientData);
+      final response = await _receptionService.createReception(widget.recipientData, widget.operator.code);
 
       if (!mounted) return;
       final tr = AppLocalizations.of(context)!;
@@ -55,7 +56,9 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           _showErrorMessage(response['error']);
           return;
         }
-        _showSuccessDialog(widget.recipientData['referenceId']);
+
+        final status = response['reception']?['status'] ?? 'PENDING';
+        _showSuccessDialog(widget.recipientData['referenceId'], status);
       } else {
         _showErrorMessage(tr.receptionCreationError);
       }
@@ -71,8 +74,10 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     }
   }
 
-  void _showSuccessDialog(String transactionId) {
+  void _showSuccessDialog(String transactionId, String status) {
     final tr = AppLocalizations.of(context)!;
+
+    final bool isCompleted = status == 'COMPLETED';
 
     showDialog(
       context: context,
@@ -80,21 +85,23 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            tr.receptionConfirmation,
+            isCompleted ? tr.receptionConfirmation : tr.receptionPending,
             style: const TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.check_circle,
-                color: Colors.green,
+              Icon(
+                isCompleted ? Icons.check_circle : Icons.hourglass_top,
+                color: isCompleted ? Colors.green : Colors.orange,
                 size: 60,
               ),
               const SizedBox(height: 16),
               Text(
-                tr.receptionProcessingMessage,
+                isCompleted
+                    ? tr.receptionSuccessMessage
+                    : tr.receptionPendingMessage,
                 textAlign: TextAlign.center,
               ),
               if (transactionId.isNotEmpty) ...[
@@ -162,7 +169,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           statusBarIconBrightness: Brightness.light,
         ),
         title: Text(
-          tr.receiveTransfer,
+          tr.receptionConfirmation,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -198,6 +205,9 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
 
   Widget _buildConfirmationCard() {
     final tr = AppLocalizations.of(context)!;
+
+    final locale = Localizations.localeOf(context).languageCode;
+    final formatter = NumberFormat('#,###', locale);
 
     final birthdayFormatter = DateFormat('dd/MM/yyyy');
     DateTime birthDate = DateTime.parse(widget.recipientData['recipientBirthDate']);
@@ -242,8 +252,33 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           const SizedBox(height: 12),
           _buildDetailRow(tr.referenceNumber, _transactionNumber),
           const SizedBox(height: 12),
+          if (widget.recipientData['amount'] != null) ... [
+            _buildDetailRow(tr.amount, '${formatter.format(widget.recipientData['amount'])} ${widget.recipientData['currency']}'),
+            const SizedBox(height: 12),
+          ],
           _buildDetailRow(tr.transferReason, widget.recipientData['reason'],),
           const SizedBox(height: 24),
+
+          if (widget.recipientData['senderFirstName'] != null
+              && widget.recipientData['senderLastName'] != null
+              && widget.recipientData['senderCountry'] != null) ... [
+            Text(
+              tr.senderInformation,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.text,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildDetailRow(tr.lastName, widget.recipientData['senderLastName']),
+            const SizedBox(height: 8),
+            _buildDetailRow(tr.firstName, widget.recipientData['senderFirstName']),
+            const SizedBox(height: 8),
+            _buildDetailRow(tr.country, CountryParser.tryParseCountryCode(widget.recipientData['senderCountry'])?.name ?? ''),
+            const SizedBox(height: 12),
+          ],
+
           Text(
             tr.recipientInformation,
             style: const TextStyle(
@@ -265,7 +300,7 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           const SizedBox(height: 8),
           _buildDetailRow(tr.idNumber, widget.recipientData['recipientIdNumber']),
           const SizedBox(height: 8),
-          _buildDetailRow(tr.nationality, widget.recipientData['recipientNationality']),
+          _buildDetailRow(tr.nationality, CountryParser.tryParseCountryCode(widget.recipientData['recipientNationality'])?.name ?? ''),
           const SizedBox(height: 8),
           _buildDetailRow(tr.birthDate, birthdayFormatter.format(birthDate)),
           const SizedBox(height: 8),

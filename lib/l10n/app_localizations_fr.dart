@@ -677,4 +677,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get print => 'Imprimer';
+
+  @override
+  String get receptionPending => 'En cours de validation';
+
+  @override
+  String get receptionSuccessMessage =>
+      'Votre réception a été validée avec succès.';
+
+  @override
+  String get receptionPendingMessage =>
+      'Votre réception est en cours de validation. Une notification vous sera envoyée une fois validée.';
 }

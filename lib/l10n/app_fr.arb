@@ -321,5 +321,8 @@
   "receptionConfirmation": "Confirmation de réception",
   "receptionProcessingMessage": "La demande de réception est en cours de traitement.",
   "receiptInReceptionHistory": "Vous pouvez à tout moment retrouver le reçu dans l'historique des réceptions.",
-  "print": "Imprimer"
+  "print": "Imprimer",
+  "receptionPending": "En cours de validation",
+  "receptionSuccessMessage": "Votre réception a été validée avec succès.",
+  "receptionPendingMessage": "Votre réception est en cours de validation. Une notification vous sera envoyée une fois validée."
 }

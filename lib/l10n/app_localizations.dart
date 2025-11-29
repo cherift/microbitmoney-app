@@ -1357,6 +1357,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Print'**
   String get print;
+
+  /// No description provided for @receptionPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending validation'**
+  String get receptionPending;
+
+  /// No description provided for @receptionSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reception has been successfully validated.'**
+  String get receptionSuccessMessage;
+
+  /// No description provided for @receptionPendingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reception is being validated. You will receive a notification once it\'s validated.'**
+  String get receptionPendingMessage;
 }
 
 class _AppLocalizationsDelegate

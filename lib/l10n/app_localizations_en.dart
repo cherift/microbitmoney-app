@@ -667,4 +667,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get print => 'Print';
+
+  @override
+  String get receptionPending => 'Pending validation';
+
+  @override
+  String get receptionSuccessMessage =>
+      'Your reception has been successfully validated.';
+
+  @override
+  String get receptionPendingMessage =>
+      'Your reception is being validated. You will receive a notification once it\'s validated.';
 }

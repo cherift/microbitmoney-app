@@ -357,10 +357,21 @@ class ReceptionService {
     ).toList();
   }
 
-  Future<Map<String, dynamic>?> createReception(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>?> createReception(Map<String, dynamic> data, String operatorCode) async {
     try {
+      String path;
+
+      switch (operatorCode) {
+        case 'RIA':
+          path = '/ria/payment';
+          break;
+        default:
+          path = '/receptions';
+          break;
+      }
+
       final response = await _apiClient.post(
-        '/receptions',
+        path,
         data: data,
       );
 
@@ -369,13 +380,9 @@ class ReceptionService {
         _cacheTimestamp = null;
         _cachedStats = null;
         _statsTimestamp = null;
-
-        return response.data;
-      } else {
-        debugPrint('Erreur lors de la création de la réception: ${response.statusCode}');
-        debugPrint('Message: ${response.data}');
-        return response.data;
       }
+
+      return response.data;
     } catch (e) {
       debugPrint('Exception lors de la création de la réception: $e');
       return null;

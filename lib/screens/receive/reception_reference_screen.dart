@@ -11,11 +11,13 @@ import 'package:bit_money/l10n/app_localizations.dart';
 class ReceptionReferenceScreen extends StatefulWidget {
   final Operator operator;
   final String referenceId;
+  final dynamic transferDetails;
 
   const ReceptionReferenceScreen({
     super.key,
     required this.operator,
     required this.referenceId,
+    this.transferDetails,
   });
 
   @override
@@ -83,6 +85,26 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeFromTransferDetails();
+  }
+
+  void _initializeFromTransferDetails() {
+    final details = widget.transferDetails;
+    if (details == null) return;
+
+    _firstNameController.text = details['recipientFirstName'] ?? '';
+    _lastNameController.text = details['recipientLastName'] ?? '';
+    Country? country = CountryParser.tryParseCountryCode(details['recipientCountry']);
+    _selectedCountryController.text = country?.name ?? '';
+    _selectedCountry = country;
+
+    final reason = details['reason'];
+    if (reason != null && reason.toString().isNotEmpty) {
+      if (!_reasons.contains(reason)) {
+        _reasons.insert(_reasons.length - 1, reason);
+      }
+      _reasonController.text = reason;
+    }
   }
 
   @override
@@ -173,9 +195,16 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         "recipientIdExpiryDate": _selectedIdExpirationDate?.toUtc().toIso8601String(),
         "recipientBirthPlace": _birthPlaceController.text,
         "recipientCountry": _selectedCountryController.text,
+        "recipientCountryCode": _selectedCountry?.countryCode ?? '',
         "operatorId": widget.operator.id,
         "referenceId": widget.referenceId,
-        "reason": _reasonLabels[_reasonController.text],
+        "reason": _reasonLabels[_reasonController.text] ?? _reasonController.text,
+        "amount": widget.transferDetails["amount"],
+        "currency": widget.transferDetails["currency"],
+        "senderLastName": widget.transferDetails["senderLastName"],
+        "senderFirstName": widget.transferDetails["senderFirstName"],
+        "senderCountry": widget.transferDetails["senderCountry"],
+        "transactionToken": widget.transferDetails["transactionToken"],
       };
 
       Navigator.push(
