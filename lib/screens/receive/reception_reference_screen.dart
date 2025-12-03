@@ -199,12 +199,12 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         "operatorId": widget.operator.id,
         "referenceId": widget.referenceId,
         "reason": _reasonLabels[_reasonController.text] ?? _reasonController.text,
-        "amount": widget.transferDetails["amount"],
-        "currency": widget.transferDetails["currency"],
-        "senderLastName": widget.transferDetails["senderLastName"],
-        "senderFirstName": widget.transferDetails["senderFirstName"],
-        "senderCountry": widget.transferDetails["senderCountry"],
-        "transactionToken": widget.transferDetails["transactionToken"],
+        "amount": widget.transferDetails?["amount"],
+        "currency": widget.transferDetails?["currency"],
+        "senderLastName": widget.transferDetails?["senderLastName"],
+        "senderFirstName": widget.transferDetails?["senderFirstName"],
+        "senderCountry": widget.transferDetails?["senderCountry"],
+        "transactionToken": widget.transferDetails?["transactionToken"],
       };
 
       Navigator.push(

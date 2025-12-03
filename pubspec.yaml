@@ -37,7 +37,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   dio: ^5.8.0+1
   curved_navigation_bar: ^1.0.6
-  intl: ^0.19.0
+  intl: ^0.20.2
   country_picker: ^2.0.27
   country_flags: ^4.1.0
   country_currency_pickers: ^2.0.0

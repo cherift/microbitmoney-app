@@ -353,7 +353,16 @@ class TransactionService {
     ).timeout(const Duration(seconds: 15));
 
     if (response.data != null) {
-      return Map<String, dynamic>.from(response.data);
+      final data = Map<String, dynamic>.from(response.data);
+
+      if (data.containsKey('error')) {
+        return {
+          'success': false,
+          'error': data['error']
+        };
+      }
+
+      return data;
     }
 
     return response;
