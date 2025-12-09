@@ -30,7 +30,7 @@ class _SendTransferOperatorScreenState extends State<SendTransferOperatorScreen>
   final _amountController = TextEditingController();
   final AuthService authService = AuthService();
 
-  final List<String> _currencies = ['GNF', 'USD'];
+  final List<String> _currencies = ['GNF', 'USD', 'SLL'];
 
   String _selectedCurrency = 'GNF';
 

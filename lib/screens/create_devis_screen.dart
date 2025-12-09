@@ -29,7 +29,7 @@ class _CreateDevisScreenState extends State<CreateDevisScreen> {
   final _selectedCountryController = TextEditingController();
   bool _initialLoadDone = false;
 
-  final List<String> _currencies = ['GNF', 'USD'];
+  final List<String> _currencies = ['GNF', 'USD', 'SLL'];
   String _selectedCurrency = 'GNF';
   String _recipientCurrency = 'GNF';
   Country? _selectedCountry;
