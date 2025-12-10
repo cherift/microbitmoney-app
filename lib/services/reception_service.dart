@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:bit_money/models/reception_model.dart';
 import 'package:bit_money/services/client/api_client.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -373,7 +376,7 @@ class ReceptionService {
       final response = await _apiClient.post(
         path,
         data: data,
-      );
+      ).timeout(const Duration(minutes: 2));
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         _cachedReceptions = null;
@@ -383,9 +386,59 @@ class ReceptionService {
       }
 
       return response.data;
+    } on TimeoutException {
+
+      if (operatorCode == 'RIA') {
+        await _cancelRiaPayment(data);
+      }
+
+      return {
+        'success': false,
+        'error': 'Le paiement a expiré. L\'opération a été annulée automatiquement.',
+        'timeout': true,
+      };
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+
+        if (operatorCode == 'RIA') {
+          await _cancelRiaPayment(data);
+        }
+
+        return {
+          'success': false,
+          'error': 'Le paiement a expiré. L\'opération a été annulée automatiquement.',
+          'timeout': true,
+        };
+      }
+
+      return {
+        'success': false,
+        'error': 'Temps de traitement trop long. Merci de réessayer',
+        'timeout': true,
+      };
     } catch (e) {
-      debugPrint('Exception lors de la création de la réception: $e');
       return null;
+    }
+  }
+
+  Future<void> _cancelRiaPayment(Map<String, dynamic> data) async {
+    try {
+      await _apiClient.post(
+        '/ria/cancel',
+        data: {
+          'orderNo': data['orderNo'],
+          'orderPaidTransRefID': data['transactionToken'],
+          'pin': data['referenceId'],
+          'beneCurrency': data['currency'],
+          'beneAmount': data['amount'],
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      debugPrint('Annulation RIA effectuée');
+    } catch (e) {
+      debugPrint('Erreur lors de l\'annulation RIA: $e');
     }
   }
 }

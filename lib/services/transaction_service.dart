@@ -350,7 +350,7 @@ class TransactionService {
         'pin': referenceId,
         'amount': 0
       }
-    ).timeout(const Duration(seconds: 15));
+    ).timeout(const Duration(seconds: 30));
 
     if (response.data != null) {
       final data = Map<String, dynamic>.from(response.data);

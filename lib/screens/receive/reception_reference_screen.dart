@@ -205,6 +205,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         "senderFirstName": widget.transferDetails?["senderFirstName"],
         "senderCountry": widget.transferDetails?["senderCountry"],
         "transactionToken": widget.transferDetails?["transactionToken"],
+        "orderNo": widget.transferDetails?["orderNo"],
       };
 
       Navigator.push(
