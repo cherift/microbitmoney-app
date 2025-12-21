@@ -538,7 +538,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get idNumber => 'ID Number';
 
   @override
+  String get issueDate => 'Issue Date';
+
+  @override
   String get expiryDate => 'Expiry Date';
+
+  @override
+  String get issuingCountry => 'Issuing Country';
 
   @override
   String get birthDate => 'Birth Date';

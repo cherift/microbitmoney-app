@@ -1112,11 +1112,23 @@ abstract class AppLocalizations {
   /// **'ID Number'**
   String get idNumber;
 
+  /// No description provided for @issueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue Date'**
+  String get issueDate;
+
   /// No description provided for @expiryDate.
   ///
   /// In en, this message translates to:
   /// **'Expiry Date'**
   String get expiryDate;
+
+  /// No description provided for @issuingCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Issuing Country'**
+  String get issuingCountry;
 
   /// No description provided for @birthDate.
   ///

@@ -542,7 +542,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get idNumber => 'Numéro ID';
 
   @override
+  String get issueDate => 'Date de délivrance';
+
+  @override
   String get expiryDate => 'Date d\'expiration';
+
+  @override
+  String get issuingCountry => 'Pays de délivrance';
 
   @override
   String get birthDate => 'Date de naissance';

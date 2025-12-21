@@ -35,7 +35,9 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   final _addressController = TextEditingController();
   final _idTypeController = TextEditingController(text: 'PASSPORT');
   final _idNumberController = TextEditingController();
+  final _idIssueDateController = TextEditingController();
   final _idExpirationDateController = TextEditingController();
+  final _idIssuingCountryNameController = TextEditingController();
   final _nationalityController = TextEditingController(text: 'GN');
   final _nationalityNameController = TextEditingController();
   final _birthDateController = TextEditingController();
@@ -46,7 +48,9 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
   Country? _selectedCountry;
   Country? _selectedNationality;
   DateTime? _selectedBirthDate;
+  DateTime? _selectedIdIssueDate;
   DateTime? _selectedIdExpirationDate;
+  Country? _selectedIdIssuingCountry;
 
   final List<String> _idTypes = [
     'PASSPORT',
@@ -115,7 +119,9 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     _addressController.dispose();
     _idTypeController.dispose();
     _idNumberController.dispose();
+    _idIssueDateController.dispose();
     _idExpirationDateController.dispose();
+    _idIssuingCountryNameController.dispose();
     _nationalityController.dispose();
     _nationalityNameController.dispose();
     _selectedCountryController.dispose();
@@ -149,6 +155,34 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
       setState(() {
         _selectedBirthDate = picked;
         _birthDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
+
+  Future<void> _selectIssueDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedIdIssueDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.secondary,
+              onPrimary: Colors.white,
+              onSurface: AppColors.text,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != _selectedIdIssueDate) {
+      setState(() {
+        _selectedIdIssueDate = picked;
+        _idIssueDateController.text = DateFormat('dd/MM/yyyy').format(picked);
       });
     }
   }
@@ -190,12 +224,15 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         "recipientAddress": _addressController.text,
         "recipientIdType": _idTypeController.text,
         "recipientIdNumber": _idNumberController.text,
+        "recipientIdIssueDate": _selectedIdIssueDate?.toUtc().toIso8601String(),
         "recipientNationality": _nationalityController.text,
         "recipientBirthDate": _selectedBirthDate?.toUtc().toIso8601String(),
         "recipientIdExpiryDate": _selectedIdExpirationDate?.toUtc().toIso8601String(),
         "recipientBirthPlace": _birthPlaceController.text,
         "recipientCountry": _selectedCountryController.text,
         "recipientCountryCode": _selectedCountry?.countryCode ?? '',
+        "recipientIdIssuingCountry": _idIssuingCountryNameController.text,
+        "recipientIdIssuingCountryCode": _selectedIdIssuingCountry?.countryCode ?? '',
         "operatorId": widget.operator.id,
         "referenceId": widget.referenceId,
         "reason": _reasonLabels[_reasonController.text] ?? _reasonController.text,
@@ -355,12 +392,23 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         ),
 
         const SizedBox(height: 16),
+        _buildTextField(tr.issueDate, _idIssueDateController,
+          readOnly: true,
+          onTap: () => _selectIssueDate(context),
+          suffixIcon: const Icon(Icons.calendar_today, size: 20),
+          validator: _requiredValidator
+        ),
+
+        const SizedBox(height: 16),
         _buildTextField(tr.expiryDate, _idExpirationDateController,
           readOnly: true,
           onTap: () => _selectExpirationDate(context),
           suffixIcon: const Icon(Icons.calendar_today, size: 20),
           validator: _expirationValidator
         ),
+
+        const SizedBox(height: 16),
+        _buildIssuingCountrySelector(),
 
         const SizedBox(height: 16),
         _buildTextField(tr.birthDate, _birthDateController,
@@ -379,6 +427,82 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
         _buildNationalitySelector(),
         const SizedBox(height: 16),
         _reasonDropdown(),
+      ],
+    );
+  }
+
+  Widget _buildIssuingCountrySelector() {
+    final tr = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tr.issuingCountry,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () {
+            showCountryPicker(
+              context: context,
+              showPhoneCode: false,
+              favorite: ['GN'],
+              countryListTheme: CountryListThemeData(
+                borderRadius: BorderRadius.circular(8),
+                inputDecoration: InputDecoration(
+                  hintText: tr.searchCountry,
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                searchTextStyle: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 16,
+                ),
+              ),
+              onSelect: (Country country) {
+                setState(() {
+                  _selectedIdIssuingCountry = country;
+                  _idIssuingCountryNameController.text = country.name;
+                });
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              children: [
+                if (_selectedIdIssuingCountry != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    _selectedIdIssuingCountry!.flagEmoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    _idIssuingCountryNameController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down, color: AppColors.darkGrey),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

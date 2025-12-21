@@ -210,7 +210,12 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
     final formatter = NumberFormat('#,###', locale);
 
     final birthdayFormatter = DateFormat('dd/MM/yyyy');
-    DateTime birthDate = DateTime.parse(widget.recipientData['recipientBirthDate']);
+    final birthDate = DateTime.tryParse(widget.recipientData['recipientBirthDate'] ?? '');
+    final issueDate = DateTime.tryParse(widget.recipientData['recipientIdIssueDate'] ?? '');
+    final expiryDate = DateTime.tryParse(widget.recipientData['recipientIdExpiryDate'] ?? '');
+    final issuingCountryName = (widget.recipientData['recipientIdIssuingCountry'] as String?)?.isNotEmpty == true
+        ? widget.recipientData['recipientIdIssuingCountry'] as String
+        : CountryParser.tryParseCountryCode(widget.recipientData['recipientIdIssuingCountryCode'])?.name ?? '';
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -300,9 +305,15 @@ class _ReceptionConfirmationScreenState extends State<ReceptionConfirmationScree
           const SizedBox(height: 8),
           _buildDetailRow(tr.idNumber, widget.recipientData['recipientIdNumber']),
           const SizedBox(height: 8),
+          _buildDetailRow(tr.issueDate, issueDate != null ? birthdayFormatter.format(issueDate) : ''),
+          const SizedBox(height: 8),
+          _buildDetailRow(tr.expiryDate, expiryDate != null ? birthdayFormatter.format(expiryDate) : ''),
+          const SizedBox(height: 8),
+          _buildDetailRow(tr.issuingCountry, issuingCountryName),
+          const SizedBox(height: 8),
           _buildDetailRow(tr.nationality, CountryParser.tryParseCountryCode(widget.recipientData['recipientNationality'])?.name ?? ''),
           const SizedBox(height: 8),
-          _buildDetailRow(tr.birthDate, birthdayFormatter.format(birthDate)),
+          _buildDetailRow(tr.birthDate, birthDate != null ? birthdayFormatter.format(birthDate) : ''),
           const SizedBox(height: 8),
           _buildDetailRow(tr.birthPlace, widget.recipientData['recipientBirthPlace']),
           const SizedBox(height: 8),
