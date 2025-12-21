@@ -26,9 +26,9 @@ class TransactionReceiptScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(tr.transactionDetails),
         backgroundColor: Colors.transparent,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.secondary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
       ),
       body: SafeArea(

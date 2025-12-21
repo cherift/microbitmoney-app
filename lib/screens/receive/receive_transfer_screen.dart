@@ -129,9 +129,9 @@ class _ReceiveTransferOperatorScreenState extends State<ReceiveTransferOperatorS
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.secondary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
         title: Text(
           tr.receiveTransfer,

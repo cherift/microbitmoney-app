@@ -265,9 +265,9 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.secondary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
         title: Text(
           tr.recipientInformation,
@@ -328,7 +328,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
             border: Border.all(color: Colors.grey.shade200),
           ),
           child: DropdownButtonFormField<String>(
-            value: _reasonController.text.isEmpty ? _reasons[0] : _reasonController.text,
+            initialValue: _reasonController.text.isEmpty ? _reasons[0] : _reasonController.text,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               border: InputBorder.none,
@@ -681,7 +681,7 @@ class _ReceptionReferenceScreenState extends State<ReceptionReferenceScreen> {
             border: Border.all(color: Colors.grey.shade200),
           ),
           child: DropdownButtonFormField<String>(
-            value: _idTypeController.text.isEmpty ? _idTypes[0] : _idTypeController.text,
+            initialValue: _idTypeController.text.isEmpty ? _idTypes[0] : _idTypeController.text,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               border: InputBorder.none,

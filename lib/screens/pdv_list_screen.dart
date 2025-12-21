@@ -324,9 +324,9 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.secondary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.text),
@@ -418,7 +418,7 @@ class _PdvListScreenState extends State<PdvListScreen> with SingleTickerProvider
                                         _applyFilters();
                                       });
                                     },
-                                    activeColor: Colors.green,
+                                    activeThumbColor: Colors.green,
                                     activeTrackColor: Colors.greenAccent.withValues(alpha: .4),
                                   ),
                                 ],

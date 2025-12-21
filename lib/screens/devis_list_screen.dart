@@ -468,9 +468,9 @@ class _DevisListScreenState extends State<DevisListScreen> with SingleTickerProv
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.secondary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.text),

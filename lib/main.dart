@@ -15,9 +15,9 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: AppColors.secondary,
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
   ));
 
   final initialLocale = await LocalizationService.getStoredOrSystemLocale();
@@ -146,9 +146,9 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.secondary,
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: AppColors.secondary,
+          systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
           ),
         ),
         backgroundColor: AppColors.background,
